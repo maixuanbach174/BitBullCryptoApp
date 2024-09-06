@@ -7,9 +7,38 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:497274852392:android:0b42f955bfa3c613b7911d",
+        "mobilesdk_app_id": "1:497274852392:android:334e38712afc246bb7911d",
         "android_client_info": {
           "package_name": "com.bachphucngequy.bitbull"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "497274852392-h2bju0pdrdp2o4rgi33brjo2aj6usm8g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkmqbQj0Q_B-buB1O3UI-Shvf11Z8VJbM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "497274852392-h2bju0pdrdp2o4rgi33brjo2aj6usm8g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497274852392:android:0b42f955bfa3c613b7911d",
+        "android_client_info": {
+          "package_name": "com.example.pitbulltradingapp"
         }
       },
       "oauth_client": [
@@ -17,7 +46,7 @@
           "client_id": "497274852392-e8bhueujemaknau9lniiofjlitpitc8m.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.bachphucngequy.bitbull",
+            "package_name": "com.example.pitbulltradingapp",
             "certificate_hash": "69a47d2382b8ae707bd3cda8941d945c3609fbed"
           }
         },
