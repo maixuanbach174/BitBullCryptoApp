@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
-//    id 'com.google.gms.google-services'
+    id 'com.google.gms.google-services'
 
 }
 
@@ -67,10 +67,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-//    implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
-//    implementation("com.google.firebase:firebase-analytics")
-//    implementation("com.google.firebase:firebase-auth")
-//    implementation("com.google.firebase:firebase-firestore")
+    implementation(platform("com.google.firebase:firebase-bom:29.2.1"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
 
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
@@ -83,6 +83,7 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.5.1'
     implementation 'com.google.accompanist:accompanist-systemuicontroller:0.24.13-rc'
 
+    implementation ("androidx.core:core-splashscreen:1.0.1")
 
     //OKHttp
     implementation platform('com.squareup.okhttp3:okhttp-bom:4.9.0')
@@ -118,6 +119,21 @@ dependencies {
 
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    //coil
+    implementation("io.coil-kt:coil-compose:2.0.0")
+
+    //SendMail
+//    implementation 'com.github.1902shubh:SendMail:1.0.0'
+
+    //Google Auth
+    implementation ("com.google.android.gms:play-services-auth:20.5.0")
+
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.8")
+
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation ("com.google.zxing:core:3.4.1")
 
 
 }

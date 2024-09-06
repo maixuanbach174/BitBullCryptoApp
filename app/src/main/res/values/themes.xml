@@ -2,4 +2,12 @@
 <resources>
 
     <style name="Theme.BitBull" parent="android:Theme.Material.Light.NoActionBar" />
+
+<!--    <style name="Theme.AnimatedSplashScreen" parent="android:Theme.Material.Light.NoActionBar" />-->
+
+<!--    <style name="Theme.App.Starting" parent="Theme.SplashScreen">-->
+<!--        <item name = "windowSplashScreenBackground">@color/white</item>-->
+<!--        <item name = "postSplashScreenTheme">@style/Theme.AnimatedSplashScreen</item>-->
+<!--        <item name="windowSplashScreenAnimatedIcon">@drawable/animated_logo</item>-->
+<!--    </style>-->
 </resources>

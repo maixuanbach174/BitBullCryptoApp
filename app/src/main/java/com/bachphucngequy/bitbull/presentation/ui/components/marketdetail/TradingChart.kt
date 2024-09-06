@@ -1,4 +1,4 @@
-package com.example.pitbulltradingapp.ui.components.marketdetail
+package com.bachphucngequy.bitbull.presentation.ui.components.marketdetail
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup
@@ -7,7 +7,6 @@ import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.platform.LocalLifecycleOwner

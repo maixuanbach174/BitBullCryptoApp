@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">BitBull</string>
+    <string name="unfollow_text_label">Unfollow</string>
+    <string name="follow_text_label">Follow</string>
+    <string name="comments_label">Comments</string>
+    <string name="add_comment_button_label">Add comment</string>
+    <string name="loading_error_message">Oops, there is an error!</string>
+    <string name="retry_button_text">Retry</string>
+    <string name="followers_text">Followers</string>
+    <string name="following_text">Following</string>
+    <string name="edit_profile_label">Edit</string>
+    <string name="username_hint">Username</string>
+    <string name="upload_changes_text">Upload</string>
+    <string name="user_bio_hint">Bio</string>
+    <string name="could_not_load_profile">We cannot load your profile!</string>
+    <string name="comment_hint">Add comment</string>
+    <string name="send_button_text">Send</string>
+    <string name="post_hint">What\'s on your mind?</string>
+    <string name="post_button_text">Post</string>
 </resources>

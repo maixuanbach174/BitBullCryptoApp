@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bachphucngequy.bitbull.R
 
@@ -47,9 +46,9 @@ fun TopBar(onSearchClick: () -> Unit) {
             Icon(Icons.Default.Headset, contentDescription = "Support")
             BadgedBox(
                 badge = {
-                    Badge {
-                        Text(text = "9")
-                    }
+                        Badge {
+                            Text(text = "9")
+                        }
 
                 }) {
                 Icon(
@@ -60,10 +59,4 @@ fun TopBar(onSearchClick: () -> Unit) {
             Icon(Icons.Default.Payment, contentDescription = "Payment")
         }
     }
-}
-
-@Preview
-@Composable
-fun TopBarPreview() {
-    TopBar(onSearchClick = {})
 }

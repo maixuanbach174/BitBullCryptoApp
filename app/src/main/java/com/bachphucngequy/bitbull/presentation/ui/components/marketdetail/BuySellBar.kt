@@ -1,4 +1,4 @@
-package com.example.pitbulltradingapp.ui.components.marketdetail
+package com.bachphucngequy.bitbull.presentation.ui.components.marketdetail
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

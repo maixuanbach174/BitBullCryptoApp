@@ -1,5 +1,6 @@
 package com.bachphucngequy.bitbull.presentation.ui.components.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,18 +12,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ProgressBar() {
+fun ProgressBar(
+    onDepositClick: () -> Unit,
+    onWithdrawClick: () -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        Text("Verification")
-        Text("Deposit")
-        Text("Trade")
+        Text(
+            text = "Verification",
+            modifier = Modifier.clickable { /* Handle verification click if needed */ }
+        )
+        Text(
+            text = "Deposit",
+            modifier = Modifier.clickable { onDepositClick() }
+        )
+        Text(
+            text = "Withdraw",
+            modifier = Modifier.clickable { onWithdrawClick() }
+        )
     }
     Spacer(modifier = Modifier.height(10.dp))
     LinearProgressIndicator(
@@ -31,7 +43,5 @@ fun ProgressBar() {
         trackColor = Color.LightGray.copy(alpha = 0.2f),
         color = Color.Black,
         strokeCap = StrokeCap.Round
-
     )
-
 }

@@ -1,4 +1,4 @@
-package com.bachphucngequy.bitbull.ui.components.marketdetail
+package com.bachphucngequy.bitbull.presentation.ui.components.marketdetail
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

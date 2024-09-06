@@ -1,4 +1,4 @@
-package com.example.pitbulltradingapp.ui.components.search
+package com.bachphucngequy.bitbull.presentation.ui.components.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

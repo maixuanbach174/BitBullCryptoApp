@@ -1,4 +1,4 @@
-package com.example.pitbulltradingapp.ui.components.MarketTracker
+package com.bachphucngequy.bitbull.presentation.ui.components.MarketTracker
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,12 +14,8 @@ import androidx.compose.material.icons.filled.AreaChart
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.CandlestickChart
 import androidx.compose.material.icons.filled.InsertChart
-import androidx.compose.material.icons.filled.InsertChartOutlined
-import androidx.compose.material.icons.filled.LineAxis
 import androidx.compose.material.icons.filled.MultilineChart
-import androidx.compose.material.icons.filled.PointOfSale
 import androidx.compose.material.icons.filled.ShowChart
-import androidx.compose.material.icons.filled.StackedLineChart
 import androidx.compose.material.icons.filled.TableChart
 import androidx.compose.material.icons.filled.WaterfallChart
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,7 +34,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 enum class BottomSheetContent {
