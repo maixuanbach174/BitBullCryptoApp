@@ -108,5 +108,7 @@ dependencies {
     implementation 'com.tinder.scarlet:message-adapter-moshi:0.1.12'
     implementation 'com.tinder.scarlet:stream-adapter-coroutines:0.1.12'
 
+    implementation ("androidx.compose.material:material-icons-extended:1.0.1")
+
 
 }

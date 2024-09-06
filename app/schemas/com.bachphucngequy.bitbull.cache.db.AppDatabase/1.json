@@ -1,0 +1,70 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "e033da898190983dbc3d308f291b241d",
+    "entities": [
+      {
+        "tableName": "ticker",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`productId` TEXT NOT NULL, `price` TEXT, `openPrice` TEXT, `volume24` TEXT, `low24` TEXT, `high24` TEXT, `volumeMonth` TEXT, PRIMARY KEY(`productId`))",
+        "fields": [
+          {
+            "fieldPath": "productId",
+            "columnName": "productId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "price",
+            "columnName": "price",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "openPrice",
+            "columnName": "openPrice",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "volume24",
+            "columnName": "volume24",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "low24",
+            "columnName": "low24",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "high24",
+            "columnName": "high24",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "volumeMonth",
+            "columnName": "volumeMonth",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "productId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e033da898190983dbc3d308f291b241d')"
+    ]
+  }
+}

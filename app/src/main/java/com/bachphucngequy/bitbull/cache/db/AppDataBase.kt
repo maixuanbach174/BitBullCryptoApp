@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.bachphucngequy.bitbull.cache.model.CachedTicker
 
-@Database(entities = [CachedTicker::class], version = 1)
+@Database(entities = [CachedTicker::class], version = 1, exportSchema = false)
 @TypeConverters(Convertors::class)
 abstract class AppDatabase : RoomDatabase() {
 
