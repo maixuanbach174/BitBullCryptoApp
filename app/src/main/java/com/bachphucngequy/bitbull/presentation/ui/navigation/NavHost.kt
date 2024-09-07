@@ -190,7 +190,6 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         }
         composable(Screen.Trade.route) {
             TradingSection ()
-
         }
         composable(Screen.ViewMarket.route) {
             ViewMarketScreen(onNavigateToMarketDetail = { navController.navigate(Screen.MarketDetail.route) })

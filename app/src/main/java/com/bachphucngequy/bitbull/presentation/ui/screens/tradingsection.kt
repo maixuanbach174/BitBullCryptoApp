@@ -13,13 +13,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// Define light theme colors
 object LightThemeColors {
     val Background = Color.White
     val Surface = Color(0xFFF5F5F5)
     val Primary = Color(0xFF1E88E5)
-    val PrimaryVariant = Color(0xFF1565C0)
-    val Secondary = Color(0xFFFF6F00)
     val TextPrimary = Color.Black
     val TextSecondary = Color.Gray
     val Green = Color(0xFF4CAF50)
@@ -37,7 +34,6 @@ fun TradingSection() {
             .background(LightThemeColors.Background)
             .padding(16.dp)
     ) {
-        TopBarSection()
         Spacer(modifier = Modifier.height(16.dp))
         TradingPairInfo()
         Spacer(modifier = Modifier.height(16.dp))
@@ -246,28 +242,8 @@ fun BottomSection() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text("Open Orders (0)", fontWeight = FontWeight.Bold, color = LightThemeColors.TextPrimary)
-                Text("Holdings", color = LightThemeColors.TextSecondary)
-                Text("Spot Grid", color = LightThemeColors.TextSecondary)
-            }
-            // Add an icon here if needed
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("Available Funds: 0.00 USDT", color = LightThemeColors.TextPrimary)
-        Text("Transfer funds to your Spot wallet to trade", color = LightThemeColors.TextSecondary)
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(
-                onClick = { },
-                colors = ButtonDefaults.buttonColors(backgroundColor = LightThemeColors.Primary)
-            ) {
-                Text("Increase Balance", color = Color.White)
-            }
-            Button(
-                onClick = { },
-                colors = ButtonDefaults.buttonColors(backgroundColor = LightThemeColors.Secondary)
-            ) {
-                Text("Learn", color = Color.White)
+                Text("Open Orders (0)")
+                Text("Holdings")
             }
         }
     }
