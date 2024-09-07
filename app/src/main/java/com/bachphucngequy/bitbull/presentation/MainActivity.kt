@@ -30,7 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-//    private val viewModel by viewModels<SplashViewModel>()
+    private val viewModel by viewModels<SplashViewModel>()
 
     private val coinViewModel by viewModels<CoinViewModel> {
         object : ViewModelProvider.Factory {
@@ -44,11 +44,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-//        installSplashScreen().apply {
-//            setKeepOnScreenCondition {
-//                !viewModel.isReady.value
-//            }
-//        }
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                !viewModel.isReady.value
+            }
+        }
         val newsViewModel = ViewModelProvider(this)[NewsViewModel::class.java]
         val tweetsViewModel = ViewModelProvider(this)[TweetsViewModel::class.java]
         val postDetailViewModel = ViewModelProvider(this)[PostDetailViewModel::class.java]
