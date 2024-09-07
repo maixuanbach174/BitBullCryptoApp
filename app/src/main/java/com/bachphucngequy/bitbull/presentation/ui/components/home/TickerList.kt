@@ -1,7 +1,5 @@
 package com.bachphucngequy.bitbull.presentation.ui.components.home
 
-import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,24 +12,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.bachphucngequy.bitbull.domain.model.Ticker
-import com.bachphucngequy.bitbull.presentation.ui.theme.Green
-import com.bachphucngequy.bitbull.presentation.ui.theme.RED
 import java.text.DecimalFormat
-import timber.log.Timber
-import com.bachphucngequy.bitbull.R
 import com.bachphucngequy.bitbull.presentation.ui.theme.DarkRed
 import com.bachphucngequy.bitbull.presentation.ui.theme.Green100
-import com.bachphucngequy.bitbull.presentation.ui.theme.Red100
 
 
 @Composable
@@ -73,7 +63,7 @@ fun TickerItem(item: Ticker, onNavigateToDetail: (String) -> Unit) {
             Text(
                 text = "Vol. ${DecimalFormat("#.###").format(item.volume24)}",
                 style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.W200,
+                fontWeight = FontWeight.W400,
                 fontSize = 14.sp
             )
         }
@@ -103,7 +93,7 @@ fun TickerItem(item: Ticker, onNavigateToDetail: (String) -> Unit) {
                 fontSize = 14.sp,
                 textAlign = TextAlign.End,
                 style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.W200
+                fontWeight = FontWeight.W400
             )
         }
     }
@@ -111,7 +101,7 @@ fun TickerItem(item: Ticker, onNavigateToDetail: (String) -> Unit) {
 
 fun getProductResource(productCode: String): String {
     return when (productCode) {
-        "BTC" -> "https://static.coinpaprika.com/coin/bnb-binance-coin/logo.png"
+        "BTC" -> "https://static.coinpaprika.com/coin/btc-bitcoin/logo.png"
         "ETH" -> "https://static.coinpaprika.com/coin/eth-ethereum/logo.png"
         "ADA" -> "https://static.coinpaprika.com/coin/ada-cardano/logo.png"
         "LINK" -> "https://static.coinpaprika.com/coin/link-chainlink/logo.png"
