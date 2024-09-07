@@ -50,6 +50,7 @@ import com.bachphucngequy.bitbull.presentation.ui.screens.MarketDetailScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.SavedInstanceKeys
 import com.bachphucngequy.bitbull.presentation.ui.screens.Screen
 import com.bachphucngequy.bitbull.presentation.ui.screens.SearchScreen
+import com.bachphucngequy.bitbull.presentation.ui.screens.TradingSection
 import com.bachphucngequy.bitbull.presentation.ui.screens.TradingSheetScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.UserAccountScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.ViewMarketScreen
@@ -183,8 +184,13 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                 onNavigateToFeeds = { navController.navigate(Screen.Tweets.route) },
                 onNavigateToDeposit = { navController.navigate(Screen.Deposit.route) },
                 onNavigateToWithdraw = { navController.navigate(Screen.Withdraw.route) },
-                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) },
+                onNavigateToTrade = {navController.navigate(Screen.Trade.route)}
             )
+        }
+        composable(Screen.Trade.route) {
+            TradingSection ()
+
         }
         composable(Screen.ViewMarket.route) {
             ViewMarketScreen(onNavigateToMarketDetail = { navController.navigate(Screen.MarketDetail.route) })
