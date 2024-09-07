@@ -57,8 +57,8 @@ class MainActivity : ComponentActivity() {
         val followsViewModel = ViewModelProvider(this)[FollowsViewModel::class.java]
         val newPostViewModel = ViewModelProvider(this)[NewPostViewModel::class.java]
 
-//        val authViewModel : AuthViewModel by viewModels()
-//        authViewModel.configureGoogleSignIn(this)
+        val authViewModel : AuthViewModel by viewModels()
+        authViewModel.configureGoogleSignIn(this)
 
         setContent {
             BitBullTheme{
@@ -75,7 +75,7 @@ class MainActivity : ComponentActivity() {
                             editProfileViewModel = editProfileViewModel,
                             followsViewModel = followsViewModel,
                             newPostViewModel = newPostViewModel,
-//                            authViewModel = authViewModel
+                            authViewModel = authViewModel
                         )
                     }
                 )

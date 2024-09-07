@@ -73,14 +73,14 @@ class AuthViewModel : ViewModel() {
         _authState.value = AuthState.Unauthenticated
     }
 
-//    fun configureGoogleSignIn(context: Context) {
-//        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//            .requestIdToken(context.getString(R.string.default_web_client_id))
-//            .requestEmail()
-//            .build()
-//
-//        googleSignInClient = GoogleSignIn.getClient(context, gso)
-//    }
+    fun configureGoogleSignIn(context: Context) {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(context.getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        googleSignInClient = GoogleSignIn.getClient(context, gso)
+    }
 
     fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
@@ -111,6 +111,6 @@ sealed class AuthState {
 
 fun savePasswordToFile(email: String, password: String) {
     val filename = "${email}.txt"
-    val file = File("/data/data/com.example.pitbulltradingapp/files", filename)
+    val file = File("/data/data/com.bachphucngequy.bitbull/files", filename)
     file.writeText(password)
 }

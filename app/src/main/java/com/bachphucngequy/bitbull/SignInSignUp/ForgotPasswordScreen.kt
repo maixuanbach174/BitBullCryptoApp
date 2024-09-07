@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.FirebaseAuth
 //import papaya.`in`.sendmail.SendMail
 //import javax.mail.MessagingException
+import kotlin.random.Random
 
 //import java.util.*
 //import javax.mail.*
@@ -86,53 +87,53 @@ fun ForgotPasswordScreen(onNavigateToEnterCodePassword: (String,String) -> Unit,
 
         Button(
             onClick = {
-//                if(email.isNotEmpty()) {
-//                    try {
-//                        val oldPassword = getPasswordFromFile(email)
-//                        if (oldPassword != null) {
-//                            // Check if the email is associated with an existing user
-//                            firebaseAuth.fetchSignInMethodsForEmail(email)
-//                                .addOnCompleteListener { fetchTask ->
-//                                    if (fetchTask.isSuccessful) {
-////                            val signInMethods = fetchTask.result?.signInMethods ?: emptyList()
-////                            if (signInMethods.isNotEmpty()) {
-//                                        val otp =
-//                                            random(email).toString()
-//                                        onNavigateToEnterCodePassword(otp, email)
-////                            }
-////                            else {
-////                                // Email is not associated with any account
-////                                Toast.makeText(context, "No account associated with this email.", Toast.LENGTH_SHORT).show()
-////                            }
-//                                    } else {
-//                                        // The operation failed
-//                                        val exception = fetchTask.exception
-//                                        Toast.makeText(
-//                                            context,
-//                                            "Failed to check email: ${exception?.message}",
-//                                            Toast.LENGTH_SHORT
-//                                        ).show()
-//                                    }
-//                                }
-//                        }
-//                        else {
-//                            Toast.makeText(
-//                                context,
-//                                "Account containing email is not hashing stored on phone",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//                        }
-//                    } catch (e: MessagingException) {
-//                        onError(e)
-//                    }
-//                }
-//                else{
-//                    Toast.makeText(
-//                        context,
-//                        "Email can't be empty",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
+                if(email.isNotEmpty()) {
+                    try {
+                        val oldPassword = getPasswordFromFile(email)
+                        if (oldPassword != null) {
+                            // Check if the email is associated with an existing user
+                            firebaseAuth.fetchSignInMethodsForEmail(email)
+                                .addOnCompleteListener { fetchTask ->
+                                    if (fetchTask.isSuccessful) {
+//                            val signInMethods = fetchTask.result?.signInMethods ?: emptyList()
+//                            if (signInMethods.isNotEmpty()) {
+                                        val otp =
+                                            random(email).toString()
+                                        onNavigateToEnterCodePassword(otp, email)
+//                            }
+//                            else {
+//                                // Email is not associated with any account
+//                                Toast.makeText(context, "No account associated with this email.", Toast.LENGTH_SHORT).show()
+//                            }
+                                    } else {
+                                        // The operation failed
+                                        val exception = fetchTask.exception
+                                        Toast.makeText(
+                                            context,
+                                            "Failed to check email: ${exception?.message}",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                        }
+                        else {
+                            Toast.makeText(
+                                context,
+                                "Account containing email is not hashing stored on phone",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } catch (e: Exception) {
+                        onError(e)
+                    }
+                }
+                else{
+                    Toast.makeText(
+                        context,
+                        "Email can't be empty",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -157,14 +158,19 @@ fun ForgotPasswordScreen(onNavigateToEnterCodePassword: (String,String) -> Unit,
     }
 }
 
-//fun onError(e: MessagingException) {
-//    println("Failed to send email: ${e}")
-//}
+fun onError(e: Exception) {
+    println("Failed to send email $e")
+}
 
-//fun random(email:String) : Int{
-//    val random=(1000..9999).random()
-//    var mail= SendMail("nguyentrongquy0978172149@gmail.com","ofvjkcqqckngtrxh",email,"Pitbull Trading app's OTP for resetting password",
+fun random(email:String) : Int{
+    val random=(1000..9999).random()
+//    var mail= SendMail("nguyentrongquy0978172149@gmail.com","gsqgbpizpgvbeefc",email,"Pitbull Trading app's OTP for resetting password",
 //        "Your OTP is \n -> $random")
+    var mail2 = SendMail(Config.EMAIL, Config.PASSWORD,
+        email,
+        "Pitbull Trading app's OTP for resetting password",
+        "Your OTP is \\n -> $random")
 //    mail.execute()
-//    return random
-//}
+    mail2.execute()
+    return random
+}
