@@ -120,7 +120,6 @@ fun TweetsScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         when(index) {
-                            //TODO: Need to change it later to display random posts
                             0 -> LazyColumn {
                                 items(postsUIState.posts) {post ->
                                     PostListItem(

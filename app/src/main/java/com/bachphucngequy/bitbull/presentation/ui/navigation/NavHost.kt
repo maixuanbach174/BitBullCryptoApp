@@ -1,4 +1,4 @@
-package com.bachphucngequy.bitbull.ui.navigation
+package com.bachphucngequy.bitbull.presentation.ui.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable

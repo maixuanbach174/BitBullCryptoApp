@@ -83,3 +83,6 @@ var samplePosts = mutableListOf(
         authorImageUrl = "https://picsum.photos/200"
     ),
 )
+
+
+var posts: MutableList<Post> = mutableListOf()

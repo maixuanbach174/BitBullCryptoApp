@@ -24,7 +24,7 @@ import com.bachphucngequy.bitbull.tweets.account.follows.FollowsViewModel
 import com.bachphucngequy.bitbull.tweets.account.profile.ProfileViewModel
 import com.bachphucngequy.bitbull.tweets.post.NewPostViewModel
 import com.bachphucngequy.bitbull.tweets.post.PostDetailViewModel
-import com.bachphucngequy.bitbull.ui.navigation.MyAppNavHost
+import com.bachphucngequy.bitbull.presentation.ui.navigation.MyAppNavHost
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
