@@ -19,7 +19,7 @@ class EditProfileViewModel : ViewModel() {
     var bioTextFieldValue: TextFieldValue by mutableStateOf(TextFieldValue(text = ""))
         private set
 
-    fun fetchProfile(userId: Int){
+    fun fetchProfile(userId: String){
         viewModelScope.launch {
 
             uiState = uiState.copy(

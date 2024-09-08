@@ -55,7 +55,7 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     userInfoUiState: UserInfoUiState,
     profilePostsUiState: ProfilePostsUiState,
-    profileId: Int,
+    profileId: String,
     onUiAction: (ProfileUiAction) -> Unit,
     onButtonClick: () -> Unit,
     onFollowersScreenNavigation: () -> Unit,

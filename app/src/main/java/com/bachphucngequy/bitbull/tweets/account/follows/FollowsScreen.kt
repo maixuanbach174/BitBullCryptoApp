@@ -28,7 +28,7 @@ fun FollowsScreen(
     modifier: Modifier = Modifier,
     uiState: FollowsUiState,
     fetchFollows: () -> Unit,
-    onItemClick: (Int) -> Unit,
+    onItemClick: (String) -> Unit,
     navigateUp: () -> Unit
 ) {
     Scaffold(
@@ -64,12 +64,12 @@ fun FollowsScreen(
                     items(
                         items = uiState.sampleFollowsUsers,
                         key = { user -> user.id }
-                    ) {
+                    ) {followUser ->
                         FollowsListItem(
-                            name = it.name,
-                            bio = it.bio,
-                            imageUrl = it.profileUrl,
-                            onItemClick = {onItemClick(it.id)}
+                            name = followUser.name,
+                            bio = followUser.bio,
+                            imageUrl = followUser.profileUrl,
+                            onItemClick = {onItemClick(followUser.id)}
                         )
                     }
                 }

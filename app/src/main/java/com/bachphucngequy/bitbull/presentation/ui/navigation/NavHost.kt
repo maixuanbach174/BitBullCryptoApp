@@ -297,7 +297,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         }
 
         composable(route = Screen.PostDetail.route) {
-            navController.previousBackStackEntry?.savedStateHandle?.get<Int?>(SavedInstanceKeys.POST_ID)
+            navController.previousBackStackEntry?.savedStateHandle?.get<String?>(SavedInstanceKeys.POST_ID)
                 ?.let { postId ->
                     PostDetailScreen(
                         postUiState = postDetailViewModel.postUiState,
@@ -319,7 +319,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         // 1. Forward from TweetsScreen (Home)
         // 2. Back from EditProfileScreen
         composable(route = Screen.Profile.route) {
-            navController.previousBackStackEntry?.savedStateHandle?.get<Int?>(SavedInstanceKeys.USER_ID)
+            navController.previousBackStackEntry?.savedStateHandle?.get<String?>(SavedInstanceKeys.USER_ID)
                 ?.let {userId ->
                     ProfileScreen(
                         userInfoUiState = profileViewModel.userInfoUiState,
@@ -350,7 +350,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         }
 
         composable(route = Screen.EditProfile.route) {
-            navController.previousBackStackEntry?.savedStateHandle?.get<Int?>(SavedInstanceKeys.USER_ID)
+            navController.previousBackStackEntry?.savedStateHandle?.get<String?>(SavedInstanceKeys.USER_ID)
                 ?.let {userId ->
                     EditProfileScreen(
                         editProfileUiState = editProfileViewModel.uiState,
@@ -366,7 +366,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         }
 
         composable(route = Screen.Following.route) {
-            navController.previousBackStackEntry?.savedStateHandle?.get<Int?>(SavedInstanceKeys.USER_ID)
+            navController.previousBackStackEntry?.savedStateHandle?.get<String?>(SavedInstanceKeys.USER_ID)
                 ?.let {userId ->
                     FollowsScreen(
                         uiState = followsViewModel.uiState,
@@ -381,7 +381,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         }
 
         composable(route = Screen.Followers.route) {
-            navController.previousBackStackEntry?.savedStateHandle?.get<Int?>(SavedInstanceKeys.USER_ID)
+            navController.previousBackStackEntry?.savedStateHandle?.get<String?>(SavedInstanceKeys.USER_ID)
                 ?.let {userId ->
                     FollowsScreen(
                         uiState = followsViewModel.uiState,
@@ -431,21 +431,21 @@ private fun navigateToPostDetail(navController: NavController, post: Post){
     )
 }
 
-private fun navigateToProfile(navController: NavController, userId: Int) {
+private fun navigateToProfile(navController: NavController, userId: String) {
     navController.currentBackStackEntry?.savedStateHandle?.set(SavedInstanceKeys.USER_ID, userId)
     navController.navigate(
         route = Screen.Profile.route
     )
 }
 
-private fun navigateToEditProfile(navController: NavController, userId: Int) {
+private fun navigateToEditProfile(navController: NavController, userId: String) {
     navController.currentBackStackEntry?.savedStateHandle?.set(SavedInstanceKeys.USER_ID, userId)
     navController.navigate(
         route = Screen.EditProfile.route
     )
 }
 
-private fun navigateToFollows(navController: NavController, userId: Int, followsType: Int) {
+private fun navigateToFollows(navController: NavController, userId: String, followsType: Int) {
     navController.currentBackStackEntry?.savedStateHandle?.set(SavedInstanceKeys.USER_ID, userId)
     if(followsType == Constants.FOLLOWING_CODE) {
         navController.navigate(

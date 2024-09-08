@@ -26,7 +26,7 @@ class ProfileViewModel : ViewModel() {
         syncProfilesWithFollows()
     }
 
-    private fun fetchProfile(userId: Int) {
+    private fun fetchProfile(userId: String) {
         viewModelScope.launch {
             userInfoUiState = userInfoUiState.copy(
                 isLoading = false,
@@ -68,13 +68,12 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
-    private fun updateFollowRelationships(fromUserId: Int, toUserId: Int, isFollowing: Boolean) {
+    private fun updateFollowRelationships(fromUserId: String, toUserId: String, isFollowing: Boolean) {
         if(isFollowing) {
             sampleFollowRelationship.add(
                 FollowRelationship(
                     fromUserId = fromUserId,
-                    toUserId = toUserId,
-                    followDate = "Sep 1, 2024"
+                    toUserId = toUserId
                 )
             )
         }
@@ -82,8 +81,7 @@ class ProfileViewModel : ViewModel() {
             sampleFollowRelationship.remove(
                 FollowRelationship(
                     fromUserId = fromUserId,
-                    toUserId = toUserId,
-                    followDate = "Sep 1, 2024"
+                    toUserId = toUserId
                 )
             )
         }
@@ -144,7 +142,7 @@ data class ProfilePostsUiState(
 )
 
 sealed interface ProfileUiAction {
-    data class FetchProfileAction(val profileId: Int) : ProfileUiAction
+    data class FetchProfileAction(val profileId: String) : ProfileUiAction
     data class FollowUserAction(val profile: Profile) : ProfileUiAction
     data class PostLikeAction(val post: Post) : ProfileUiAction
 }

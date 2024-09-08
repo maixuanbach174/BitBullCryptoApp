@@ -1,13 +1,13 @@
 package com.bachphucngequy.bitbull.tweets.data
 
 data class Comment(
-    val id: Int,
+    val id: String,
     val comment: String,
     val date: String,
     val authorName: String,
     val authorImageUrl: String,
-    val authorId: Int,
-    val postId: Int
+    val authorId: String,
+    val postId: String
 )
 //{
 //    fun toDomainComment(): PostComment {
@@ -26,7 +26,7 @@ data class Comment(
 
 val sampleComments = mutableListOf(
     Comment(
-        id = 1,
+        id = "1",
         date = "Jun 24, 2023",
         comment = "Great post!\nI learned a lot from it.",
         authorName = sampleUsers[0].name,
@@ -35,7 +35,7 @@ val sampleComments = mutableListOf(
         postId = samplePosts[0].id
     ),
     Comment(
-        id = 2,
+        id = "2",
         date = "Jun 24, 2023",
         comment = "Nice work! Keep sharing more content like this.",
         authorName = sampleUsers[1].name,
@@ -44,7 +44,7 @@ val sampleComments = mutableListOf(
         postId = samplePosts[0].id
     ),
     Comment(
-        id = 3,
+        id = "3",
         date = "Jun 24, 2023",
         comment = "Thanks for the insights!\nYour post was really helpful.",
         authorName = sampleUsers[2].name,
@@ -53,7 +53,7 @@ val sampleComments = mutableListOf(
         postId = samplePosts[0].id
     ),
     Comment(
-        id = 4,
+        id = "4",
         date = "Jun 24, 2023",
         comment = "I enjoyed reading your post! Looking forward to more.",
         authorName = sampleUsers[3].name,
@@ -62,7 +62,7 @@ val sampleComments = mutableListOf(
         postId = samplePosts[0].id
     ),
     Comment(
-        id = 5,
+        id = "5",
         date = "Jun 24, 2023",
         comment = "I enjoyed reading your post! Looking forward to more.",
         authorName = sampleUsers[3].name,

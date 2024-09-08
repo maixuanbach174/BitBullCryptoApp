@@ -41,7 +41,7 @@ import com.bachphucngequy.bitbull.tweets.data.Post
 fun TweetsScreen(
     postsUIState: PostsUIState,
     onUiAction: (HomeUiAction) -> Unit,
-    onProfileNavigation: (userId: Int) -> Unit,
+    onProfileNavigation: (userId: String) -> Unit,
     onPostDetailNavigation: (Post) -> Unit,
     onNewPostNavigation: () -> Unit,
     navigateUp: () -> Unit

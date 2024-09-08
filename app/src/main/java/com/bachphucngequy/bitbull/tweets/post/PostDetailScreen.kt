@@ -59,8 +59,8 @@ fun PostDetailScreen(
     modifier: Modifier = Modifier,
     postUiState: PostUiState,
     commentsUiState: CommentsUiState,
-    postId: Int,
-    onProfileNavigation: (userId: Int) -> Unit,
+    postId: String,
+    onProfileNavigation: (userId: String) -> Unit,
     onUiAction: (PostDetailUiAction) -> Unit,
     navigateUp: () -> Unit
 ) {

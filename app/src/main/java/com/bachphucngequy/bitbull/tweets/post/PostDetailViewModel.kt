@@ -43,7 +43,7 @@ class PostDetailViewModel : ViewModel() {
 //        }
 //    }
 
-    private fun fetchData(postId: Int) {
+    private fun fetchData(postId: String) {
         viewModelScope.launch {
             postUiState = postUiState.copy(
                 isLoading = false,
@@ -79,7 +79,7 @@ class PostDetailViewModel : ViewModel() {
         }
     }
 
-    private fun updatedPostsInDB(id: Int, post: Post, count: Int) {
+    private fun updatedPostsInDB(id: String, post: Post, count: Int) {
         samplePosts = samplePosts.map {
             if (it.id == id) {
                 it.copy(
@@ -163,7 +163,7 @@ data class CommentsUiState(
 )
 
 sealed interface PostDetailUiAction{
-    data class FetchPostAction(val postId: Int): PostDetailUiAction
+    data class FetchPostAction(val postId: String): PostDetailUiAction
     data class LikeOrDislikePostAction(val post: Post): PostDetailUiAction
     data class AddCommentAction(val comment: String) : PostDetailUiAction
 }
