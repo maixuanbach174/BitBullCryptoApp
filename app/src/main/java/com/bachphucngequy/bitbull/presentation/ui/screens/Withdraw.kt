@@ -169,7 +169,7 @@ fun Withdraw(
                             )
                         } else {
                             Toast.makeText(context, "Insufficient funds", Toast.LENGTH_SHORT).show()
-                            Log.d("Withdraw", "Insufficient funds")
+                            Log.d("Withdraw", "Insufficient funds!")
                         }
                     } else {
                         if(binanceId.value==user.usid) {
