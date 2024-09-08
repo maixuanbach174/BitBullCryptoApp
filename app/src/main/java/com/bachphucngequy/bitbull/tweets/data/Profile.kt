@@ -57,3 +57,5 @@ val sampleProfiles = mutableListOf(
         isFollowing = false
     )
 )
+
+var profiles: List<Profile> = listOf()

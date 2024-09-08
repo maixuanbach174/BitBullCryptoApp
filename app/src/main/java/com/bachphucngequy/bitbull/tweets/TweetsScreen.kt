@@ -158,4 +158,8 @@ fun TweetsScreen(
             }
         }
     )
+
+    LaunchedEffect(key1 = Unit) {
+        onUiAction(HomeUiAction.CreateNewUser)
+    }
 }

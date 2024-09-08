@@ -6,3 +6,5 @@ data class RemoteUser(
     val name: String = "",
     val userId: String = ""
 )
+
+var remoteUsers: List<RemoteUser> = listOf()

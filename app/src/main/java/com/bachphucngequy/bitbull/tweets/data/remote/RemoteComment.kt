@@ -7,4 +7,4 @@ data class RemoteComment(
     val userId: String = ""
 )
 
-var remoteComments: List<RemoteComment> = kotlin.collections.emptyList()
+var remoteComments: List<RemoteComment> = listOf()

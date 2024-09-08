@@ -7,3 +7,5 @@ data class RemotePost(
     val postId: String = "",
     val userId: String = ""
 )
+
+var remotePosts: List<RemotePost> = listOf()
