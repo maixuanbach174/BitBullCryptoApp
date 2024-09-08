@@ -5,6 +5,7 @@ sealed class Screen(val route: String) {
     object tradingsection : Screen("tradingsection")
     object Withdraw : Screen("withdraw")
     object Deposit : Screen("deposit") // New route for Deposit
+    object Trade : Screen("trade")
     object ViewMarket : Screen("ViewMarketsScreen")
     object MarketDetail : Screen("MarketDetailScreen")
     object BuySell : Screen("BuySellScreen")
