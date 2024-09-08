@@ -116,8 +116,8 @@ fun SignInPhoneScreen(onNavigateToSignIn: () -> Unit,onNavigateToEnterCode: (Str
                 if(email.isNotEmpty()) {
                     val oldPassword = getPasswordFromFile(email)
                     if (oldPassword != null) {
-//                        val otp = randomSix(email).toString()
-//                        onNavigateToEnterCode(otp, email)
+                        val otp = randomSix(email).toString()
+                        onNavigateToEnterCode(otp, email)
                     }
                     else {
                         Toast.makeText(
@@ -142,10 +142,10 @@ fun SignInPhoneScreen(onNavigateToSignIn: () -> Unit,onNavigateToEnterCode: (Str
     }
 }
 
-//fun randomSix(email:String) : Int{
-//    val random=(100000..999999).random()
-//    var mail= SendMail("nguyentrongquy0978172149@gmail.com","ofvjkcqqckngtrxh",email,"Pitbull Trading app's OTP for signing in",
-//        "Your OTP is \n -> $random")
-//    mail.execute()
-//    return random
-//}
+fun randomSix(email:String) : Int{
+    val random=(100000..999999).random()
+    var mail= SendMail("nguyentrongquy0978172149@gmail.com","ofvjkcqqckngtrxh",email,"Pitbull Trading app's OTP for signing in",
+        "Your OTP is \n -> $random")
+    mail.execute()
+    return random
+}

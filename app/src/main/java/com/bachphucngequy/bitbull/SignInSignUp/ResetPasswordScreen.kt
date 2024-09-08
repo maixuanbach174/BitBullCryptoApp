@@ -165,7 +165,7 @@ fun ResetPasswordScreen(onNavigateToSignIn: () -> Unit,onNavigateToForgotPasswor
 
 fun getPasswordFromFile(email: String): String? {
     val filename = "${email}.txt"
-    val file = File("/data/data/com.example.pitbulltradingapp/files", filename)
+    val file = File("/data/data/com.bachphucngequy.bitbull/files", filename)
     return if (file.exists()) {
         file.readText()
     } else {

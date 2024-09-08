@@ -66,53 +66,53 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                  editProfileViewModel: EditProfileViewModel,
                  followsViewModel: FollowsViewModel,
                  newPostViewModel: NewPostViewModel,
-//                 authViewModel: AuthViewModel
+                 authViewModel: AuthViewModel
 ) {
     val navController = rememberNavController()
     var symbol by remember { mutableStateOf("") }
     var coin by remember { mutableStateOf(Coin()) }
     var pairCoin by remember { mutableStateOf("") }
-    NavHost(navController = navController, startDestination = Screen.Home.route) {
-//        composable(com.bachphucngequy.bitbull.Navigation.Screen.Start.route) {
-//            StartScreen(
-//                onNavigateToSignIn={navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route)},
-//                onNavigateToSignUp={navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignUp.route)},
-//                authViewModel = authViewModel
-//            )
-//        }
-//
-//        composable(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route){
-//            SignInScreen(
-//                onNavigateToForgotPassword = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.ForgotPassword.route) },
-//                onNavigateToSignInPhone = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignInPhone.route) },
-//                onNavigateToSignUp = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignUp.route) },
-//                onNavigateToViewMarket = { navController.navigate(Screen.Home.route) },
-//                authViewModel = authViewModel
-//            )
-//        }
+    NavHost(navController = navController, startDestination = com.bachphucngequy.bitbull.Navigation.Screen.Start.route) {
+        composable(com.bachphucngequy.bitbull.Navigation.Screen.Start.route) {
+            StartScreen(
+                onNavigateToSignIn={navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route)},
+                onNavigateToSignUp={navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignUp.route)},
+                authViewModel = authViewModel
+            )
+        }
 
-//        composable(com.bachphucngequy.bitbull.Navigation.Screen.SignInPhone.route){
-//            SignInPhoneScreen(
-//                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
-//                onNavigateToEnterCode = { otp, email ->
-//                    navController.navigate("${com.bachphucngequy.bitbull.Navigation.Screen.EnterCode.route}/$otp/$email") },
-//                authViewModel = authViewModel
-//            )
-//        }
+        composable(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route){
+            SignInScreen(
+                onNavigateToForgotPassword = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.ForgotPassword.route) },
+                onNavigateToSignInPhone = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignInPhone.route) },
+                onNavigateToSignUp = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignUp.route) },
+                onNavigateToViewMarket = { navController.navigate(Screen.Home.route) },
+                authViewModel = authViewModel
+            )
+        }
 
-//        composable("${com.bachphucngequy.bitbull.Navigation.Screen.EnterCode.route}/{otp}/{email}") {
-//                backStackEntry ->
-//            val otp = backStackEntry.arguments?.getString("otp") ?: ""
-//            val email = backStackEntry.arguments?.getString("email") ?: ""
-//
-//            EnterCodeScreen(
-//                onNavigateToSignInPhone = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignInPhone.route) },
-//                onNavigateToViewMarket = { navController.navigate(Screen.Home.route) },
-//                authViewModel = authViewModel,
-//                otp=otp,
-//                email = email
-//            )
-//        }
+        composable(com.bachphucngequy.bitbull.Navigation.Screen.SignInPhone.route){
+            SignInPhoneScreen(
+                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
+                onNavigateToEnterCode = { otp, email ->
+                    navController.navigate("${com.bachphucngequy.bitbull.Navigation.Screen.EnterCode.route}/$otp/$email") },
+                authViewModel = authViewModel
+            )
+        }
+
+        composable("${com.bachphucngequy.bitbull.Navigation.Screen.EnterCode.route}/{otp}/{email}") {
+                backStackEntry ->
+            val otp = backStackEntry.arguments?.getString("otp") ?: ""
+            val email = backStackEntry.arguments?.getString("email") ?: ""
+
+            EnterCodeScreen(
+                onNavigateToSignInPhone = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignInPhone.route) },
+                onNavigateToViewMarket = { navController.navigate(Screen.Home.route) },
+                authViewModel = authViewModel,
+                otp=otp,
+                email = email
+            )
+        }
 
         composable(com.bachphucngequy.bitbull.Navigation.Screen.ForgotPassword.route) {
             ForgotPasswordScreen(
@@ -153,29 +153,28 @@ fun MyAppNavHost(innerPadding: PaddingValues,
             )
         }
 
-//        composable(com.bachphucngequy.bitbull.Navigation.Screen.SignUp.route){
-//            SignUpScreen(
-//                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
-//                onNavigateToCreateSuccess = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.CreateSuccess.route) },
-//                authViewModel = authViewModel
-//            )
-//        }
-//
-//        composable(com.bachphucngequy.bitbull.Navigation.Screen.CreateSuccess.route) {
-//            CreateSuccessScreen(
-//                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
-//                authViewModel = authViewModel
-//            )
-//        }
-//
-//        composable(Screen.UserAccount.route) {
-//            UserAccountScreen(
-//                onNavigateToHome = { navController.navigate(Screen.Home.route) },
-//                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
-//                authViewModel = authViewModel
-//            )
-//        }
+        composable(com.bachphucngequy.bitbull.Navigation.Screen.SignUp.route){
+            SignUpScreen(
+                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
+                onNavigateToCreateSuccess = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.CreateSuccess.route) },
+                authViewModel = authViewModel
+            )
+        }
 
+        composable(com.bachphucngequy.bitbull.Navigation.Screen.CreateSuccess.route) {
+            CreateSuccessScreen(
+                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
+                authViewModel = authViewModel
+            )
+        }
+
+        composable(Screen.UserAccount.route) {
+            UserAccountScreen(
+                onNavigateToHome = { navController.navigate(Screen.Home.route) },
+                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
+                authViewModel = authViewModel
+            )
+        }
 
         composable(Screen.Home.route) {
             HomeScreen(
