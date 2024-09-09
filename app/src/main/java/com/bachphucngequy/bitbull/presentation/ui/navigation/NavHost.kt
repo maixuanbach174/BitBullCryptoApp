@@ -44,6 +44,7 @@ import com.bachphucngequy.bitbull.firebase.user
 import com.bachphucngequy.bitbull.presentation.ui.components.home.Crypto
 import com.bachphucngequy.bitbull.presentation.ui.components.home.sampleData
 import com.bachphucngequy.bitbull.presentation.ui.screens.BuySellScreen
+import com.bachphucngequy.bitbull.presentation.ui.screens.CryptoWalletScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.Deposit
 import com.bachphucngequy.bitbull.presentation.ui.screens.HomeScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.MarketDetailScreen
@@ -172,8 +173,15 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         composable(Screen.UserAccount.route) {
             UserAccountScreen(
                 onNavigateToHome = { navController.navigate(Screen.Home.route) },
+                onNavigateToCryptoWallet = { navController.navigate(Screen.CryptoWallet.route) },
                 onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
                 authViewModel = authViewModel
+            )
+        }
+
+        composable(Screen.CryptoWallet.route) {
+            CryptoWalletScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
             )
         }
 
