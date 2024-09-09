@@ -2,21 +2,17 @@ package com.bachphucngequy.bitbull.tweets
 
 import android.annotation.SuppressLint
 import android.util.Log
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bachphucngequy.bitbull.presentation.ui.screens.Screen
 import com.bachphucngequy.bitbull.tweets.common.util.Event
 import com.bachphucngequy.bitbull.tweets.common.util.EventBus
+import com.bachphucngequy.bitbull.tweets.data.Comment
 import com.bachphucngequy.bitbull.tweets.data.Post
+import com.bachphucngequy.bitbull.tweets.data.Profile
+import com.bachphucngequy.bitbull.tweets.data.comments
 import com.bachphucngequy.bitbull.tweets.data.posts
 import com.bachphucngequy.bitbull.tweets.data.remote.RemoteComment
 import com.bachphucngequy.bitbull.tweets.data.remote.RemotePost
@@ -36,7 +32,6 @@ import kotlinx.coroutines.tasks.await
 class TweetsViewModel: ViewModel() {
     private val firestore = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
-
     private val postsCollection = firestore.collection("posts")
     private val usersCollection = firestore.collection("user")
     private val likesCollection = firestore.collection("postLikes")
@@ -80,7 +75,8 @@ class TweetsViewModel: ViewModel() {
                     .groupBy { it.postId }
                     .mapValues { entry -> entry.value.map { it.userId } }
 
-                // Create commentsMap
+                // Create commentsMap that map postId to list of userId that comments
+                // on that post
                 val commentsMap: Map<String, List<String>> = remoteComments
                     .groupBy { it.postId }
                     .mapValues { entry -> entry.value.map { it.userId } }
@@ -106,6 +102,24 @@ class TweetsViewModel: ViewModel() {
                     posts = posts
                 )
 
+                // Convert remoteComments to list of Comments
+                comments.addAll(
+                    remoteComments.mapNotNull { remoteComment ->
+                        // Find the corresponding user for the comment
+                        val user = remoteUsers.find { it.userId == remoteComment.userId }
+                        // If user is found, create a Comment object
+                        user?.let {remoteUser ->
+                            Comment(
+                                comment = remoteComment.content,
+                                date = remoteComment.createdAt,
+                                authorName = remoteUser.name,
+                                authorImageUrl = remoteUser.imageUrl,
+                                authorId = remoteUser.userId,
+                                postId = remoteComment.postId
+                            )
+                        }
+                    }
+                )
             } catch(e: Exception) {
                 postsUiState = postsUiState.copy(
                     isLoading = false,
@@ -209,7 +223,6 @@ class TweetsViewModel: ViewModel() {
                     } else it
                 }
             )
-            // TODO: Update posts in database
             // Insert or delete like in Firestore
             if (!post.isLiked) {
                 // User is liking the post
@@ -307,21 +320,21 @@ sealed interface HomeUiAction {
     object CreateNewUser: HomeUiAction
 }
 
-data class TabItem (
-    val title: String,
-    val unselectedIcon: ImageVector,
-    val selectedIcon: ImageVector
-)
-
-val tabItems = listOf(
-    TabItem(
-        title = "For you",
-        unselectedIcon = Icons.Outlined.AccountCircle,
-        selectedIcon = Icons.Filled.AccountCircle
-    ),
-    TabItem(
-        title = "Following",
-        unselectedIcon = Icons.Outlined.Favorite,
-        selectedIcon = Icons.Filled.Favorite
-    )
-)
+//data class TabItem (
+//    val title: String,
+//    val unselectedIcon: ImageVector,
+//    val selectedIcon: ImageVector
+//)
+//
+//val tabItems = listOf(
+//    TabItem(
+//        title = "For you",
+//        unselectedIcon = Icons.Outlined.AccountCircle,
+//        selectedIcon = Icons.Filled.AccountCircle
+//    ),
+//    TabItem(
+//        title = "Following",
+//        unselectedIcon = Icons.Outlined.Favorite,
+//        selectedIcon = Icons.Filled.Favorite
+//    )
+//)

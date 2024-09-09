@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -84,14 +85,9 @@ fun PostDetailScreen(
         },
         content = {paddingValues ->
             if (postUiState.isLoading) {
-                Box(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "Loading...")
-                }
+                LinearProgressIndicator(
+                    modifier = modifier.fillMaxSize().padding(paddingValues)
+                )
             } else if(postUiState.post != null) {
                 Column(
                     modifier = Modifier
@@ -122,7 +118,7 @@ fun PostDetailScreen(
 
                         items(
                             items = commentsUiState.comments,
-                            key = { comment -> comment.id }
+                            key = { comment -> comment.authorId + comment.date }
                         ) {
                             Divider()
                             CommentListItem(

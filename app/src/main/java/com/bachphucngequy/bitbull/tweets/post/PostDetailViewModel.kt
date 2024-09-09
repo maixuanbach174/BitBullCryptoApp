@@ -1,6 +1,8 @@
 package com.bachphucngequy.bitbull.tweets.post
 
+import android.annotation.SuppressLint
 import android.icu.util.Calendar
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,16 +12,23 @@ import com.bachphucngequy.bitbull.tweets.common.util.Event
 import com.bachphucngequy.bitbull.tweets.common.util.EventBus
 import com.bachphucngequy.bitbull.tweets.data.Comment
 import com.bachphucngequy.bitbull.tweets.data.Post
-import com.bachphucngequy.bitbull.tweets.data.sampleComments
-import com.bachphucngequy.bitbull.tweets.data.samplePosts
-import kotlinx.coroutines.delay
+import com.bachphucngequy.bitbull.tweets.data.comments
+import com.bachphucngequy.bitbull.tweets.data.posts
+import com.bachphucngequy.bitbull.tweets.data.remote.remoteUsers
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PostDetailViewModel : ViewModel() {
+    private val firestore = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
+    private val likesCollection = firestore.collection("postLikes")
+    private val commentsCollection = firestore.collection("postComments")
     var postUiState by mutableStateOf(PostUiState())
         private set
 
@@ -47,11 +56,11 @@ class PostDetailViewModel : ViewModel() {
         viewModelScope.launch {
             postUiState = postUiState.copy(
                 isLoading = false,
-                post = samplePosts.find { it.id == postId }
+                post = posts.find { it.id == postId }
             )
             commentsUiState = commentsUiState.copy(
                 isLoading = false,
-                comments = sampleComments.filter { comment -> comment.postId == postId }
+                comments = comments.filter { comment -> comment.postId == postId }
             )
         }
     }
@@ -72,40 +81,105 @@ class PostDetailViewModel : ViewModel() {
 
             updatePost(updatedPost)
 
-            // TODO: Need to replace with update database
-            updatedPostsInDB(updatedPost.id, post, count)
+            // Insert or delete like in Firestore
+            if (!post.isLiked) {
+                // User is liking the post
+                insertLikeToFirestore(post.id)
+            } else {
+                // User is unliking the post
+                deleteLikeFromFirestore(post.id)
+            }
 
             EventBus.send(Event.PostUpdated(updatedPost))
         }
     }
 
-    private fun updatedPostsInDB(id: String, post: Post, count: Int) {
-        samplePosts = samplePosts.map {
-            if (it.id == id) {
-                it.copy(
-                    isLiked = !post.isLiked, // toggle
-                    likesCount = post.likesCount.plus(count)
+    @SuppressLint("LogNotTimber")
+    private suspend fun insertLikeToFirestore(postId: String) {
+        try {
+            auth.currentUser?.uid?.let { userUid ->
+                val likeData = mapOf(
+                    "postId" to postId,
+                    "userId" to userUid
                 )
-            } else it
-        }.toMutableList()
+                likesCollection
+                    .add(likeData)
+                    .addOnSuccessListener { documentReference ->
+                        Log.d("Success", "DocumentSnapshot written with ID: ${documentReference.id}")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("Error", "Error adding document", e)
+                    }
+                    .await()
+            }
+        } catch (e: Exception) {
+            // Handle errors (e.g., log them or show an error message in the UI state)
+            println("Failed to insert like in Firestore: ${e.message}")
+        }
     }
+
+    private suspend fun deleteLikeFromFirestore(postId: String) {
+        try {
+            auth.currentUser?.uid?.let { userUid ->
+                // Find the like document by postId and userId
+                val querySnapshot = likesCollection
+                    .whereEqualTo("postId", postId)
+                    .whereEqualTo("userId", userUid)
+                    .get()
+                    .await()
+
+                // Delete each matching document (there should be only one)
+                for (document in querySnapshot.documents) {
+                    likesCollection.document(document.id).delete().await()
+                }
+            }
+        } catch (e: Exception) {
+            // Handle errors
+            println("Failed to delete like in Firestore: ${e.message}")
+        }
+    }
+
+//    private fun updatedPostsInDB(id: String, post: Post, count: Int) {
+//        samplePosts = samplePosts.map {
+//            if (it.id == id) {
+//                it.copy(
+//                    isLiked = !post.isLiked, // toggle
+//                    likesCount = post.likesCount.plus(count)
+//                )
+//            } else it
+//        }.toMutableList()
+//    }
 
     private fun addNewComment(commentStr: String) {
         viewModelScope.launch {
             val post = postUiState.post ?: return@launch
 
             commentsUiState = commentsUiState.copy(isAddingNewComment = true)
-            delay(500)
 
             // TODO: Need to replace with update database
-            val comment = updateCommentsInDB(commentStr, post)
-            //
-            val updatedComments = listOf(comment) + commentsUiState.comments
+            val currentUser = remoteUsers.find { it.userId == auth.currentUser?.uid }
+            val currentDate = sdf.format(Calendar.getInstance().time)
+            val newComment = Comment(
+                comment = commentStr,
+                date = currentDate,
+                // TODO: Need to replace with current user
+                authorName = currentUser?.name ?: "User",
+                authorId = currentUser?.userId ?: "",
+                authorImageUrl = currentUser?.imageUrl ?: "",
+                //
+                postId = post.id
+            )
+            // Add to list of comments
+            comments.add(newComment)
 
+            // Update UI
             commentsUiState = commentsUiState.copy(
-                comments = updatedComments,
+                comments = comments,
                 isAddingNewComment = false
             )
+
+            // Insert comments in Firebase
+            insertCommentFirebase(commentStr, currentDate, post.id)
 
             val updatedPost = post.copy(
                 commentsCount = post.commentsCount.plus(1)
@@ -115,22 +189,46 @@ class PostDetailViewModel : ViewModel() {
         }
     }
 
-    private fun updateCommentsInDB(commentStr: String, post : Post): Comment {
-        val lastId = sampleComments.last().id
-        val newComment = Comment(
-            id = lastId + 1,
-            comment = commentStr,
-            date = sdf.format(Calendar.getInstance().time),
-            // TODO: Need to replace with current user
-            authorName = post.authorName,
-            authorId = post.authorId,
-            authorImageUrl = post.authorImageUrl,
-            //
-            postId = post.id
-        )
-        sampleComments.add(newComment)
-        return newComment
+    @SuppressLint("LogNotTimber")
+    private suspend fun insertCommentFirebase(commentStr: String, currentDate: String, postId: String) {
+        try {
+            auth.currentUser?.uid?.let { userUid ->
+                val commentData = mapOf(
+                    "content" to commentStr,
+                    "createdAt" to currentDate,
+                    "postId" to postId,
+                    "userId" to userUid
+                )
+                commentsCollection
+                    .add(commentData)
+                    .addOnSuccessListener { documentReference ->
+                        Log.d("Success", "DocumentSnapshot written with ID: ${documentReference.id}")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("Error", "Error adding document", e)
+                    }
+                    .await()
+            }
+        } catch (e: Exception) {
+            // Handle errors (e.g., log them or show an error message in the UI state)
+            println("Failed to insert like in Firestore: ${e.message}")
+        }
     }
+
+//    private fun updateCommentsInDB(commentStr: String, post : Post): Comment {
+//        val newComment = Comment(
+//            comment = commentStr,
+//            date = sdf.format(Calendar.getInstance().time),
+//            // TODO: Need to replace with current user
+//            authorName = post.authorName,
+//            authorId = post.authorId,
+//            authorImageUrl = post.authorImageUrl,
+//            //
+//            postId = post.id
+//        )
+//        sampleComments.add(newComment)
+//        return newComment
+//    }
 
 
     fun onUiAction(action: PostDetailUiAction){
