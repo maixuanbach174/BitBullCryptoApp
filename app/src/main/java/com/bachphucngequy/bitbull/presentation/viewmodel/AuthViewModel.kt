@@ -10,11 +10,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import java.io.File
 
 class AuthViewModel : ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     private val _authState = MutableLiveData<AuthState>()
     val authState: LiveData<AuthState> = _authState
@@ -59,11 +61,27 @@ class AuthViewModel : ViewModel() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    _authState.value = AuthState.Authenticated
-                    savePasswordToFile(email, password)
+                    val user = auth.currentUser
+                    if (user != null) {
+                        // Create a new user document in Firestore
+                        val userMap = hashMapOf(
+                            "name" to "Investor",
+                            "email" to email
+                        )
+                        firestore.collection("AppUsers").document(user.uid)
+                            .set(userMap)
+                            .addOnSuccessListener {
+                                _authState.value = AuthState.Authenticated
+                                savePasswordToFile(email, password)
+                            }
+                            .addOnFailureListener { e ->
+                                _authState.value = AuthState.Error("Failed to store user data: ${e.message}")
+                            }
+                    } else {
+                        _authState.value = AuthState.Error("User creation successful but user is null")
+                    }
                 } else {
-                    _authState.value =
-                        AuthState.Error(task.exception?.message ?: "Something went wrong")
+                    _authState.value = AuthState.Error(task.exception?.message ?: "Something went wrong")
                 }
             }
     }
@@ -99,6 +117,10 @@ class AuthViewModel : ViewModel() {
         googleSignInClient.signOut().addOnCompleteListener {
 //            context.startActivity(signInIntent)
         }
+    }
+
+    fun getCurrentUserId(): String? {
+        return FirebaseAuth.getInstance().currentUser?.uid
     }
 }
 

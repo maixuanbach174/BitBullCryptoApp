@@ -1,5 +1,6 @@
 package com.bachphucngequy.bitbull.presentation.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,11 +11,16 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -22,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.bachphucngequy.bitbull.R
 import com.bachphucngequy.bitbull.presentation.viewmodel.AuthState
 import com.bachphucngequy.bitbull.presentation.viewmodel.AuthViewModel
+import com.google.firebase.firestore.FirebaseFirestore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,6 +39,25 @@ fun UserAccountScreen(
     authViewModel: AuthViewModel
 ) {
     val authState = authViewModel.authState.observeAsState()
+    val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+
+    val currentUserId = authViewModel.getCurrentUserId()
+    var userName by remember { mutableStateOf("") }
+    var userEmail by remember { mutableStateOf("") }
+
+    LaunchedEffect(currentUserId) {
+        if (currentUserId != null) {
+            val userDoc = firestore.collection("AppUsers").document(currentUserId)
+                .get().addOnSuccessListener {
+                if(it!=null){
+                    userName = it.data?.get("name")?.toString().toString()
+                    userEmail = it.data?.get("email")?.toString().toString()
+                }
+            }
+                .addOnFailureListener{
+                    println("Error fetching user data")}
+        }
+    }
 
     LaunchedEffect(authState.value) {
         when(authState.value) {
@@ -65,7 +91,7 @@ fun UserAccountScreen(
                 .padding(innerPadding)
         ) {
             item { GreenFundBanner() }
-            item { UserInfoSection(onNavigateToCryptoWallet) }
+            item { UserInfoSection(onNavigateToCryptoWallet, userName, userEmail) }
             item { MenuItems() }
             item { LogoutButton(authViewModel) }
         }
@@ -87,7 +113,7 @@ fun GreenFundBanner() {
 // UserInfoSection, MenuItems, and LogoutButton remain the same as in the previous version
 
 @Composable
-fun UserInfoSection(onNavigateToCryptoWallet: () -> Unit) {
+fun UserInfoSection(onNavigateToCryptoWallet: () -> Unit, userName: String, userEmail: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -110,12 +136,12 @@ fun UserInfoSection(onNavigateToCryptoWallet: () -> Unit) {
                 .padding(start = 16.dp)
         ) {
             Text(
-                "John Doe",
+                userName.ifEmpty { "Loading..." },
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                "+1234567890",
+                userEmail.ifEmpty { "Loading..." },
                 fontSize = 14.sp,
                 color = LocalContentColor.current.copy(alpha = 0.7f)
             )
@@ -143,6 +169,7 @@ fun MenuItems() {
         "Driver Feedback" to Icons.Default.Feedback,
         "Company Information" to Icons.Default.Info,
         "Change Password" to Icons.Default.Lock,
+        "Change Nickname" to Icons.Default.Edit,
         "Language" to Icons.Default.Language
     )
 
