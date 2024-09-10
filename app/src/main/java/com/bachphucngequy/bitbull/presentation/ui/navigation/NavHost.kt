@@ -45,12 +45,14 @@ import com.bachphucngequy.bitbull.firebase.user
 import com.bachphucngequy.bitbull.presentation.ui.components.home.Crypto
 import com.bachphucngequy.bitbull.presentation.ui.components.home.sampleData
 import com.bachphucngequy.bitbull.presentation.ui.screens.BuySellScreen
+import com.bachphucngequy.bitbull.presentation.ui.screens.CryptoWalletScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.Deposit
 import com.bachphucngequy.bitbull.presentation.ui.screens.HomeScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.MarketDetailScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.SavedInstanceKeys
 import com.bachphucngequy.bitbull.presentation.ui.screens.Screen
 import com.bachphucngequy.bitbull.presentation.ui.screens.SearchScreen
+import com.bachphucngequy.bitbull.presentation.ui.screens.TradingSection
 import com.bachphucngequy.bitbull.presentation.ui.screens.TradingSheetScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.UserAccountScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.ViewMarketScreen
@@ -166,8 +168,15 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         composable(Screen.UserAccount.route) {
             UserAccountScreen(
                 onNavigateToHome = { navController.navigate(Screen.Home.route) },
+                onNavigateToCryptoWallet = { navController.navigate(Screen.CryptoWallet.route) },
                 onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
                 authViewModel = authViewModel
+            )
+        }
+
+        composable(Screen.CryptoWallet.route) {
+            CryptoWalletScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
             )
         }
 
@@ -177,8 +186,12 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                 onNavigateToFeeds = { navController.navigate(Screen.Tweets.route) },
                 onNavigateToDeposit = { navController.navigate(Screen.Deposit.route) },
                 onNavigateToWithdraw = { navController.navigate(Screen.Withdraw.route) },
-                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) },
+                onNavigateToTrade = {navController.navigate(Screen.Trade.route)}
             )
+        }
+        composable(Screen.Trade.route) {
+            TradingSection ()
         }
         composable(Screen.ViewMarket.route) {
             ViewMarketScreen(onNavigateToMarketDetail = { navController.navigate(Screen.MarketDetail.route) })
