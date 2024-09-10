@@ -48,7 +48,7 @@ fun CryptoWalletScreen(
                     Icon(Icons.Default.Refresh, contentDescription = "Refresh", tint = Color.White)
                 }
             },
-            colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Black)
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Black)
         )
 
         // Total Assets
@@ -141,7 +141,7 @@ fun CryptoWalletScreen(
                 onValueChange = { searchQuery = it },
                 placeholder = { Text("Search", color = Color.Gray) },
                 modifier = Modifier.width(120.dp),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
+                colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = Color.White,
                     focusedBorderColor = Color.White,
                     unfocusedBorderColor = Color.Gray
