@@ -174,7 +174,7 @@ class PostDetailViewModel : ViewModel() {
 
             // Update UI
             commentsUiState = commentsUiState.copy(
-                comments = comments,
+                comments = commentsUiState.comments + listOf(newComment),
                 isAddingNewComment = false
             )
 

@@ -5,12 +5,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -21,7 +23,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.bachphucngequy.bitbull.tweets.common.CircleImage
 import com.bachphucngequy.bitbull.tweets.common.PostListItem
 import com.bachphucngequy.bitbull.tweets.data.Post
 
@@ -41,7 +42,10 @@ fun TweetsScreen(
                 title = { Text(text = "Feed") },
                 navigationIcon = {
                     IconButton(onClick = navigateUp) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back to Home")
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back to Home"
+                        )
                     }
                 }
             )
@@ -60,29 +64,34 @@ fun TweetsScreen(
            )
         },
         content = {paddingValues ->
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                items(postsUIState.posts) {post ->
-                    PostListItem(
-                        post = post,
-                        onPostClick = {onPostDetailNavigation(it)},
-                        onProfileClick = {onProfileNavigation(it)},
-                        onLikeClick = {onUiAction(HomeUiAction.PostLikeAction(it))},
-                        onCommentClick = {onPostDetailNavigation(it)}
-                    )
-                    Divider(
-                        modifier = Modifier.fillMaxWidth(),
-                        thickness = 1.dp
-                    )
+            if(postsUIState.isLoading) {
+                LinearProgressIndicator(
+                    modifier = Modifier.fillMaxWidth().padding(paddingValues)
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                ) {
+                    items(postsUIState.posts) {post ->
+                        PostListItem(
+                            post = post,
+                            onPostClick = {onPostDetailNavigation(it)},
+                            onProfileClick = {onProfileNavigation(it)},
+                            onLikeClick = {onUiAction(HomeUiAction.PostLikeAction(it))},
+                            onCommentClick = {onPostDetailNavigation(it)}
+                        )
+                        HorizontalDivider(
+                            modifier = Modifier.fillMaxWidth(),
+                            thickness = 1.dp
+                        )
+                    }
                 }
             }
         }
     )
-
     LaunchedEffect(key1 = Unit) {
-        onUiAction(HomeUiAction.CreateNewUser)
+        onUiAction(HomeUiAction.FetchPostsAction)
     }
 }

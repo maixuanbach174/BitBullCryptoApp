@@ -2,6 +2,7 @@ package com.bachphucngequy.bitbull.tweets.common.util
 
 import com.bachphucngequy.bitbull.tweets.common.util.Constants.EVENT_BUS_BUFFER_CAPACITY
 import com.bachphucngequy.bitbull.tweets.data.Post
+import com.bachphucngequy.bitbull.tweets.data.Profile
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 

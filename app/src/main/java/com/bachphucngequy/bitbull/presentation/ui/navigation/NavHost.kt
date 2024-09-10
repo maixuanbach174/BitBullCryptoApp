@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -60,12 +61,6 @@ import com.bachphucngequy.bitbull.presentation.viewmodel.AuthViewModel
 fun MyAppNavHost(innerPadding: PaddingValues,
                  coins: List<Coin>,
                  newsViewModel: NewsViewModel,
-                 tweetsViewModel: TweetsViewModel,
-                 postDetailViewModel: PostDetailViewModel,
-                 profileViewModel: ProfileViewModel,
-                 editProfileViewModel: EditProfileViewModel,
-                 followsViewModel: FollowsViewModel,
-                 newPostViewModel: NewPostViewModel,
                  authViewModel: AuthViewModel
 ) {
     val navController = rememberNavController()
@@ -273,6 +268,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         }
 
         composable(Screen.Tweets.route) {
+            val tweetsViewModel = viewModel<TweetsViewModel>()
             TweetsScreen(
                 postsUIState = tweetsViewModel.postsUiState,
                 onUiAction = {tweetsViewModel.onUiAction(it)},
@@ -296,6 +292,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         }
 
         composable(route = Screen.PostDetail.route) {
+            val postDetailViewModel = viewModel<PostDetailViewModel>()
             navController.previousBackStackEntry?.savedStateHandle?.get<String?>(SavedInstanceKeys.POST_ID)
                 ?.let { postId ->
                     PostDetailScreen(
@@ -318,6 +315,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         // 1. Forward from TweetsScreen (Home)
         // 2. Back from EditProfileScreen
         composable(route = Screen.Profile.route) {
+            val profileViewModel = viewModel<ProfileViewModel>()
             navController.previousBackStackEntry?.savedStateHandle?.get<String?>(SavedInstanceKeys.USER_ID)
                 ?.let {userId ->
                     ProfileScreen(
@@ -349,15 +347,15 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         }
 
         composable(route = Screen.EditProfile.route) {
+            val editProfileViewModel = viewModel<EditProfileViewModel>()
             navController.previousBackStackEntry?.savedStateHandle?.get<String?>(SavedInstanceKeys.USER_ID)
                 ?.let {userId ->
                     EditProfileScreen(
                         editProfileUiState = editProfileViewModel.uiState,
                         onNameChange = editProfileViewModel::onNameChange,
-                        bioTextFieldValue = editProfileViewModel.bioTextFieldValue,
                         onBioChange = editProfileViewModel::onBioChange,
+                        onImageUrlChange = editProfileViewModel::onImageUrlChange,
                         onUploadButtonClick = { editProfileViewModel.uploadProfile() },
-                        onUploadSucceed = {navController.navigateUp()},
                         fetchProfile = { editProfileViewModel.fetchProfile(userId) },
                         navigateUp = {navController.navigateUp()}
                     )
@@ -365,12 +363,13 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         }
 
         composable(route = Screen.Following.route) {
+            val followsViewModel = viewModel<FollowsViewModel>()
             navController.previousBackStackEntry?.savedStateHandle?.get<String?>(SavedInstanceKeys.USER_ID)
                 ?.let {userId ->
                     FollowsScreen(
                         uiState = followsViewModel.uiState,
                         fetchFollows = { followsViewModel.fetchFollows(
-                            userId,
+                            currentUserId = userId,
                             followsType = Constants.FOLLOWING_CODE
                         ) },
                         onItemClick = {},
@@ -380,6 +379,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         }
 
         composable(route = Screen.Followers.route) {
+            val followsViewModel = viewModel<FollowsViewModel>()
             navController.previousBackStackEntry?.savedStateHandle?.get<String?>(SavedInstanceKeys.USER_ID)
                 ?.let {userId ->
                     FollowsScreen(
@@ -400,6 +400,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         }
 
         composable(route = Screen.NewPost.route) {
+            val newPostViewModel = viewModel<NewPostViewModel>()
             NewPostScreen(
                 onUiAction = {newPostViewModel.onUiAction(it)},
                 navigateUp = {navController.navigateUp()}

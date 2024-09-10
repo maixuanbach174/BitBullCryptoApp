@@ -14,11 +14,14 @@ import com.bachphucngequy.bitbull.tweets.data.Post
 import com.bachphucngequy.bitbull.tweets.data.Profile
 import com.bachphucngequy.bitbull.tweets.data.comments
 import com.bachphucngequy.bitbull.tweets.data.posts
+import com.bachphucngequy.bitbull.tweets.data.profiles
 import com.bachphucngequy.bitbull.tweets.data.remote.RemoteComment
+import com.bachphucngequy.bitbull.tweets.data.remote.RemoteFollows
 import com.bachphucngequy.bitbull.tweets.data.remote.RemotePost
 import com.bachphucngequy.bitbull.tweets.data.remote.RemotePostLike
 import com.bachphucngequy.bitbull.tweets.data.remote.RemoteUser
 import com.bachphucngequy.bitbull.tweets.data.remote.remoteComments
+import com.bachphucngequy.bitbull.tweets.data.remote.remoteFollows
 import com.bachphucngequy.bitbull.tweets.data.remote.remoteLikes
 import com.bachphucngequy.bitbull.tweets.data.remote.remotePosts
 import com.bachphucngequy.bitbull.tweets.data.remote.remoteUsers
@@ -35,13 +38,12 @@ class TweetsViewModel: ViewModel() {
     private val postsCollection = firestore.collection("posts")
     private val usersCollection = firestore.collection("user")
     private val likesCollection = firestore.collection("postLikes")
+    private val followsCollection = firestore.collection("follows")
     private val commentsCollection = firestore.collection("postComments")
     var postsUiState by mutableStateOf(PostsUIState())
         private set
 
     init {
-        fetchPostsFromFirebase()
-
         EventBus.events
             .onEach {
                 when (it) {
@@ -51,6 +53,10 @@ class TweetsViewModel: ViewModel() {
     }
 
     private fun fetchPostsFromFirebase() {
+        postsUiState = postsUiState.copy(
+            isLoading = true,
+            posts = posts
+        )
         viewModelScope.launch {
             try {
                 // Get current user ID from Firebase Authentication
@@ -59,19 +65,36 @@ class TweetsViewModel: ViewModel() {
                 val postSnapshot = postsCollection.get().await()
                 remotePosts = postSnapshot.documents.mapNotNull { it.toObject(RemotePost::class.java) }
 
+                for(remotePost in remotePosts) {
+                    Log.d("Post id", remotePost.postId)
+                }
                 val userSnapShot = usersCollection.get().await()
                 remoteUsers = userSnapShot.documents.mapNotNull { it.toObject(RemoteUser::class.java) }
+                for(remoteUser in remoteUsers) {
+                    Log.d("User id", remoteUser.userId)
+                }
+                // Create current user in firebase if not exists
+                createUserIfNotExists()
 
                 // Fetch likes from Firebase
                 val likesSnapshot = likesCollection.get().await()
                 remoteLikes = likesSnapshot.documents.mapNotNull { it.toObject(RemotePostLike::class.java) }
-
+                for(like in remoteLikes) {
+                    Log.d("Like for post", like.postId)
+                }
                 // Fetch comments from Firebase
                 val commentsSnapshot = commentsCollection.get().await()
                 remoteComments = commentsSnapshot.documents.mapNotNull { it.toObject(RemoteComment::class.java) }
+                for(comment in remoteComments) {
+                    Log.d("Comment for post", comment.postId)
+                }
+                // Fetch remote follows
+                val followsSnapshot = followsCollection.get().await()
+                remoteFollows = followsSnapshot.documents.mapNotNull { it.toObject(RemoteFollows::class.java) }
 
                 // Create likesMap
-                val likesMap: Map<String, List<String>> = remoteLikes
+                val likesMap: Map<String, List<String>> =
+                    remoteLikes
                     .groupBy { it.postId }
                     .mapValues { entry -> entry.value.map { it.userId } }
 
@@ -86,16 +109,14 @@ class TweetsViewModel: ViewModel() {
 
                 // Combine RemotePost and RemoteUser into Post objects
                 // then add all to "posts"
-                posts.addAll(
-                    remotePosts.mapNotNull { remotePost ->
-                        usersMap[remotePost.userId]?.let { remoteAuthor ->
-                            val isLikedByCurrentUser = likesMap[remotePost.postId]?.contains(currentUserId)
-                            val likesCount = likesMap[remotePost.postId]?.size
-                            val commentsCount = commentsMap[remotePost.postId]?.size
-                            mapToPost(remotePost, remoteAuthor, currentUserId, isLikedByCurrentUser, likesCount, commentsCount)
-                        }
+                posts = remotePosts.mapNotNull { remotePost ->
+                    usersMap[remotePost.userId]?.let { remoteAuthor ->
+                        val isLikedByCurrentUser = likesMap[remotePost.postId]?.contains(currentUserId)
+                        val likesCount = likesMap[remotePost.postId]?.size
+                        val commentsCount = commentsMap[remotePost.postId]?.size
+                        mapToPost(remotePost, remoteAuthor, currentUserId, isLikedByCurrentUser, likesCount, commentsCount)
                     }
-                )
+                }.toMutableList()
 
                 postsUiState = postsUiState.copy(
                     isLoading = false,
@@ -103,8 +124,7 @@ class TweetsViewModel: ViewModel() {
                 )
 
                 // Convert remoteComments to list of Comments
-                comments.addAll(
-                    remoteComments.mapNotNull { remoteComment ->
+                comments = remoteComments.mapNotNull { remoteComment ->
                         // Find the corresponding user for the comment
                         val user = remoteUsers.find { it.userId == remoteComment.userId }
                         // If user is found, create a Comment object
@@ -118,9 +138,36 @@ class TweetsViewModel: ViewModel() {
                                 postId = remoteComment.postId
                             )
                         }
-                    }
-                )
+                    }.toMutableList()
+
+                // Map remote users to Profiles
+                profiles = remoteUsers.map { user ->
+                    // Calculate followers count (where `toId` is the user's ID)
+                    val followersCount = remoteFollows.count { it.toId == user.userId }
+
+                    // Calculate following count (where `fromId` is the user's ID)
+                    val followingCount = remoteFollows.count { it.fromId == user.userId }
+
+                    // Check if the profile belongs to the current user
+                    val isOwnProfile = user.userId == auth.currentUser?.uid
+
+                    // Check if the current user is following this user
+                    val isFollowing = remoteFollows.any { it.fromId == auth.currentUser?.uid && it.toId == user.userId }
+
+                    // Create Profile object
+                    Profile(
+                        id = user.userId,
+                        name = user.name,
+                        bio = user.bio,
+                        profileUrl = user.imageUrl,
+                        followersCount = followersCount,
+                        followingCount = followingCount,
+                        isOwnProfile = isOwnProfile,
+                        isFollowing = isFollowing
+                    )
+                }
             } catch(e: Exception) {
+                Log.e("Error", "Error in TweetsViewModel")
                 postsUiState = postsUiState.copy(
                     isLoading = false,
                     errorMessage = e.message
@@ -130,40 +177,36 @@ class TweetsViewModel: ViewModel() {
     }
 
     @SuppressLint("LogNotTimber")
-    private fun createUserIfNotExists() {
-        viewModelScope.launch {
-            var isUserExist = false
-            for(remoteUser in remoteUsers) {
-                if(remoteUser.userId == auth.currentUser?.uid) {
-                    isUserExist = true
-                    break
+    private suspend fun createUserIfNotExists() {
+        val isUserExist = remoteUsers.any {remoteUser ->
+            remoteUser.userId == auth.currentUser?.uid!!
+        }
+        Log.e("currentUser", auth.currentUser?.uid!!)
+        Log.e("isUserExist", isUserExist.toString())
+        if(!isUserExist) {
+            try {
+                auth.currentUser?.uid?.let { userUid ->
+                    // Insert new user with default values
+                    val userData = mapOf(
+                        "bio" to "Hey, what's up? Welcome to my profile!",
+                        "imageUrl" to "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png",
+                        "name" to "User",
+                        "userId" to userUid
+                    )
+                    // Insert to Firebase collection
+                    usersCollection
+                        .add(userData)
+                        .addOnSuccessListener { documentReference ->
+                            Log.d("Success", "DocumentSnapshot written with ID: ${documentReference.id}")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w("Error", "Error adding document", e)
+                        }
+                        .await()
                 }
-            }
-            if(!isUserExist) {
-                try {
-                    auth.currentUser?.uid?.let { userUid ->
-                        // Insert new user with default values
-                        val userData = mapOf(
-                            "bio" to "Hey, what's up? Welcome to my profile!",
-                            "imageUrl" to "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png",
-                            "name" to "User",
-                            "userId" to userUid
-                        )
-                        // Insert to Firebase collection
-                        usersCollection
-                            .add(userData)
-                            .addOnSuccessListener { documentReference ->
-                                Log.d("Success", "DocumentSnapshot written with ID: ${documentReference.id}")
-                            }
-                            .addOnFailureListener { e ->
-                                Log.w("Error", "Error adding document", e)
-                            }
-                            .await()
-                    }
-                } catch (e: Exception) {
-                    // Handle errors (e.g., log them or show an error message in the UI state)
-                    println("Failed to insert user in Firestore: ${e.message}")
-                }
+            } catch (e: Exception) {
+                // Handle errors (e.g., log them or show an error message in the UI state)
+                println("Failed to insert user in Firestore: ${e.message}")
             }
         }
     }
@@ -304,7 +347,7 @@ class TweetsViewModel: ViewModel() {
     fun onUiAction(uiAction: HomeUiAction) {
         when (uiAction) {
             is HomeUiAction.PostLikeAction -> likeOrUnlikePost(uiAction.post)
-            is HomeUiAction.CreateNewUser -> createUserIfNotExists()
+            HomeUiAction.FetchPostsAction -> fetchPostsFromFirebase()
         }
     }
 }
@@ -317,7 +360,8 @@ data class PostsUIState(
 
 sealed interface HomeUiAction {
     data class PostLikeAction(val post: Post) : HomeUiAction
-    object CreateNewUser: HomeUiAction
+
+    object FetchPostsAction: HomeUiAction
 }
 
 //data class TabItem (

@@ -18,4 +18,5 @@
     <string name="post_hint">What\'s on your mind?</string>
     <string name="post_button_text">Post</string>
     <string name="image_url_hint">Image url</string>
+    <string name="user_image_url_hint">Image URL</string>
 </resources>

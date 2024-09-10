@@ -2,7 +2,7 @@ package com.bachphucngequy.bitbull.presentation.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material3.*
@@ -53,7 +53,7 @@ fun Withdraw(
                     title = { Text("Send USDT") },
                     navigationIcon = {
                         IconButton(onClick = onNavigateToWithdraw) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                         }
                     },
                     actions = {
