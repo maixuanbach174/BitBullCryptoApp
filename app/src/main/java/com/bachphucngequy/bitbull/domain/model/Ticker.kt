@@ -1,13 +1,15 @@
 package com.bachphucngequy.bitbull.domain.model
 
 data class Ticker(
-    val productId: String,
+    val symbol: String,
+    val priceChange: Double,
+    val priceChangePercent: Double,
     val productCode: String,
     val productName: String,
-    val price: Double,
+    val lastPrice: Double,
     val openPrice: Double,
-    val volume24: Double,
-    val low24: Double,
-    val high24: Double,
-    val volumeMonth: Double
+    val baseAssetVolume: Double,
+    val lowPrice: Double,
+    val highPrice: Double,
+    val quoteAssetVolume: Double
 )

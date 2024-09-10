@@ -1,11 +1,13 @@
 package com.bachphucngequy.bitbull.data.entity
 
 data class TickerEntity(
-    val productId: String? = null,
-    val price: String? = null,
+    val symbol: String? = null,
+    val priceChange: String? = null,
+    val priceChangePercent: String? = null,
+    val lastPrice: String? = null,
     val openPrice: String? = null,
-    val volume24: String? = null,
-    val low24: String? = null,
-    val high24: String? = null,
-    val volumeMonth: String? = null
+    val highPrice: String? = null,
+    val lowPrice: String? = null,
+    val baseAssetVolume: String? = null,
+    val quoteAssetVolume: String? = null
 )

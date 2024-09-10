@@ -15,7 +15,6 @@ import javax.inject.Singleton
 @Singleton
 class TickerRepositoryImpl @Inject constructor(
     private val tickerRemoteDataSource: TickerRemoteDataSource,
-    private val tickerCacheDataSource: TickerCacheDataSource,
     private val tickerMapper: TickerMapper,
 ) : TickerRepository {
 
@@ -39,27 +38,22 @@ class TickerRepositoryImpl @Inject constructor(
     }
 
     override fun observeTicker(): Flow<ConnectionState> = flow {
-        tickerCacheDataSource.getAllTicker()
-            .map { tickerMapper.mapFromEntity(it) }
-            .onEach {
-                emit(ConnectionState.Success(it))
-            }
-        emitAll(tickerRemoteDataSource.observeTicker()
-            .onEach { tickerEntity ->
-                tickerCacheDataSource.upsertTicker(tickerEntity)
-            }
-            .map
-            {
-                ConnectionState.Success(tickerMapper.mapFromEntity(it))
-            })
+        emitAll(tickerRemoteDataSource.observeTicker().map {
+            ConnectionState.Success(tickerMapper.mapFromEntity(it))
+        })
     }
 
     override fun subscribeTicker() {
         tickerRemoteDataSource.sendSubscribe(
             Subscribe(
-                productIds = Crypto.values()
-                    .map { it.id },
-                channels = listOf("ticker")
+                1,
+                params = listOf(
+                    Crypto.BITCOIN.symbol.lowercase() + "@ticker",
+                    Crypto.ETHEREUM.symbol.lowercase() + "@ticker",
+                    Crypto.CARDANO.symbol.lowercase() + "@ticker",
+                    Crypto.CHAINLINK.symbol.lowercase() + "@ticker",
+                    Crypto.LITECOIN.symbol.lowercase() + "@ticker",
+                ),
             )
         )
     }

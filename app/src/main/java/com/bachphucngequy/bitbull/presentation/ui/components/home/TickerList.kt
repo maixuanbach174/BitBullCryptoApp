@@ -31,7 +31,7 @@ fun TickerList(data: List<Ticker>, onNavigateToDetail: (String) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(data.sortedBy { ticker -> ticker.productId }) { item ->
+        items(data.sortedBy { ticker -> ticker.symbol }) { item ->
             TickerItem(item, onNavigateToDetail)
         }
     }
@@ -39,7 +39,7 @@ fun TickerList(data: List<Ticker>, onNavigateToDetail: (String) -> Unit) {
 
 @Composable
 fun TickerItem(item: Ticker, onNavigateToDetail: (String) -> Unit) {
-    val asc = (item.openPrice < item.price)
+    val asc = (item.openPrice < item.lastPrice)
 
     Row(
         modifier = Modifier
@@ -61,7 +61,7 @@ fun TickerItem(item: Ticker, onNavigateToDetail: (String) -> Unit) {
                 fontSize = 16.sp,
             )
             Text(
-                text = "Vol. ${DecimalFormat("#.###").format(item.volume24)}",
+                text = "Vol. ${DecimalFormat("#.###").format(item.baseAssetVolume)}",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.W400,
                 fontSize = 14.sp
@@ -79,7 +79,7 @@ fun TickerItem(item: Ticker, onNavigateToDetail: (String) -> Unit) {
                     .padding(horizontal = 16.dp, vertical = 6.dp)
             ){
                 Text(
-                    text = item.price.toString(),
+                    text = item.lastPrice.toString(),
                     fontSize = 14.sp,
                     textAlign = TextAlign.End,
                     style = MaterialTheme.typography.bodyLarge,

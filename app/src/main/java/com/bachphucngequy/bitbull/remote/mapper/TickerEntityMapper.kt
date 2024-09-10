@@ -8,13 +8,15 @@ class TickerEntityMapper @Inject constructor() : EntityMapper<RemoteTicker, Tick
 
     override fun mapFromRemote(type: RemoteTicker): TickerEntity {
         return TickerEntity(
-            productId = type.productId,
-            price = type.price,
+            symbol = type.symbol,
+            priceChange = type.priceChange,
+            priceChangePercent = type.priceChangePercent,
+            lastPrice = type.lastPrice,
             openPrice = type.openPrice,
-            volume24 = type.volume24,
-            volumeMonth = type.volume30d,
-            low24 = type.low24,
-            high24 = type.high24
+            highPrice = type.highPrice,
+            lowPrice = type.lowPrice,
+            baseAssetVolume = type.baseAssetVolume,
+            quoteAssetVolume = type.quoteAssetVolume
         )
     }
 }
