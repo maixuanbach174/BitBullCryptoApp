@@ -51,9 +51,6 @@ fun ChangeNicknameScreen(
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Go to User Account")
                     }
                 },
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
             )
         }
     ) { innerPadding ->
