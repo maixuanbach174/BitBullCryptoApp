@@ -1,5 +1,6 @@
 package com.bachphucngequy.bitbull.presentation.ui.screens
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
@@ -135,6 +137,9 @@ fun MarketDetailScreen(
             }
             if (showBottomSheet) {
                 OrderBottomSheet(
+                    btcCurrency = "BTC",
+                    usdtCurrency = "USDT",
+                    price = 56000.0,
                     isBuySelected = isBuy,
                     onPlaceOrderClick = { amount, isBuySelected ->
                         // Handle placing the order here
@@ -213,6 +218,9 @@ fun BuySellBar(onBuyClick: () -> Unit, onSellClick: () -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrderBottomSheet(
+    btcCurrency: String,
+    usdtCurrency: String,
+    price: Double,
     isBuySelected: Boolean,
     onPlaceOrderClick: (String, Boolean) -> Unit,
     onDismiss: () -> Unit
@@ -220,7 +228,11 @@ fun OrderBottomSheet(
     var amount by remember { mutableStateOf("") }
     var isBuy by remember { mutableStateOf(isBuySelected) }
     var availableBalance by remember { mutableStateOf(0.0) } // Balance from Firebase
-    val coroutineScope = rememberCoroutineScope()
+
+    // Currency variables
+    var btcCurrency = "BTC"
+    var usdtCurrency = "USDT"
+    var price= 56000.0
 
     // Firebase Firestore initialization
     val userId = user.usid
@@ -228,20 +240,18 @@ fun OrderBottomSheet(
     // Fetch balance when the bottom sheet opens
     LaunchedEffect(userId, isBuy) {
         if (userId != null) {
-            val currency = if (isBuy) "USDT" else "BTC" // Adjust based on Buy/Sell
+            // Adjust based on Buy/Sell
+            val currency = if (isBuy) usdtCurrency else btcCurrency
             FirebaseRepository.fetchAvailableBalance(
                 userId = userId,
                 currency = currency,
                 onSuccess = { balance ->
                     availableBalance = balance
-                    // Update your UI or perform further operations here
                 },
                 onFailure = { exception ->
-                    // Handle the error (e.g., show a message to the user)
                     Log.e("FirebaseRepository", "Error fetching balance", exception)
                 }
             )
-
         }
     }
 
@@ -273,7 +283,21 @@ fun OrderBottomSheet(
                 // Buy/Sell Toggle Buttons
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     FilledTonalButton(
-                        onClick = { isBuy = true },
+                        onClick = {
+                            isBuy = true
+                            amount = "" // Reset the amount to zero
+                            val currency = usdtCurrency
+                            FirebaseRepository.fetchAvailableBalance(
+                                userId = userId,
+                                currency = currency,
+                                onSuccess = { balance ->
+                                    availableBalance = balance
+                                },
+                                onFailure = { exception ->
+                                    Log.e("FirebaseRepository", "Error fetching balance", exception)
+                                }
+                            )
+                        },
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = if (isBuy) Green100 else Color.Gray
@@ -283,7 +307,21 @@ fun OrderBottomSheet(
                     }
 
                     FilledTonalButton(
-                        onClick = { isBuy = false },
+                        onClick = {
+                            isBuy = false
+                            amount = "" // Reset the amount to zero
+                            val currency = btcCurrency
+                            FirebaseRepository.fetchAvailableBalance(
+                                userId = userId,
+                                currency = currency,
+                                onSuccess = { balance ->
+                                    availableBalance = balance
+                                },
+                                onFailure = { exception ->
+                                    Log.e("FirebaseRepository", "Error fetching balance", exception)
+                                }
+                            )
+                        },
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = if (!isBuy) Red100 else Color.Gray
@@ -301,8 +339,8 @@ fun OrderBottomSheet(
                     TextField(
                         value = amount,
                         onValueChange = { inputAmount ->
-                            if (inputAmount.toDoubleOrNull() ?: 0.0 <= availableBalance) {
-                                amount = inputAmount // Only allow amount <= available balance
+                            if (inputAmount.toDoubleOrNull() != null && inputAmount.toDouble() <= availableBalance) {
+                                amount = inputAmount // Only allow valid numeric input and <= available balance
                             }
                         },
                         modifier = Modifier.weight(1f),
@@ -311,7 +349,8 @@ fun OrderBottomSheet(
                             keyboardType = KeyboardType.Number
                         )
                     )
-                    Text(text = if (isBuy) "USDT" else "BTC")
+
+                    Text(text = if (isBuy) usdtCurrency else btcCurrency)
 
                     FilledTonalButton(
                         onClick = {
@@ -325,9 +364,12 @@ fun OrderBottomSheet(
                 }
 
                 // Place Order Button
+                val context = LocalContext.current
+
                 FilledTonalButton(
                     onClick = {
                         onPlaceOrderClick(amount, isBuy)
+                        Toast.makeText(context, "Order placed successfully!", Toast.LENGTH_SHORT).show()
                         onDismiss() // Dismiss after placing the order
                     },
                     shape = RoundedCornerShape(10.dp),
@@ -335,6 +377,7 @@ fun OrderBottomSheet(
                 ) {
                     Text("Place Order", style = MaterialTheme.typography.bodyMedium)
                 }
+
             }
         }
     }
