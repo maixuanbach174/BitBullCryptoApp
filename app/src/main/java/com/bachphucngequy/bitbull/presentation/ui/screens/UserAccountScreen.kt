@@ -29,6 +29,7 @@ fun UserAccountScreen(
     onNavigateToHome: () -> Unit,
     onNavigateToCryptoWallet: () -> Unit,
     onNavigateToSignIn: () -> Unit,
+    onNavigateToHistory: () -> Unit,
     authViewModel: AuthViewModel
 ) {
     val authState = authViewModel.authState.observeAsState()
@@ -66,7 +67,7 @@ fun UserAccountScreen(
         ) {
             item { GreenFundBanner() }
             item { UserInfoSection(onNavigateToCryptoWallet) }
-            item { MenuItems() }
+            item { MenuItems(onNavigateToHistory = onNavigateToHistory) }
             item { LogoutButton(authViewModel) }
         }
     }
@@ -128,14 +129,16 @@ fun UserInfoSection(onNavigateToCryptoWallet: () -> Unit) {
 }
 
 @Composable
-fun MenuItems() {
+fun MenuItems(
+    onNavigateToHistory: () -> Unit
+) {
     val menuItems = listOf(
         "Member Rank" to Icons.Default.Star,
         "Refer a Friend" to Icons.Default.Person,
         "Deposit" to Icons.Default.AccountBalance,
         "Change" to Icons.Default.Autorenew,
         "Payment Management" to Icons.Default.Payment,
-        "Invoice Information" to Icons.Default.Receipt,
+        "Transaction History" to Icons.Default.Receipt,
         "Prize" to Icons.Default.EmojiEvents,
         "Regular Questions" to Icons.Default.QuestionAnswer,
         "Terms and Policies" to Icons.Default.Description,
@@ -163,7 +166,11 @@ fun MenuItems() {
                         contentDescription = "Arrow Right"
                     )
                 },
-                modifier = Modifier.clickable { /* Handle click */ }
+                modifier = Modifier.clickable {
+                    if(title == "Transaction History") {
+                        onNavigateToHistory()
+                    }
+                }
             )
             Divider()
         }

@@ -42,6 +42,8 @@ import com.bachphucngequy.bitbull.SignInSignUp.SignInScreen
 import com.bachphucngequy.bitbull.SignInSignUp.SignUpScreen
 import com.bachphucngequy.bitbull.SignInSignUp.StartScreen
 import com.bachphucngequy.bitbull.firebase.user
+import com.bachphucngequy.bitbull.history.HistoryScreen
+import com.bachphucngequy.bitbull.history.HistoryViewModel
 import com.bachphucngequy.bitbull.presentation.ui.components.home.Crypto
 import com.bachphucngequy.bitbull.presentation.ui.components.home.sampleData
 import com.bachphucngequy.bitbull.presentation.ui.screens.BuySellScreen
@@ -170,6 +172,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                 onNavigateToHome = { navController.navigate(Screen.Home.route) },
                 onNavigateToCryptoWallet = { navController.navigate(Screen.CryptoWallet.route) },
                 onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
+                onNavigateToHistory = { navController.navigate(Screen.History.route) },
                 authViewModel = authViewModel
             )
         }
@@ -426,6 +429,14 @@ fun MyAppNavHost(innerPadding: PaddingValues,
             Withdraw(onNavigateToWithdraw = { /*TODO*/ }, onNavigateToHistory = { /*TODO*/ }) {
 
             }
+        }
+        composable(Screen.History.route) {
+            val historyViewModel = viewModel<HistoryViewModel>()
+            HistoryScreen(
+                uiState = historyViewModel.uiState,
+                onUiAction = { historyViewModel.onUiAction(it) },
+                navigateUp = {navController.navigateUp()}
+            )
         }
     }
 }
