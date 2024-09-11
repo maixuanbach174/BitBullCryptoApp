@@ -36,7 +36,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 fun UserAccountScreen(
     onNavigateToHome: () -> Unit,
     onNavigateToCryptoWallet: () -> Unit,
+    onNavigateToFeedback: () -> Unit,
+    onNavigateToCompanyInfo: () -> Unit,
+    onNavigateToChangePasswordAccount: () -> Unit,
     onNavigateToChangeNickname: () -> Unit,
+    onNavigateToChooseLanguage: () -> Unit,
     onNavigateToSignIn: () -> Unit,
     onNavigateToHistory: () -> Unit,
     authViewModel: AuthViewModel
@@ -95,7 +99,7 @@ fun UserAccountScreen(
         ) {
             item { GreenFundBanner() }
             item { UserInfoSection(onNavigateToCryptoWallet, userName, userEmail) }
-            item { MenuItems(onNavigateToHistory,onNavigateToChangeNickname) }
+            item { MenuItems(onNavigateToHistory,onNavigateToFeedback,onNavigateToCompanyInfo,onNavigateToChangePasswordAccount,onNavigateToChangeNickname,onNavigateToChooseLanguage) }
             item { LogoutButton(authViewModel) }
         }
     }
@@ -158,7 +162,12 @@ fun UserInfoSection(onNavigateToCryptoWallet: () -> Unit, userName: String, user
 
 @Composable
 fun MenuItems(
-    onNavigateToHistory: () -> Unit,onNavigateToChangeNickname: () -> Unit
+    onNavigateToHistory: () -> Unit,
+    onNavigateToFeedback: () -> Unit,
+    onNavigateToCompanyInfo: () -> Unit,
+    onNavigateToChangePasswordAccount: () -> Unit,
+    onNavigateToChangeNickname: () -> Unit,
+    onNavigateToChooseLanguage: () -> Unit
 ) {
     val menuItems = listOf(
         MenuItem("Member Rank", Icons.Default.Star),
@@ -198,7 +207,11 @@ fun MenuItems(
                 modifier = Modifier.clickable {
                     when (item.title) {
                         "Transaction History" -> onNavigateToHistory()
+                        "User Feedback" -> onNavigateToFeedback()
+                        "Company Information" -> onNavigateToCompanyInfo()
+                        "Change Password" -> onNavigateToChangePasswordAccount()
                         "Change Nickname" -> onNavigateToChangeNickname()
+                        "Language" -> onNavigateToChooseLanguage()
                         else -> {
                             // Handle other menu item clicks
                             // You can add more navigation or action handlers here

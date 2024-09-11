@@ -32,6 +32,7 @@ import com.bachphucngequy.bitbull.tweets.post.NewPostViewModel
 import com.bachphucngequy.bitbull.tweets.post.PostDetailScreen
 import com.bachphucngequy.bitbull.tweets.post.PostDetailViewModel
 import com.bachphucngequy.bitbull.SignInSignUp.ChangeSuccessScreen
+import com.bachphucngequy.bitbull.SignInSignUp.ChooseLanguageScreen
 import com.bachphucngequy.bitbull.SignInSignUp.CreateSuccessScreen
 import com.bachphucngequy.bitbull.SignInSignUp.EnterCodePasswordScreen
 import com.bachphucngequy.bitbull.SignInSignUp.EnterCodeScreen
@@ -48,8 +49,11 @@ import com.bachphucngequy.bitbull.presentation.ui.components.home.Crypto
 import com.bachphucngequy.bitbull.presentation.ui.components.home.sampleData
 import com.bachphucngequy.bitbull.presentation.ui.screens.BuySellScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.ChangeNicknameScreen
+import com.bachphucngequy.bitbull.presentation.ui.screens.ChangePasswordAccountScreen
+import com.bachphucngequy.bitbull.presentation.ui.screens.CompanyInfoScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.CryptoWalletScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.Deposit
+import com.bachphucngequy.bitbull.presentation.ui.screens.FeedbackScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.HomeScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.MarketDetailScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.SavedInstanceKeys
@@ -153,6 +157,11 @@ fun MyAppNavHost(innerPadding: PaddingValues,
             )
         }
 
+        composable(com.bachphucngequy.bitbull.Navigation.Screen.ChooseLanguage.route) {
+            ChooseLanguageScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) })
+        }
+
         composable(com.bachphucngequy.bitbull.Navigation.Screen.SignUp.route){
             SignUpScreen(
                 onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
@@ -172,7 +181,11 @@ fun MyAppNavHost(innerPadding: PaddingValues,
             UserAccountScreen(
                 onNavigateToHome = { navController.navigate(Screen.Home.route) },
                 onNavigateToCryptoWallet = { navController.navigate(Screen.CryptoWallet.route) },
+                onNavigateToFeedback = { navController.navigate(Screen.Feedback.route) },
+                onNavigateToCompanyInfo = { navController.navigate(Screen.CompanyInfo.route) },
+                onNavigateToChangePasswordAccount = { navController.navigate(Screen.ChangePasswordAccount.route) },
                 onNavigateToChangeNickname = { navController.navigate(Screen.ChangeNickname.route) },
+                onNavigateToChooseLanguage = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.ChooseLanguage.route) },
                 onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
                 onNavigateToHistory = { navController.navigate(Screen.History.route) },
                 authViewModel = authViewModel
@@ -185,8 +198,26 @@ fun MyAppNavHost(innerPadding: PaddingValues,
             )
         }
 
+        composable(Screen.Feedback.route) {
+            FeedbackScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+            )
+        }
+
+        composable(Screen.CompanyInfo.route) {
+            CompanyInfoScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+            )
+        }
+
         composable(Screen.ChangeNickname.route) {
             ChangeNicknameScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+            )
+        }
+
+        composable(Screen.ChangePasswordAccount.route) {
+            ChangePasswordAccountScreen(
                 onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
             )
         }
