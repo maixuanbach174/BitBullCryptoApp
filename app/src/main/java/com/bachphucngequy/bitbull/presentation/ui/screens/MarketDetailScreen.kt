@@ -38,7 +38,7 @@ fun MarketDetailScreen(
     newsViewModel: NewsViewModel,
     onNavigateToNewsDetails: (Article) -> Unit,
     onFavouriteClick: () -> Unit,
-    symbol: String,
+    crypto: Crypto,
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
@@ -46,8 +46,8 @@ fun MarketDetailScreen(
         topBar = {
             Column {
                 SymbolAppBar(
-                    marketName = symbol.uppercase(),
-                    companyName = Crypto.getCompanyName(symbol),
+                    marketName = crypto.code + "/" + crypto.quoteCode,
+                    companyName = crypto.fullName,
                     onBackClick = onBackClick,
                     onFavouriteClick = onFavouriteClick,
                     isCoinFavourite = false
@@ -65,14 +65,14 @@ fun MarketDetailScreen(
             when (selectedTabIndex) {
                 0 -> PriceContent(
                     modifier = Modifier.fillMaxSize(),
-                    symbol = symbol,
+                    symbol = crypto.symbol,
                 )
-//                1 -> CoinDetailScreen(coin = coinDetail)
+                1 -> CoinDetailScreen(coinId = crypto.code.lowercase() + "-" + crypto.fullName.lowercase())
                 2 -> TradingDataContent()
                 3 -> NewsScreen(
                     newsViewModel = newsViewModel,
                     navigateToDetails = onNavigateToNewsDetails,
-                    searchQuery = symbol
+                    searchQuery = crypto.symbol
                 )
             }
         }
@@ -85,13 +85,10 @@ fun PriceContent(
     symbol: String,
 ) {
 
-    val scrollState = rememberScrollState()
-
     var selectedTimeframe by remember { mutableStateOf("15") }
     var selectedChartType by remember { mutableStateOf("1") }
 
     Column(
-        modifier = modifier.verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
 

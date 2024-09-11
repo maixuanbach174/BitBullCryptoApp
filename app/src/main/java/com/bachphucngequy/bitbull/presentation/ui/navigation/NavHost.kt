@@ -40,9 +40,8 @@ import com.bachphucngequy.bitbull.SignInSignUp.SignInPhoneScreen
 import com.bachphucngequy.bitbull.SignInSignUp.SignInScreen
 import com.bachphucngequy.bitbull.SignInSignUp.SignUpScreen
 import com.bachphucngequy.bitbull.SignInSignUp.StartScreen
+import com.bachphucngequy.bitbull.data.entity.Crypto
 import com.bachphucngequy.bitbull.firebase.user
-import com.bachphucngequy.bitbull.presentation.ui.components.home.Crypto
-import com.bachphucngequy.bitbull.presentation.ui.components.home.sampleData
 import com.bachphucngequy.bitbull.presentation.ui.screens.BuySellScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.Deposit
 import com.bachphucngequy.bitbull.presentation.ui.screens.HomeScreen
@@ -58,7 +57,6 @@ import com.bachphucngequy.bitbull.presentation.viewmodel.AuthViewModel
 
 @Composable
 fun MyAppNavHost(innerPadding: PaddingValues,
-                 coins: List<Coin>,
                  newsViewModel: NewsViewModel,
                  tweetsViewModel: TweetsViewModel,
                  postDetailViewModel: PostDetailViewModel,
@@ -69,7 +67,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
 //                 authViewModel: AuthViewModel
 ) {
     val navController = rememberNavController()
-    var symbol by remember { mutableStateOf("") }
+    var crypto by remember { mutableStateOf(Crypto.BITCOIN) }
     NavHost(navController = navController, startDestination = Screen.Home.route) {
 
         composable(com.bachphucngequy.bitbull.Navigation.Screen.ForgotPassword.route) {
@@ -117,7 +115,11 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                 onNavigateToFeeds = { navController.navigate(Screen.Tweets.route) },
                 onNavigateToDeposit = { navController.navigate(Screen.Deposit.route) },
                 onNavigateToWithdraw = { navController.navigate(Screen.Withdraw.route) },
-                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) },
+                onNavigateToDetail = { coin ->
+                    navController.navigate(Screen.MarketDetail.route)
+                    crypto = coin
+                }
             )
         }
         composable(Screen.ViewMarket.route) {
@@ -137,7 +139,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                     )
                 },
                 onFavouriteClick = { /*TODO*/ },
-                symbol = symbol
+                crypto = crypto
             )
         }
         composable(Screen.TradingSheet.route) {
@@ -152,7 +154,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                 onCancelClick = { navController.popBackStack() },
                 onSearchItemClick = {
                     navController.navigate(Screen.MarketDetail.route)
-                    symbol = it
+                    crypto = it
                 }
             )
         }

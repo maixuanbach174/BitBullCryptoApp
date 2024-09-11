@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.bachphucngequy.bitbull.data.entity.Crypto
 import com.bachphucngequy.bitbull.domain.model.Ticker
 import java.text.DecimalFormat
 import com.bachphucngequy.bitbull.presentation.ui.theme.DarkRed
@@ -25,7 +26,7 @@ import com.bachphucngequy.bitbull.presentation.ui.theme.Green100
 
 
 @Composable
-fun TickerList(data: List<Ticker>, onNavigateToDetail: (String) -> Unit) {
+fun TickerList(data: List<Ticker>, onNavigateToDetail: (Crypto) -> Unit) {
     LazyColumn(
         Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -38,13 +39,17 @@ fun TickerList(data: List<Ticker>, onNavigateToDetail: (String) -> Unit) {
 }
 
 @Composable
-fun TickerItem(item: Ticker, onNavigateToDetail: (String) -> Unit) {
+fun TickerItem(item: Ticker, onNavigateToDetail: (Crypto) -> Unit) {
     val asc = (item.openPrice < item.lastPrice)
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {}
+            .clickable {
+                onNavigateToDetail(
+                    Crypto.values().find { it.symbol == item.symbol } ?: Crypto.WETH
+                )
+            }
             .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -103,5 +108,8 @@ fun getProductResource(
     productCode: String,
     productName: String
 ): String {
+    if(productCode == "BNB") {
+        return "https://static.coinpaprika.com/coin/bnb-binance-coin/logo.png"
+    }
     return "https://static.coinpaprika.com/coin/" + productCode.lowercase() + "-" +productName.lowercase() + "/logo.png"
 }

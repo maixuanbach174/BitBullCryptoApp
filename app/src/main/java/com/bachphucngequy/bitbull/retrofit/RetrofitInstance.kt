@@ -1,6 +1,5 @@
 package com.bachphucngequy.bitbull.retrofit
 
-import com.bachphucngequy.bitbull.data.BinanceApi
 import com.bachphucngequy.bitbull.data.CoinPaprikaApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -15,13 +14,6 @@ object RetrofitInstance {
     private val client: OkHttpClient = OkHttpClient
         .Builder().addInterceptor(interceptor)
         .build()
-
-    val binanceApi: BinanceApi = Retrofit.Builder()
-        .addConverterFactory(GsonConverterFactory.create())
-        .baseUrl(BinanceApi.BASE_URL)
-        .client(client)
-        .build()
-        .create(BinanceApi::class.java)
 
     val coinPaprikaApi: CoinPaprikaApi = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())

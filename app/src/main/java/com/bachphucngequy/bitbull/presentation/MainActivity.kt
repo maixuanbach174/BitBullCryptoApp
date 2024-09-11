@@ -6,18 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.bachphucngequy.bitbull.data.repository.CoinRepositoryImpl
 import com.bachphucngequy.bitbull.news.NewsViewModel
 import com.bachphucngequy.bitbull.presentation.ui.theme.BitBullTheme
-import com.bachphucngequy.bitbull.presentation.viewmodel.AuthViewModel
-import com.bachphucngequy.bitbull.presentation.viewmodel.CoinViewModel
 import com.bachphucngequy.bitbull.presentation.viewmodel.SplashViewModel
-import com.bachphucngequy.bitbull.retrofit.RetrofitInstance
 import com.bachphucngequy.bitbull.tweets.TweetsViewModel
 import com.bachphucngequy.bitbull.tweets.account.edit.EditProfileViewModel
 import com.bachphucngequy.bitbull.tweets.account.follows.FollowsViewModel
@@ -32,13 +25,13 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel by viewModels<SplashViewModel>()
 
-    private val coinViewModel by viewModels<CoinViewModel> {
-        object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return CoinViewModel(CoinRepositoryImpl(RetrofitInstance.coinPaprikaApi)) as T
-            }
-        }
-    }
+//    private val coinViewModel by viewModels<CoinViewModel> {
+//        object : ViewModelProvider.Factory {
+//            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//                return CoinViewModel(CoinRepositoryImpl(RetrofitInstance.coinPaprikaApi)) as T
+//            }
+//        }
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,12 +55,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             BitBullTheme{
-                val coins by coinViewModel.coin.collectAsState()
+//                val coins by coinViewModel.coin.collectAsState()
                 Scaffold(
                     content = {
                         MyAppNavHost(
                             it,
-                            coins = coins,
                             newsViewModel = newsViewModel,
                             tweetsViewModel = tweetsViewModel,
                             postDetailViewModel = postDetailViewModel,

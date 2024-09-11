@@ -48,13 +48,7 @@ class TickerRepositoryImpl @Inject constructor(
         tickerRemoteDataSource.sendSubscribe(
             Subscribe(
                 1,
-                params = listOf(
-                    Crypto.BITCOIN.symbol.lowercase() + "@ticker",
-                    Crypto.ETHEREUM.symbol.lowercase() + "@ticker",
-                    Crypto.CARDANO.symbol.lowercase() + "@ticker",
-                    Crypto.CHAINLINK.symbol.lowercase() + "@ticker",
-                    Crypto.LITECOIN.symbol.lowercase() + "@ticker",
-                ),
+                params = Crypto.values().map { it.symbol.lowercase() + "@ticker" },
             )
         )
     }
