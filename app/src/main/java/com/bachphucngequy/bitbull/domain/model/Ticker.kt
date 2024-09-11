@@ -6,6 +6,7 @@ data class Ticker(
     val priceChangePercent: Double,
     val productCode: String,
     val productName: String,
+    val quoteCode: String,
     val lastPrice: Double,
     val openPrice: Double,
     val baseAssetVolume: Double,

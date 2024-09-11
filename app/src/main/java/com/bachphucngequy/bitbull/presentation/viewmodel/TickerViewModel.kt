@@ -2,6 +2,7 @@ package com.bachphucngequy.bitbull.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bachphucngequy.bitbull.core.di.annotation.HiltDispatchers
 import com.bachphucngequy.bitbull.domain.model.ConnectionState
 import com.bachphucngequy.bitbull.domain.model.Ticker

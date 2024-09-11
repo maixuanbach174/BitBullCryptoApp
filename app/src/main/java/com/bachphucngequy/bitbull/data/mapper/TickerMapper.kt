@@ -17,6 +17,7 @@ class TickerMapper @Inject constructor() : Mapper<TickerEntity, Ticker> {
                 ?: "",
             productName = enum?.fullName
                 ?: "",
+            quoteCode = enum?.quoteCode ?: "",
             lastPrice = entity.lastPrice?.toDouble() ?: 0.0,
             openPrice = entity.openPrice?.toDouble() ?: 0.0,
             baseAssetVolume = entity.baseAssetVolume?.toDouble() ?: 0.0,

@@ -70,49 +70,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
 ) {
     val navController = rememberNavController()
     var symbol by remember { mutableStateOf("") }
-    var coin by remember { mutableStateOf(Coin()) }
-    var pairCoin by remember { mutableStateOf("") }
     NavHost(navController = navController, startDestination = Screen.Home.route) {
-//        composable(com.bachphucngequy.bitbull.Navigation.Screen.Start.route) {
-//            StartScreen(
-//                onNavigateToSignIn={navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route)},
-//                onNavigateToSignUp={navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignUp.route)},
-//                authViewModel = authViewModel
-//            )
-//        }
-//
-//        composable(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route){
-//            SignInScreen(
-//                onNavigateToForgotPassword = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.ForgotPassword.route) },
-//                onNavigateToSignInPhone = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignInPhone.route) },
-//                onNavigateToSignUp = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignUp.route) },
-//                onNavigateToViewMarket = { navController.navigate(Screen.Home.route) },
-//                authViewModel = authViewModel
-//            )
-//        }
-
-//        composable(com.bachphucngequy.bitbull.Navigation.Screen.SignInPhone.route){
-//            SignInPhoneScreen(
-//                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
-//                onNavigateToEnterCode = { otp, email ->
-//                    navController.navigate("${com.bachphucngequy.bitbull.Navigation.Screen.EnterCode.route}/$otp/$email") },
-//                authViewModel = authViewModel
-//            )
-//        }
-
-//        composable("${com.bachphucngequy.bitbull.Navigation.Screen.EnterCode.route}/{otp}/{email}") {
-//                backStackEntry ->
-//            val otp = backStackEntry.arguments?.getString("otp") ?: ""
-//            val email = backStackEntry.arguments?.getString("email") ?: ""
-//
-//            EnterCodeScreen(
-//                onNavigateToSignInPhone = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignInPhone.route) },
-//                onNavigateToViewMarket = { navController.navigate(Screen.Home.route) },
-//                authViewModel = authViewModel,
-//                otp=otp,
-//                email = email
-//            )
-//        }
 
         composable(com.bachphucngequy.bitbull.Navigation.Screen.ForgotPassword.route) {
             ForgotPasswordScreen(
@@ -153,30 +111,6 @@ fun MyAppNavHost(innerPadding: PaddingValues,
             )
         }
 
-//        composable(com.bachphucngequy.bitbull.Navigation.Screen.SignUp.route){
-//            SignUpScreen(
-//                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
-//                onNavigateToCreateSuccess = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.CreateSuccess.route) },
-//                authViewModel = authViewModel
-//            )
-//        }
-//
-//        composable(com.bachphucngequy.bitbull.Navigation.Screen.CreateSuccess.route) {
-//            CreateSuccessScreen(
-//                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
-//                authViewModel = authViewModel
-//            )
-//        }
-//
-//        composable(Screen.UserAccount.route) {
-//            UserAccountScreen(
-//                onNavigateToHome = { navController.navigate(Screen.Home.route) },
-//                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
-//                authViewModel = authViewModel
-//            )
-//        }
-
-
         composable(Screen.Home.route) {
             HomeScreen(
                 onSearchClick = { navController.navigate(Screen.Search.route) },
@@ -195,9 +129,6 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                     navController.navigate(Screen.BuySell.route)
                 },
                 onBackClick = { navController.popBackStack() },
-                marketName = symbol,
-                coin = coin,
-                pairCoin = pairCoin,
                 newsViewModel = newsViewModel,
                 onNavigateToNewsDetails = {article ->
                     navigateToNewsDetails(
@@ -205,31 +136,8 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                         article = article
                     )
                 },
-                onFavouriteClick = {
-                    val newIsFavourite = !coin.isFavourite
-                    coin = coin.copy(
-                        isFavourite = newIsFavourite
-                    )
-                    //TODO: Add to sampleData, need to change later
-                    coins.find { it.id == coin.id }?.let {
-                        it.isFavourite = newIsFavourite
-                    }
-                    if(newIsFavourite) {
-                        sampleData.add(
-                            Crypto(
-                                icon = R.drawable.btc,
-                                name = coin.name,
-                                volume = "$464,70M",
-                                price = "$59.749",
-                                change = "-0,42%"
-                            )
-                        )
-                    } else {
-                       sampleData.find { it.name == coin.name }?.let {crypto ->
-                           sampleData.remove(crypto)
-                       }
-                    }
-                }
+                onFavouriteClick = { /*TODO*/ },
+                symbol = symbol
             )
         }
         composable(Screen.TradingSheet.route) {
@@ -244,21 +152,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                 onCancelClick = { navController.popBackStack() },
                 onSearchItemClick = {
                     navController.navigate(Screen.MarketDetail.route)
-                    pairCoin = it
-                    if (it.length == 8) {
-                        symbol = it.substring(0, 4) + "/" + it.substring(4)
-                        coin = coins.find { coin ->
-                            it.substring(
-                                0,
-                                4
-                            ) == if (coin.symbol.length >= 4) coin.symbol.substring(0, 4) else ""
-                        } ?: Coin()
-                    } else {
-                        symbol = it.substring(0, 3) + "/" + it.substring(3)
-                        coin = coins.find { coin ->
-                            it.substring(0, 3) == coin.symbol.substring(0, 3)
-                        } ?: Coin()
-                    }
+                    symbol = it
                 }
             )
         }

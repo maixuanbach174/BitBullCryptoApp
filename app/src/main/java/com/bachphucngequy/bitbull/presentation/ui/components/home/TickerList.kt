@@ -49,13 +49,13 @@ fun TickerItem(item: Ticker, onNavigateToDetail: (String) -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = getProductResource(item.productCode),
+            model = getProductResource(item.productCode, item.productName),
             contentDescription = null,
             modifier = Modifier.size(40.dp),
         )
         Column(modifier = Modifier.padding(start = 16.dp)) {
             Text(
-                text = item.productCode,
+                text = item.productCode + "/" + item.quoteCode,
                 fontWeight = FontWeight.W500,
                 style = MaterialTheme.typography.bodyLarge,
                 fontSize = 16.sp,
@@ -99,15 +99,9 @@ fun TickerItem(item: Ticker, onNavigateToDetail: (String) -> Unit) {
     }
 }
 
-fun getProductResource(productCode: String): String {
-    return when (productCode) {
-        "BTC" -> "https://static.coinpaprika.com/coin/btc-bitcoin/logo.png"
-        "ETH" -> "https://static.coinpaprika.com/coin/eth-ethereum/logo.png"
-        "ADA" -> "https://static.coinpaprika.com/coin/ada-cardano/logo.png"
-        "LINK" -> "https://static.coinpaprika.com/coin/link-chainlink/logo.png"
-        "LTC" -> "https://static.coinpaprika.com/coin/ltc-litecoin/logo.png"
-        else -> {
-            "https://static.coinpaprika.com/coin/bnb-binance-coin/logo.png"
-        }
-    }
+fun getProductResource(
+    productCode: String,
+    productName: String
+): String {
+    return "https://static.coinpaprika.com/coin/" + productCode.lowercase() + "-" +productName.lowercase() + "/logo.png"
 }

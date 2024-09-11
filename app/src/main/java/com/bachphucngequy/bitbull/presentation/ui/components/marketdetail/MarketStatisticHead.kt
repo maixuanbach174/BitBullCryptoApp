@@ -1,4 +1,4 @@
-package com.bachphucngequy.bitbull.presentation.ui.components.MarketTracker
+package com.bachphucngequy.bitbull.presentation.ui.components.marketdetail
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,13 +27,13 @@ import java.text.DecimalFormat
 @Composable
 fun MarketStatisticHead(
     modifier: Modifier = Modifier,
-    productId: String?
+    symbol: String
 ) {
     val tickerViewModel: TickerViewModel = hiltViewModel()
     val uiState by tickerViewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
-        tickerViewModel.getCryptos(productId)
+        tickerViewModel.getCryptos(symbol)
     }
 
     if(uiState.data.isNotEmpty()) {

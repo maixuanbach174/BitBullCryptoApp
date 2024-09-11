@@ -9,6 +9,7 @@ import com.bachphucngequy.bitbull.domain.repository.TickerRepository
 import com.bachphucngequy.bitbull.remote.model.Subscribe
 import com.tinder.scarlet.WebSocket
 import kotlinx.coroutines.flow.*
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
