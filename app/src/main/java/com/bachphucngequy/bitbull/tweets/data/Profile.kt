@@ -1,12 +1,12 @@
 package com.bachphucngequy.bitbull.tweets.data
 
 data class Profile(
-    val id: Int,
+    val id: String,
     val name: String,
     val bio: String,
     val profileUrl: String,
-    var followersCount: Int,
-    var followingCount: Int,
+    var followersCount: Int = 0,
+    var followingCount: Int = 0,
     val isOwnProfile: Boolean = false,
     val isFollowing: Boolean = false
 )
@@ -14,7 +14,7 @@ data class Profile(
 
 val sampleProfiles = mutableListOf(
     Profile(
-        id = 1,
+        id = "1",
         name = "Duy Phuc",
         bio = "Hey there, welcome to my Social App page!",
         profileUrl = "https://picsum.photos/200",
@@ -25,7 +25,7 @@ val sampleProfiles = mutableListOf(
     ),
 
     Profile(
-        id = 2,
+        id = "2",
         name = "Xuan Bach",
         profileUrl = "https://picsum.photos/200",
         bio = "Hey there, welcome to my Social App page!",
@@ -36,7 +36,7 @@ val sampleProfiles = mutableListOf(
     ),
 
     Profile(
-        id = 3,
+        id = "3",
         name = "Trong Quy",
         profileUrl = "https://picsum.photos/200",
         bio = "Hey there, welcome to my Social App page!",
@@ -47,7 +47,7 @@ val sampleProfiles = mutableListOf(
     ),
 
     Profile(
-        id = 4,
+        id = "4",
         name = "Danh Nghe",
         profileUrl = "https://picsum.photos/200",
         bio = "Hey there, welcome to my Social App page!",
@@ -57,3 +57,5 @@ val sampleProfiles = mutableListOf(
         isFollowing = false
     )
 )
+
+var profiles: List<Profile> = listOf()

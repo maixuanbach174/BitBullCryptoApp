@@ -2,20 +2,20 @@ package com.bachphucngequy.bitbull.tweets.post
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -28,10 +28,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,23 +47,28 @@ fun NewPostScreen(
     var postText by rememberSaveable {
         mutableStateOf("")
     }
+    var postImageUrl by rememberSaveable {
+        mutableStateOf("")
+    }
     val keyboardController = LocalSoftwareKeyboardController.current
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "New post") },
                 navigationIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Close new post"
-                    )
+                    IconButton(onClick = navigateUp) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Close new post"
+                        )
+                    }
                 },
                 actions = {
                     PostButton(
                         sendCommentEnabled = postText.isNotBlank(),
                         onPostClick = {
                             keyboardController?.hide()
-                            onUiAction(NewPostUiAction.AddPost(postText))
+                            onUiAction(NewPostUiAction.AddPost(postText, postImageUrl))
                             postText = ""
                             navigateUp()
                         }
@@ -75,11 +78,11 @@ fun NewPostScreen(
         },
         content = {paddingValues ->
             PostInput(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
+                contentPaddingValues = paddingValues,
                 postText = postText,
-                onTextChange = {postText = it}
+                postImageUrl = postImageUrl,
+                onTextChange = {postText = it},
+                onImageUrlChange = {postImageUrl = it}
             )
         }
     )
@@ -87,44 +90,58 @@ fun NewPostScreen(
 
 @Composable
 fun PostInput(
-    modifier: Modifier = Modifier,
+    contentPaddingValues: PaddingValues,
     postText: String,
-    onTextChange: (String) -> Unit
+    postImageUrl: String,
+    onTextChange: (String) -> Unit,
+    onImageUrlChange: (String) -> Unit
 ) {
-    Box(
-        modifier = modifier
-            .heightIn(min = 35.dp, max = 70.dp)
+    Column(
+        modifier = Modifier
             .background(
                 color = Color.White
             )
-            .padding(
-                horizontal = Dimension.MediumSpacing,
-                vertical = Dimension.SmallSpacing
-            )
+            .padding(contentPaddingValues)
     ) {
-        BasicTextField(
-            value = postText,
-            onValueChange = onTextChange,
-            modifier = modifier
-                .fillMaxSize()
-                .align(Alignment.TopStart),
-            textStyle = LocalTextStyle.current.copy(color = LocalContentColor.current),
-            cursorBrush = SolidColor(LocalContentColor.current)
-        )
-
         TextField(
             value = postText,
             onValueChange = onTextChange,
-            modifier = modifier
-                .fillMaxSize()
-                .align(Alignment.TopStart),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = Dimension.MediumSpacing,
+                    vertical = Dimension.SmallSpacing
+                )
+                .weight(1f),
             textStyle = LocalTextStyle.current.copy(color = LocalContentColor.current),
             placeholder = {
                 Text(
                     modifier = Modifier
-                        .align(Alignment.TopStart)
                         .padding(start = Dimension.SmallSpacing),
                     text = stringResource(id = R.string.post_hint),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+                )
+            }
+        )
+        Spacer(
+            modifier = Modifier.height(20.dp)
+        )
+        TextField(
+            value = postImageUrl,
+            onValueChange = onImageUrlChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                horizontal = Dimension.MediumSpacing,
+                vertical = Dimension.SmallSpacing
+            ),
+            textStyle = LocalTextStyle.current.copy(color = LocalContentColor.current),
+            placeholder = {
+                Text(
+                    modifier = Modifier
+                        .padding(start = Dimension.SmallSpacing),
+                    text = stringResource(id = R.string.image_url_hint),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
                 )

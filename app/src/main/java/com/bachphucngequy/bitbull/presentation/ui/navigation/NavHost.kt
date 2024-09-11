@@ -1,4 +1,4 @@
-package com.bachphucngequy.bitbull.ui.navigation
+package com.bachphucngequy.bitbull.presentation.ui.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -41,9 +42,13 @@ import com.bachphucngequy.bitbull.SignInSignUp.SignInScreen
 import com.bachphucngequy.bitbull.SignInSignUp.SignUpScreen
 import com.bachphucngequy.bitbull.SignInSignUp.StartScreen
 import com.bachphucngequy.bitbull.firebase.user
+import com.bachphucngequy.bitbull.history.HistoryScreen
+import com.bachphucngequy.bitbull.history.HistoryViewModel
 import com.bachphucngequy.bitbull.presentation.ui.components.home.Crypto
 import com.bachphucngequy.bitbull.presentation.ui.components.home.sampleData
 import com.bachphucngequy.bitbull.presentation.ui.screens.BuySellScreen
+import com.bachphucngequy.bitbull.presentation.ui.screens.ChangeNicknameScreen
+import com.bachphucngequy.bitbull.presentation.ui.screens.CryptoWalletScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.Deposit
 import com.bachphucngequy.bitbull.presentation.ui.screens.HomeScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.MarketDetailScreen
@@ -61,59 +66,53 @@ import com.bachphucngequy.bitbull.presentation.viewmodel.AuthViewModel
 fun MyAppNavHost(innerPadding: PaddingValues,
                  coins: List<Coin>,
                  newsViewModel: NewsViewModel,
-                 tweetsViewModel: TweetsViewModel,
-                 postDetailViewModel: PostDetailViewModel,
-                 profileViewModel: ProfileViewModel,
-                 editProfileViewModel: EditProfileViewModel,
-                 followsViewModel: FollowsViewModel,
-                 newPostViewModel: NewPostViewModel,
-//                 authViewModel: AuthViewModel
+                 authViewModel: AuthViewModel
 ) {
     val navController = rememberNavController()
     var symbol by remember { mutableStateOf("") }
     var coin by remember { mutableStateOf(Coin()) }
     var pairCoin by remember { mutableStateOf("") }
-    NavHost(navController = navController, startDestination = Screen.Home.route) {
-//        composable(com.bachphucngequy.bitbull.Navigation.Screen.Start.route) {
-//            StartScreen(
-//                onNavigateToSignIn={navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route)},
-//                onNavigateToSignUp={navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignUp.route)},
-//                authViewModel = authViewModel
-//            )
-//        }
-//
-//        composable(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route){
-//            SignInScreen(
-//                onNavigateToForgotPassword = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.ForgotPassword.route) },
-//                onNavigateToSignInPhone = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignInPhone.route) },
-//                onNavigateToSignUp = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignUp.route) },
-//                onNavigateToViewMarket = { navController.navigate(Screen.Home.route) },
-//                authViewModel = authViewModel
-//            )
-//        }
+    NavHost(navController = navController, startDestination = com.bachphucngequy.bitbull.Navigation.Screen.Start.route) {
+        composable(com.bachphucngequy.bitbull.Navigation.Screen.Start.route) {
+            StartScreen(
+                onNavigateToSignIn={navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route)},
+                onNavigateToSignUp={navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignUp.route)},
+                authViewModel = authViewModel
+            )
+        }
 
-//        composable(com.bachphucngequy.bitbull.Navigation.Screen.SignInPhone.route){
-//            SignInPhoneScreen(
-//                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
-//                onNavigateToEnterCode = { otp, email ->
-//                    navController.navigate("${com.bachphucngequy.bitbull.Navigation.Screen.EnterCode.route}/$otp/$email") },
-//                authViewModel = authViewModel
-//            )
-//        }
+        composable(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route){
+            SignInScreen(
+                onNavigateToForgotPassword = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.ForgotPassword.route) },
+                onNavigateToSignInPhone = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignInPhone.route) },
+                onNavigateToSignUp = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignUp.route) },
+                onNavigateToViewMarket = { navController.navigate(Screen.Home.route) },
+                authViewModel = authViewModel
+            )
+        }
 
-//        composable("${com.bachphucngequy.bitbull.Navigation.Screen.EnterCode.route}/{otp}/{email}") {
-//                backStackEntry ->
-//            val otp = backStackEntry.arguments?.getString("otp") ?: ""
-//            val email = backStackEntry.arguments?.getString("email") ?: ""
-//
-//            EnterCodeScreen(
-//                onNavigateToSignInPhone = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignInPhone.route) },
-//                onNavigateToViewMarket = { navController.navigate(Screen.Home.route) },
-//                authViewModel = authViewModel,
-//                otp=otp,
-//                email = email
-//            )
-//        }
+        composable(com.bachphucngequy.bitbull.Navigation.Screen.SignInPhone.route){
+            SignInPhoneScreen(
+                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
+                onNavigateToEnterCode = { otp, email ->
+                    navController.navigate("${com.bachphucngequy.bitbull.Navigation.Screen.EnterCode.route}/$otp/$email") },
+                authViewModel = authViewModel
+            )
+        }
+
+        composable("${com.bachphucngequy.bitbull.Navigation.Screen.EnterCode.route}/{otp}/{email}") {
+                backStackEntry ->
+            val otp = backStackEntry.arguments?.getString("otp") ?: ""
+            val email = backStackEntry.arguments?.getString("email") ?: ""
+
+            EnterCodeScreen(
+                onNavigateToSignInPhone = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignInPhone.route) },
+                onNavigateToViewMarket = { navController.navigate(Screen.Home.route) },
+                authViewModel = authViewModel,
+                otp=otp,
+                email = email
+            )
+        }
 
         composable(com.bachphucngequy.bitbull.Navigation.Screen.ForgotPassword.route) {
             ForgotPasswordScreen(
@@ -154,29 +153,43 @@ fun MyAppNavHost(innerPadding: PaddingValues,
             )
         }
 
-//        composable(com.bachphucngequy.bitbull.Navigation.Screen.SignUp.route){
-//            SignUpScreen(
-//                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
-//                onNavigateToCreateSuccess = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.CreateSuccess.route) },
-//                authViewModel = authViewModel
-//            )
-//        }
-//
-//        composable(com.bachphucngequy.bitbull.Navigation.Screen.CreateSuccess.route) {
-//            CreateSuccessScreen(
-//                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
-//                authViewModel = authViewModel
-//            )
-//        }
-//
-//        composable(Screen.UserAccount.route) {
-//            UserAccountScreen(
-//                onNavigateToHome = { navController.navigate(Screen.Home.route) },
-//                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
-//                authViewModel = authViewModel
-//            )
-//        }
+        composable(com.bachphucngequy.bitbull.Navigation.Screen.SignUp.route){
+            SignUpScreen(
+                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
+                onNavigateToCreateSuccess = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.CreateSuccess.route) },
+                authViewModel = authViewModel
+            )
+        }
 
+        composable(com.bachphucngequy.bitbull.Navigation.Screen.CreateSuccess.route) {
+            CreateSuccessScreen(
+                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
+                authViewModel = authViewModel
+            )
+        }
+
+        composable(Screen.UserAccount.route) {
+            UserAccountScreen(
+                onNavigateToHome = { navController.navigate(Screen.Home.route) },
+                onNavigateToCryptoWallet = { navController.navigate(Screen.CryptoWallet.route) },
+                onNavigateToChangeNickname = { navController.navigate(Screen.ChangeNickname.route) },
+                onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
+                onNavigateToHistory = { navController.navigate(Screen.History.route) },
+                authViewModel = authViewModel
+            )
+        }
+
+        composable(Screen.CryptoWallet.route) {
+            CryptoWalletScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+            )
+        }
+
+        composable(Screen.ChangeNickname.route) {
+            ChangeNicknameScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+            )
+        }
 
         composable(Screen.Home.route) {
             HomeScreen(
@@ -279,6 +292,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         }
 
         composable(Screen.Tweets.route) {
+            val tweetsViewModel = viewModel<TweetsViewModel>()
             TweetsScreen(
                 postsUIState = tweetsViewModel.postsUiState,
                 onUiAction = {tweetsViewModel.onUiAction(it)},
@@ -302,7 +316,8 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         }
 
         composable(route = Screen.PostDetail.route) {
-            navController.previousBackStackEntry?.savedStateHandle?.get<Int?>(SavedInstanceKeys.POST_ID)
+            val postDetailViewModel = viewModel<PostDetailViewModel>()
+            navController.previousBackStackEntry?.savedStateHandle?.get<String?>(SavedInstanceKeys.POST_ID)
                 ?.let { postId ->
                     PostDetailScreen(
                         postUiState = postDetailViewModel.postUiState,
@@ -324,7 +339,8 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         // 1. Forward from TweetsScreen (Home)
         // 2. Back from EditProfileScreen
         composable(route = Screen.Profile.route) {
-            navController.previousBackStackEntry?.savedStateHandle?.get<Int?>(SavedInstanceKeys.USER_ID)
+            val profileViewModel = viewModel<ProfileViewModel>()
+            navController.previousBackStackEntry?.savedStateHandle?.get<String?>(SavedInstanceKeys.USER_ID)
                 ?.let {userId ->
                     ProfileScreen(
                         userInfoUiState = profileViewModel.userInfoUiState,
@@ -355,15 +371,15 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         }
 
         composable(route = Screen.EditProfile.route) {
-            navController.previousBackStackEntry?.savedStateHandle?.get<Int?>(SavedInstanceKeys.USER_ID)
+            val editProfileViewModel = viewModel<EditProfileViewModel>()
+            navController.previousBackStackEntry?.savedStateHandle?.get<String?>(SavedInstanceKeys.USER_ID)
                 ?.let {userId ->
                     EditProfileScreen(
                         editProfileUiState = editProfileViewModel.uiState,
                         onNameChange = editProfileViewModel::onNameChange,
-                        bioTextFieldValue = editProfileViewModel.bioTextFieldValue,
                         onBioChange = editProfileViewModel::onBioChange,
+                        onImageUrlChange = editProfileViewModel::onImageUrlChange,
                         onUploadButtonClick = { editProfileViewModel.uploadProfile() },
-                        onUploadSucceed = {navController.navigateUp()},
                         fetchProfile = { editProfileViewModel.fetchProfile(userId) },
                         navigateUp = {navController.navigateUp()}
                     )
@@ -371,12 +387,13 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         }
 
         composable(route = Screen.Following.route) {
-            navController.previousBackStackEntry?.savedStateHandle?.get<Int?>(SavedInstanceKeys.USER_ID)
+            val followsViewModel = viewModel<FollowsViewModel>()
+            navController.previousBackStackEntry?.savedStateHandle?.get<String?>(SavedInstanceKeys.USER_ID)
                 ?.let {userId ->
                     FollowsScreen(
                         uiState = followsViewModel.uiState,
                         fetchFollows = { followsViewModel.fetchFollows(
-                            userId,
+                            currentUserId = userId,
                             followsType = Constants.FOLLOWING_CODE
                         ) },
                         onItemClick = {},
@@ -386,7 +403,8 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         }
 
         composable(route = Screen.Followers.route) {
-            navController.previousBackStackEntry?.savedStateHandle?.get<Int?>(SavedInstanceKeys.USER_ID)
+            val followsViewModel = viewModel<FollowsViewModel>()
+            navController.previousBackStackEntry?.savedStateHandle?.get<String?>(SavedInstanceKeys.USER_ID)
                 ?.let {userId ->
                     FollowsScreen(
                         uiState = followsViewModel.uiState,
@@ -406,6 +424,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         }
 
         composable(route = Screen.NewPost.route) {
+            val newPostViewModel = viewModel<NewPostViewModel>()
             NewPostScreen(
                 onUiAction = {newPostViewModel.onUiAction(it)},
                 navigateUp = {navController.navigateUp()}
@@ -416,6 +435,14 @@ fun MyAppNavHost(innerPadding: PaddingValues,
         }
         composable(Screen.Withdraw.route) {
             Withdraw(onNavigateToHelp = { /*TODO*/ }, onNavigateToHistory = { /*TODO*/ }, navController = navController)
+        }
+        composable(Screen.History.route) {
+            val historyViewModel = viewModel<HistoryViewModel>()
+            HistoryScreen(
+                uiState = historyViewModel.uiState,
+                onUiAction = { historyViewModel.onUiAction(it) },
+                navigateUp = {navController.navigateUp()}
+            )
         }
     }
 }
@@ -434,21 +461,21 @@ private fun navigateToPostDetail(navController: NavController, post: Post){
     )
 }
 
-private fun navigateToProfile(navController: NavController, userId: Int) {
+private fun navigateToProfile(navController: NavController, userId: String) {
     navController.currentBackStackEntry?.savedStateHandle?.set(SavedInstanceKeys.USER_ID, userId)
     navController.navigate(
         route = Screen.Profile.route
     )
 }
 
-private fun navigateToEditProfile(navController: NavController, userId: Int) {
+private fun navigateToEditProfile(navController: NavController, userId: String) {
     navController.currentBackStackEntry?.savedStateHandle?.set(SavedInstanceKeys.USER_ID, userId)
     navController.navigate(
         route = Screen.EditProfile.route
     )
 }
 
-private fun navigateToFollows(navController: NavController, userId: Int, followsType: Int) {
+private fun navigateToFollows(navController: NavController, userId: String, followsType: Int) {
     navController.currentBackStackEntry?.savedStateHandle?.set(SavedInstanceKeys.USER_ID, userId)
     if(followsType == Constants.FOLLOWING_CODE) {
         navController.navigate(

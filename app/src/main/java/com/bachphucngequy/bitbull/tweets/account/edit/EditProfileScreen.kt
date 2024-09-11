@@ -13,17 +13,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,8 +33,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.bachphucngequy.bitbull.R
@@ -51,10 +49,9 @@ fun EditProfileScreen(
     modifier: Modifier = Modifier,
     editProfileUiState: EditProfileUiState,
     onNameChange: (String) -> Unit,
-    bioTextFieldValue: TextFieldValue,
-    onBioChange: (TextFieldValue) -> Unit,
+    onBioChange: (String) -> Unit,
+    onImageUrlChange: (String) -> Unit,
     onUploadButtonClick: () -> Unit,
-    onUploadSucceed: () -> Unit,
     fetchProfile: () -> Unit,
     navigateUp: () -> Unit
 ) {
@@ -67,7 +64,7 @@ fun EditProfileScreen(
                 navigationIcon = {
                     IconButton(onClick = navigateUp) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null,
                         )
                     }
@@ -76,7 +73,9 @@ fun EditProfileScreen(
         },
         content = {paddingValues ->
             Box(
-                modifier = modifier.fillMaxSize().padding(paddingValues),
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
                 contentAlignment = Alignment.Center
             ) {
                 when {
@@ -127,12 +126,20 @@ fun EditProfileScreen(
                                 hint = R.string.username_hint
                             )
 
-                            BioTextField(value = bioTextFieldValue, onValueChange = onBioChange)
+                            CustomTextField(
+                                value = editProfileUiState.profile.bio,
+                                onValueChange = onBioChange,
+                                hint = R.string.user_bio_hint
+                            )
+
+                            CustomTextField(
+                                value = editProfileUiState.profile.profileUrl,
+                                onValueChange = onImageUrlChange,
+                                hint = R.string.user_image_url_hint
+                            )
 
                             Button(
-                                onClick = {
-                                    onUploadButtonClick()
-                                },
+                                onClick = {onUploadButtonClick()},
                                 modifier = modifier
                                     .fillMaxWidth()
                                     .height(ButtonHeight),
@@ -167,10 +174,9 @@ fun EditProfileScreen(
                     }
 
                 }
-
-                if (editProfileUiState.isLoading){
-                    Text(text = "Loading...")
-                }
+            }
+            if (editProfileUiState.isLoading){
+                LinearProgressIndicator(modifier = modifier.fillMaxWidth().padding(paddingValues))
             }
         }
     )
@@ -182,7 +188,8 @@ fun EditProfileScreen(
         key2 = editProfileUiState.errorMessage,
         block = {
             if (editProfileUiState.uploadSucceed){
-                onUploadSucceed()
+                Toast.makeText(context, "Edit profile successfully!", Toast.LENGTH_SHORT).show()
+                navigateUp()
             }
 
             if (editProfileUiState.profile != null && editProfileUiState.errorMessage != null){
@@ -192,32 +199,33 @@ fun EditProfileScreen(
     )
 }
 
-@Composable
-fun BioTextField(
-    modifier: Modifier = Modifier,
-    value: TextFieldValue,
-    onValueChange: (TextFieldValue) -> Unit
-) {
-    TextField(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(90.dp),
-        value = value,
-        onValueChange = {
-            onValueChange(
-                TextFieldValue(
-                    text = it.text,
-                    selection = TextRange(it.text.length)
-                )
-            )
-        },
-        textStyle = MaterialTheme.typography.bodyMedium,
-        placeholder = {
-            Text(
-                text = stringResource(id = R.string.user_bio_hint),
-                style = MaterialTheme.typography.bodyMedium
-            )
-        },
-        shape = MaterialTheme.shapes.medium
-    )
-}
+//@Composable
+//fun EditTextField(
+//    modifier: Modifier = Modifier,
+//    value: TextFieldValue,
+//    onValueChange: (TextFieldValue) -> Unit,
+//    hintStringId: Int
+//) {
+//    TextField(
+//        modifier = modifier
+//            .fillMaxWidth()
+//            .height(90.dp),
+//        value = value,
+//        onValueChange = {
+//            onValueChange(
+//                TextFieldValue(
+//                    text = it.text,
+//                    selection = TextRange(it.text.length)
+//                )
+//            )
+//        },
+//        textStyle = MaterialTheme.typography.bodyMedium,
+//        placeholder = {
+//            Text(
+//                text = stringResource(id = hintStringId),
+//                style = MaterialTheme.typography.bodyMedium
+//            )
+//        },
+//        shape = MaterialTheme.shapes.medium
+//    )
+//}

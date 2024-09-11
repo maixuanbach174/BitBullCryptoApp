@@ -41,7 +41,7 @@ fun PostListItem(
     modifier: Modifier = Modifier,
     post: Post,
     onPostClick: (Post) -> Unit,
-    onProfileClick: (userId: Int) -> Unit,
+    onProfileClick: (userId: String) -> Unit,
     onLikeClick: (Post) -> Unit,
     onCommentClick: (Post) -> Unit,
     isDetailScreen: Boolean = false

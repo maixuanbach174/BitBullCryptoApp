@@ -28,7 +28,7 @@ import com.bachphucngequy.bitbull.tweets.data.sampleComments
 fun CommentListItem(
     modifier: Modifier = Modifier,
     comment: Comment,
-    onProfileClick: (Int) -> Unit,
+    onProfileClick: (String) -> Unit,
     onMoreIconClick: (Comment) -> Unit
 ) {
     Row(

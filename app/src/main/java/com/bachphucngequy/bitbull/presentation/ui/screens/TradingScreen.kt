@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Window
@@ -58,7 +58,8 @@ fun TopBar() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = { /*TODO*/ }) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = "Back",
+                Icon(
+                    Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back",
                     modifier = Modifier.size(20.dp)
                 )
             }

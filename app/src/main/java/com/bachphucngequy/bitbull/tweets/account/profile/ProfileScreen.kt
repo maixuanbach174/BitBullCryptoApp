@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -55,7 +55,7 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     userInfoUiState: UserInfoUiState,
     profilePostsUiState: ProfilePostsUiState,
-    profileId: Int,
+    profileId: String,
     onUiAction: (ProfileUiAction) -> Unit,
     onButtonClick: () -> Unit,
     onFollowersScreenNavigation: () -> Unit,
@@ -70,7 +70,7 @@ fun ProfileScreen(
                 navigationIcon = {
                     IconButton(onClick = navigateUp) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null,
                         )
                     }

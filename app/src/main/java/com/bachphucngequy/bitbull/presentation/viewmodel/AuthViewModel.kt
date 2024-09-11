@@ -10,11 +10,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import java.io.File
 
 class AuthViewModel : ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     private val _authState = MutableLiveData<AuthState>()
     val authState: LiveData<AuthState> = _authState
@@ -59,11 +61,27 @@ class AuthViewModel : ViewModel() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    _authState.value = AuthState.Authenticated
-                    savePasswordToFile(email, password)
+                    val user = auth.currentUser
+                    if (user != null) {
+                        // Create a new user document in Firestore
+                        val userMap = hashMapOf(
+                            "name" to "Investor",
+                            "email" to email
+                        )
+                        firestore.collection("AppUsers").document(user.uid)
+                            .set(userMap)
+                            .addOnSuccessListener {
+                                _authState.value = AuthState.Authenticated
+                                savePasswordToFile(email, password)
+                            }
+                            .addOnFailureListener { e ->
+                                _authState.value = AuthState.Error("Failed to store user data: ${e.message}")
+                            }
+                    } else {
+                        _authState.value = AuthState.Error("User creation successful but user is null")
+                    }
                 } else {
-                    _authState.value =
-                        AuthState.Error(task.exception?.message ?: "Something went wrong")
+                    _authState.value = AuthState.Error(task.exception?.message ?: "Something went wrong")
                 }
             }
     }
@@ -73,14 +91,14 @@ class AuthViewModel : ViewModel() {
         _authState.value = AuthState.Unauthenticated
     }
 
-//    fun configureGoogleSignIn(context: Context) {
-//        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//            .requestIdToken(context.getString(R.string.default_web_client_id))
-//            .requestEmail()
-//            .build()
-//
-//        googleSignInClient = GoogleSignIn.getClient(context, gso)
-//    }
+    fun configureGoogleSignIn(context: Context) {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(context.getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        googleSignInClient = GoogleSignIn.getClient(context, gso)
+    }
 
     fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
@@ -100,6 +118,10 @@ class AuthViewModel : ViewModel() {
 //            context.startActivity(signInIntent)
         }
     }
+
+    fun getCurrentUserId(): String? {
+        return FirebaseAuth.getInstance().currentUser?.uid
+    }
 }
 
 sealed class AuthState {
@@ -111,6 +133,6 @@ sealed class AuthState {
 
 fun savePasswordToFile(email: String, password: String) {
     val filename = "${email}.txt"
-    val file = File("/data/data/com.example.pitbulltradingapp/files", filename)
+    val file = File("/data/data/com.bachphucngequy.bitbull/files", filename)
     file.writeText(password)
 }

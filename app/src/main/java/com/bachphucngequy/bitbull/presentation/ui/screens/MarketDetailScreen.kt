@@ -71,7 +71,7 @@ import kotlinx.coroutines.launch
 fun MarketDetailScreen(
     onNavigateToBuySell: () -> Unit,
     onBackClick: () -> Unit,
-    marketName : String = "BTCUSD",
+    marketName : String = "BTC-USD",
     coin: Coin = Coin(),
     pairCoin: String = "",
     newsViewModel: NewsViewModel,
@@ -364,42 +364,9 @@ fun SquareContent() {
 fun PriceContent(
     modifier: Modifier,
     symbol: String,
+    marketName: String = "BTC-USD"
 ) {
 
-//    var selectedTimeframe by remember { mutableStateOf("15") }
-//    var selectedChartType by remember { mutableStateOf("1") }
-
-//    LazyColumn(
-//        modifier = modifier,
-//        verticalArrangement = Arrangement.spacedBy(10.dp)
-//    ) {
-//        item(key = "market_statistics_head") {
-//            MarketStatisticHead(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp))
-//        }
-//        item {
-//            PartialBottomSheet(modifier = Modifier.padding(16.dp), onLineTypeClick = { selectedChartType = it }, onTimeSpanClick = { selectedTimeframe = it })
-//            Divider(
-//                thickness = 1.dp,
-//                modifier = Modifier.fillMaxWidth()
-//                    .padding(horizontal = 16.dp)
-//            )
-//        }
-//        item {
-//            TradingChart(
-//                symbol = symbol,
-//                selectedTimeFrame = selectedTimeframe,
-//                selectedChartType = selectedChartType
-//            )
-//            Divider(
-//                thickness = 1.dp,
-//                modifier = Modifier.fillMaxWidth()
-//                    .padding(horizontal = 16.dp)
-//            )
-//        }
-//        item {
-//            OrderBookUI(modifier = Modifier.padding(horizontal = 16.dp))
-//        }
-//    }
     val scrollState = rememberScrollState()
 
     var selectedTimeframe by remember { mutableStateOf("15") }
@@ -410,7 +377,7 @@ fun PriceContent(
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
 
-        MarketStatisticHead(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp))
+        MarketStatisticHead(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp), productId = marketName)
         PartialBottomSheet(modifier = Modifier.padding(16.dp), onLineTypeClick = { selectedChartType = it }, onTimeSpanClick = { selectedTimeframe = it })
         Divider(
             thickness = 1.dp,
