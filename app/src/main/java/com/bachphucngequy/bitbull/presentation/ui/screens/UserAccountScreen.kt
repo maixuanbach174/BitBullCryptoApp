@@ -1,5 +1,6 @@
 package com.bachphucngequy.bitbull.presentation.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,11 +11,17 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -22,17 +29,38 @@ import androidx.compose.ui.unit.sp
 import com.bachphucngequy.bitbull.R
 import com.bachphucngequy.bitbull.presentation.viewmodel.AuthState
 import com.bachphucngequy.bitbull.presentation.viewmodel.AuthViewModel
+import com.google.firebase.firestore.FirebaseFirestore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserAccountScreen(
     onNavigateToHome: () -> Unit,
     onNavigateToCryptoWallet: () -> Unit,
+    onNavigateToChangeNickname: () -> Unit,
     onNavigateToSignIn: () -> Unit,
     onNavigateToHistory: () -> Unit,
     authViewModel: AuthViewModel
 ) {
     val authState = authViewModel.authState.observeAsState()
+    val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+
+    val currentUserId = authViewModel.getCurrentUserId()
+    var userName by remember { mutableStateOf("") }
+    var userEmail by remember { mutableStateOf("") }
+
+    LaunchedEffect(currentUserId) {
+        if (currentUserId != null) {
+            firestore.collection("AppUsers").document(currentUserId)
+                .get().addOnSuccessListener {
+                if(it!=null){
+                    userName = it.data?.get("name")?.toString().toString()
+                    userEmail = it.data?.get("email")?.toString().toString()
+                }
+            }
+                .addOnFailureListener{
+                    println("Error fetching user data")}
+        }
+    }
 
     LaunchedEffect(authState.value) {
         when(authState.value) {
@@ -66,8 +94,8 @@ fun UserAccountScreen(
                 .padding(innerPadding)
         ) {
             item { GreenFundBanner() }
-            item { UserInfoSection(onNavigateToCryptoWallet) }
-            item { MenuItems(onNavigateToHistory = onNavigateToHistory) }
+            item { UserInfoSection(onNavigateToCryptoWallet, userName, userEmail) }
+            item { MenuItems(onNavigateToHistory,onNavigateToChangeNickname) }
             item { LogoutButton(authViewModel) }
         }
     }
@@ -88,7 +116,7 @@ fun GreenFundBanner() {
 // UserInfoSection, MenuItems, and LogoutButton remain the same as in the previous version
 
 @Composable
-fun UserInfoSection(onNavigateToCryptoWallet: () -> Unit) {
+fun UserInfoSection(onNavigateToCryptoWallet: () -> Unit, userName: String, userEmail: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -111,12 +139,12 @@ fun UserInfoSection(onNavigateToCryptoWallet: () -> Unit) {
                 .padding(start = 16.dp)
         ) {
             Text(
-                "John Doe",
+                userName.ifEmpty { "Loading..." },
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                "+1234567890",
+                userEmail.ifEmpty { "Loading..." },
                 fontSize = 14.sp,
                 color = LocalContentColor.current.copy(alpha = 0.7f)
             )
@@ -130,32 +158,33 @@ fun UserInfoSection(onNavigateToCryptoWallet: () -> Unit) {
 
 @Composable
 fun MenuItems(
-    onNavigateToHistory: () -> Unit
+    onNavigateToHistory: () -> Unit,onNavigateToChangeNickname: () -> Unit
 ) {
     val menuItems = listOf(
-        "Member Rank" to Icons.Default.Star,
-        "Refer a Friend" to Icons.Default.Person,
-        "Deposit" to Icons.Default.AccountBalance,
-        "Change" to Icons.Default.Autorenew,
-        "Payment Management" to Icons.Default.Payment,
-        "Transaction History" to Icons.Default.Receipt,
-        "Prize" to Icons.Default.EmojiEvents,
-        "Regular Questions" to Icons.Default.QuestionAnswer,
-        "Terms and Policies" to Icons.Default.Description,
-        "Support Center" to Icons.Default.Help,
-        "Driver Feedback" to Icons.Default.Feedback,
-        "Company Information" to Icons.Default.Info,
-        "Change Password" to Icons.Default.Lock,
-        "Language" to Icons.Default.Language
+        MenuItem("Member Rank", Icons.Default.Star),
+        MenuItem("Refer a Friend", Icons.Default.Person),
+        MenuItem("Deposit", Icons.Default.AccountBalance),
+        MenuItem("Change", Icons.Default.Autorenew),
+        MenuItem("Payment Management", Icons.Default.Payment),
+        MenuItem("Transaction History", Icons.Default.Receipt),
+        MenuItem("Prize", Icons.Default.EmojiEvents),
+        MenuItem("Regular Questions", Icons.Default.QuestionAnswer),
+        MenuItem("Terms and Policies", Icons.Default.Description),
+        MenuItem("Support Center", Icons.Default.Help),
+        MenuItem("User Feedback", Icons.Default.Feedback),
+        MenuItem("Company Information", Icons.Default.Info),
+        MenuItem("Change Password", Icons.Default.Lock),
+        MenuItem("Change Nickname", Icons.Default.Edit),
+        MenuItem("Language", Icons.Default.Language)
     )
 
     Column {
-        menuItems.forEach { (title, icon) ->
+        menuItems.forEach { item ->
             ListItem(
-                headlineContent = { Text(title) },
+                headlineContent = { Text(item.title) },
                 leadingContent = {
                     Icon(
-                        imageVector = icon,
+                        imageVector = item.icon,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary
                     )
@@ -167,8 +196,13 @@ fun MenuItems(
                     )
                 },
                 modifier = Modifier.clickable {
-                    if(title == "Transaction History") {
-                        onNavigateToHistory()
+                    when (item.title) {
+                        "Transaction History" -> onNavigateToHistory()
+                        "Change Nickname" -> onNavigateToChangeNickname()
+                        else -> {
+                            // Handle other menu item clicks
+                            // You can add more navigation or action handlers here
+                        }
                     }
                 }
             )
@@ -176,6 +210,8 @@ fun MenuItems(
         }
     }
 }
+
+data class MenuItem(val title: String, val icon: ImageVector)
 
 @Composable
 fun LogoutButton(authViewModel: AuthViewModel) {
