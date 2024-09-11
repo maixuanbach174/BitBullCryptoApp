@@ -16,15 +16,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.bachphucngequy.bitbull.firebase.WithdrawBackend
 import com.bachphucngequy.bitbull.firebase.user
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Withdraw(
-    onNavigateToWithdraw: () -> Unit,
     onNavigateToHistory: () -> Unit,
     onNavigateToHelp: () -> Unit,
+    navController: NavController
 ) {
     val binanceId = remember { mutableStateOf("") }
     val withdrawAmount = remember { mutableStateOf(0.0) }
@@ -49,8 +50,10 @@ fun Withdraw(
             TopAppBar(
                 title = { Text("Send USDT") },
                 navigationIcon = {
-                    IconButton(onClick = onNavigateToWithdraw) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    IconButton(onClick = {
+                        navController.popBackStack() // Navigate back in the navigation stack
+                    }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.Black)
                     }
                 },
                 actions = {
