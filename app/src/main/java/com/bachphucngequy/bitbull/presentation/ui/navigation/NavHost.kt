@@ -44,6 +44,7 @@ import com.bachphucngequy.bitbull.firebase.user
 import com.bachphucngequy.bitbull.presentation.ui.components.home.Crypto
 import com.bachphucngequy.bitbull.presentation.ui.components.home.sampleData
 import com.bachphucngequy.bitbull.presentation.ui.screens.BuySellScreen
+import com.bachphucngequy.bitbull.presentation.ui.screens.ChangeNicknameScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.CryptoWalletScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.Deposit
 import com.bachphucngequy.bitbull.presentation.ui.screens.HomeScreen
@@ -174,6 +175,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
             UserAccountScreen(
                 onNavigateToHome = { navController.navigate(Screen.Home.route) },
                 onNavigateToCryptoWallet = { navController.navigate(Screen.CryptoWallet.route) },
+                onNavigateToChangeNickname = { navController.navigate(Screen.ChangeNickname.route) },
                 onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
                 authViewModel = authViewModel
             )
@@ -181,6 +183,12 @@ fun MyAppNavHost(innerPadding: PaddingValues,
 
         composable(Screen.CryptoWallet.route) {
             CryptoWalletScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+            )
+        }
+
+        composable(Screen.ChangeNickname.route) {
+            ChangeNicknameScreen(
                 onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
             )
         }

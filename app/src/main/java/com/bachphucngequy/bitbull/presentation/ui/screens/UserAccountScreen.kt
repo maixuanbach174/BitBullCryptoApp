@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -35,6 +36,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 fun UserAccountScreen(
     onNavigateToHome: () -> Unit,
     onNavigateToCryptoWallet: () -> Unit,
+    onNavigateToChangeNickname: () -> Unit,
     onNavigateToSignIn: () -> Unit,
     authViewModel: AuthViewModel
 ) {
@@ -47,7 +49,7 @@ fun UserAccountScreen(
 
     LaunchedEffect(currentUserId) {
         if (currentUserId != null) {
-            val userDoc = firestore.collection("AppUsers").document(currentUserId)
+            firestore.collection("AppUsers").document(currentUserId)
                 .get().addOnSuccessListener {
                 if(it!=null){
                     userName = it.data?.get("name")?.toString().toString()
@@ -92,7 +94,7 @@ fun UserAccountScreen(
         ) {
             item { GreenFundBanner() }
             item { UserInfoSection(onNavigateToCryptoWallet, userName, userEmail) }
-            item { MenuItems() }
+            item { MenuItems(onNavigateToChangeNickname) }
             item { LogoutButton(authViewModel) }
         }
     }
@@ -154,32 +156,34 @@ fun UserInfoSection(onNavigateToCryptoWallet: () -> Unit, userName: String, user
 }
 
 @Composable
-fun MenuItems() {
+fun MenuItems(
+    onNavigateToChangeNickname: () -> Unit
+) {
     val menuItems = listOf(
-        "Member Rank" to Icons.Default.Star,
-        "Refer a Friend" to Icons.Default.Person,
-        "Deposit" to Icons.Default.AccountBalance,
-        "Change" to Icons.Default.Autorenew,
-        "Payment Management" to Icons.Default.Payment,
-        "Invoice Information" to Icons.Default.Receipt,
-        "Prize" to Icons.Default.EmojiEvents,
-        "Regular Questions" to Icons.Default.QuestionAnswer,
-        "Terms and Policies" to Icons.Default.Description,
-        "Support Center" to Icons.Default.Help,
-        "Driver Feedback" to Icons.Default.Feedback,
-        "Company Information" to Icons.Default.Info,
-        "Change Password" to Icons.Default.Lock,
-        "Change Nickname" to Icons.Default.Edit,
-        "Language" to Icons.Default.Language
+        MenuItem("Member Rank", Icons.Default.Star),
+        MenuItem("Refer a Friend", Icons.Default.Person),
+        MenuItem("Deposit", Icons.Default.AccountBalance),
+        MenuItem("Change", Icons.Default.Autorenew),
+        MenuItem("Payment Management", Icons.Default.Payment),
+        MenuItem("Invoice Information", Icons.Default.Receipt),
+        MenuItem("Prize", Icons.Default.EmojiEvents),
+        MenuItem("Regular Questions", Icons.Default.QuestionAnswer),
+        MenuItem("Terms and Policies", Icons.Default.Description),
+        MenuItem("Support Center", Icons.Default.Help),
+        MenuItem("User Feedback", Icons.Default.Feedback),
+        MenuItem("Company Information", Icons.Default.Info),
+        MenuItem("Change Password", Icons.Default.Lock),
+        MenuItem("Change Nickname", Icons.Default.Edit),
+        MenuItem("Language", Icons.Default.Language)
     )
 
     Column {
-        menuItems.forEach { (title, icon) ->
+        menuItems.forEach { item ->
             ListItem(
-                headlineContent = { Text(title) },
+                headlineContent = { Text(item.title) },
                 leadingContent = {
                     Icon(
-                        imageVector = icon,
+                        imageVector = item.icon,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary
                     )
@@ -190,12 +194,22 @@ fun MenuItems() {
                         contentDescription = "Arrow Right"
                     )
                 },
-                modifier = Modifier.clickable { /* Handle click */ }
+                modifier = Modifier.clickable {
+                    when (item.title) {
+                        "Change Nickname" -> onNavigateToChangeNickname()
+                        else -> {
+                            // Handle other menu item clicks
+                            // You can add more navigation or action handlers here
+                        }
+                    }
+                }
             )
             Divider()
         }
     }
 }
+
+data class MenuItem(val title: String, val icon: ImageVector)
 
 @Composable
 fun LogoutButton(authViewModel: AuthViewModel) {
