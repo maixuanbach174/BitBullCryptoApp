@@ -23,6 +23,17 @@ sealed class Screen(val route: String) {
     object CryptoWallet : Screen("CryptoWalletScreen")
     object History: Screen("HistoryScreen")
     object ChangeNickname : Screen("ChangeNicknameScreen")
+    object ChangePasswordAccount : Screen("ChangePasswordAccountScreen")
+    object CompanyInfo: Screen("CompanyInfoScreen")
+    object Feedback: Screen("FeedbackScreen")
+    object SupportCenter: Screen("SupportCenterScreen")
+    object Policies: Screen("PoliciesScreen")
+    object Questions: Screen("QuestionsScreen")
+    object Prize: Screen("PrizeScreen")
+    object Payment: Screen("PaymentScreen")
+    object Change: Screen("ChangeScreen")
+    object Refer: Screen("ReferScreen")
+    object Rank: Screen("RankScreen")
 }
 
 object SavedInstanceKeys {

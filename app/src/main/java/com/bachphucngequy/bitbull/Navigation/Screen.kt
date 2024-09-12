@@ -15,4 +15,5 @@ sealed class Screen(val route: String) {
     object ChangeSuccess : Screen("ChangeSuccessScreen")
     object SignUp : Screen("SignUpScreen")
     object CreateSuccess : Screen("CreateSuccessScreen")
+    object ChooseLanguage: Screen("ChooseLanguageScreen")
 }
