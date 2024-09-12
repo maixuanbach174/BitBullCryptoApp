@@ -48,19 +48,15 @@ fun MarketStatisticHead(
                     modifier = Modifier.weight(1.2f),
                 ) {
                     Text(
-                        "$ ${ticker.lastPrice}",
+                        ticker.lastPrice.toString(),
                         color = if (asc) Green100 else Red100,
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.headlineMedium
                     )
-                    val diff = ticker.lastPrice - ticker.openPrice
-                    val gain =
-                        ((ticker.lastPrice - ticker.openPrice) / (ticker.openPrice)) * 100
-                    val gainSymbol = if (gain > 0) "▲ +" else "▼ "
+                    val gainSymbol = if (ticker.priceChangePercent > 0) "▲" else "▼"
+                    val sign = if (ticker.priceChange > 0) "+" else ""
                     Text(
-                        "≈ ${ DecimalFormat("#,###.00").format(diff)} $gainSymbol${
-                            DecimalFormat("#.###").format(gain)
-                        }%",
+                        "$gainSymbol${ticker.priceChange}  $sign${ticker.priceChangePercent}%",
                         fontWeight = FontWeight.Bold,
                         color = if (asc) Green100 else DarkRed,
                         style = MaterialTheme.typography.bodySmall
@@ -82,30 +78,30 @@ fun MarketStatisticHead(
                                 "24h High",
                                 color = Color.Gray,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp,
+                                fontSize = 10.sp,
                                 style = MaterialTheme.typography.bodySmall
                             )
                             Text(
-                                DecimalFormat("#,###.0").format(ticker.highPrice),
-                                fontSize = 12.sp,
+                                ticker.highPrice.toString(),
+                                fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.End,
                                 style = MaterialTheme.typography.bodySmall
                             )
                         }
                         Column(
-                            modifier = Modifier.weight(1.3f),
+                            modifier = Modifier.weight(1.5f),
                         ) {
                             Text(
-                                "24h Vol",
+                                "24h Vol(${ticker.productCode})",
                                 color = Color.Gray,
-                                fontSize = 12.sp,
+                                fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold,
                                 style = MaterialTheme.typography.bodySmall
                             )
                             Text(
                                 DecimalFormat("#,###.0").format(ticker.baseAssetVolume),
-                                fontSize = 12.sp,
+                                fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.End,
                                 style = MaterialTheme.typography.bodySmall
@@ -125,30 +121,34 @@ fun MarketStatisticHead(
                                 color = Color.Gray,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.End,
-                                style = MaterialTheme.typography.bodySmall
+                                style = MaterialTheme.typography.bodySmall,
+                                fontSize = 10.sp
                             )
                             Text(
-                                DecimalFormat("#,###.0").format(ticker.lowPrice),
+                                ticker.lowPrice.toString(),
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.End,
-                                style = MaterialTheme.typography.bodySmall
+                                style = MaterialTheme.typography.bodySmall,
+                                fontSize = 10.sp
                             )
                         }
                         Column(
-                            modifier = Modifier.weight(1.3f)
+                            modifier = Modifier.weight(1.5f)
                         ) {
                             Text(
-                                "Vol Month",
+                                "24h Vol(${ticker.quoteCode})",
                                 color = Color.Gray,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.End,
-                                style = MaterialTheme.typography.bodySmall
+                                style = MaterialTheme.typography.bodySmall,
+                                fontSize = 10.sp
                             )
                             Text(
                                 DecimalFormat("#,###.0").format(ticker.quoteAssetVolume),
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.End,
-                                style = MaterialTheme.typography.bodySmall
+                                style = MaterialTheme.typography.bodySmall,
+                                fontSize = 10.sp
                             )
                         }
                     }
