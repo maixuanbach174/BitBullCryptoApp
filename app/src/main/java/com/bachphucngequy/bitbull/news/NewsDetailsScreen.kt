@@ -68,7 +68,6 @@ fun NewsDetailsScreen(articleUrl: String,
                             loadUrl(articleUrl)
                         }
                     },
-                    modifier = Modifier.padding(paddingValues),
                     update = {
                         webView?.loadUrl(articleUrl)
                     }

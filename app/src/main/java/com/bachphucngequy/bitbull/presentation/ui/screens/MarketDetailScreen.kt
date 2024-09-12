@@ -50,7 +50,7 @@ fun MarketDetailScreen(
                     companyName = crypto.fullName,
                     onBackClick = onBackClick,
                     onFavouriteClick = onFavouriteClick,
-                    isCoinFavourite = false
+                    isCoinFavourite = crypto.isFavourite
                 )
                 TabRow(tabTitles = listOf("Price", "Info", "Trading Data", "News"), onClick = { index ->
                     selectedTabIndex = index

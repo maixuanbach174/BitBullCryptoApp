@@ -220,7 +220,9 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                         article = article
                     )
                 },
-                onFavouriteClick = { /*TODO*/ },
+                onFavouriteClick = {
+                    crypto.isFavourite = !crypto.isFavourite
+                },
                 crypto = crypto
             )
         }
