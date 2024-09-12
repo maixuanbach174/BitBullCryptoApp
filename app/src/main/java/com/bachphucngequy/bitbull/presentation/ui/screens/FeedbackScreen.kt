@@ -64,49 +64,55 @@ fun FeedbackScreen(onNavigateToUserAccount: () -> Unit) {
         Column(
             modifier = Modifier
                 .padding(innerpadding)
-                .padding(16.dp)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
         ) {
-            Text(
-                "Response on quality of App",
-                style = MaterialTheme.typography.h6,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp)
+            ) {
+                Text(
+                    "Response on quality of App",
+                    style = MaterialTheme.typography.h6,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
 
-            Text(
-                "The issues you select will be automatically included in the content of the email sent to us.",
-                style = MaterialTheme.typography.body2,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
+                Text(
+                    "The issues you select will be automatically included in the content of the email sent to us.",
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
 
-            feedbackOptions.forEach { option ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                ) {
-                    Checkbox(
-                        checked = option in selectedOptions,
-                        onCheckedChange = { checked ->
-                            selectedOptions = if (checked) {
-                                selectedOptions + option
-                            } else {
-                                selectedOptions - option
+                feedbackOptions.forEach { option ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    ) {
+                        Checkbox(
+                            checked = option in selectedOptions,
+                            onCheckedChange = { checked ->
+                                selectedOptions = if (checked) {
+                                    selectedOptions + option
+                                } else {
+                                    selectedOptions - option
+                                }
                             }
-                        }
-                    )
-                    Text(
-                        text = option,
-                        style = MaterialTheme.typography.body1,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
+                        )
+                        Text(
+                            text = option,
+                            style = MaterialTheme.typography.body1,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
-
+            // Button row is now outside the scrollable area
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Button(

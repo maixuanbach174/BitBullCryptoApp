@@ -36,6 +36,14 @@ import com.google.firebase.firestore.FirebaseFirestore
 fun UserAccountScreen(
     onNavigateToHome: () -> Unit,
     onNavigateToCryptoWallet: () -> Unit,
+    onNavigateToRank: () -> Unit,
+    onNavigateToRefer: () -> Unit,
+    onNavigateToChange: () -> Unit,
+    onNavigateToPayment: () -> Unit,
+    onNavigateToPrize: () -> Unit,
+    onNavigateToQuestions: () -> Unit,
+    onNavigateToPolicies: () -> Unit,
+    onNavigateToSupportCenter: () -> Unit,
     onNavigateToFeedback: () -> Unit,
     onNavigateToCompanyInfo: () -> Unit,
     onNavigateToChangePasswordAccount: () -> Unit,
@@ -99,7 +107,7 @@ fun UserAccountScreen(
         ) {
             item { GreenFundBanner() }
             item { UserInfoSection(onNavigateToCryptoWallet, userName, userEmail) }
-            item { MenuItems(onNavigateToHistory,onNavigateToFeedback,onNavigateToCompanyInfo,onNavigateToChangePasswordAccount,onNavigateToChangeNickname,onNavigateToChooseLanguage) }
+            item { MenuItems(onNavigateToHistory,onNavigateToRank,onNavigateToRefer,onNavigateToChange,onNavigateToPayment,onNavigateToPrize,onNavigateToQuestions,onNavigateToPolicies,onNavigateToSupportCenter,onNavigateToFeedback,onNavigateToCompanyInfo,onNavigateToChangePasswordAccount,onNavigateToChangeNickname,onNavigateToChooseLanguage) }
             item { LogoutButton(authViewModel) }
         }
     }
@@ -163,6 +171,14 @@ fun UserInfoSection(onNavigateToCryptoWallet: () -> Unit, userName: String, user
 @Composable
 fun MenuItems(
     onNavigateToHistory: () -> Unit,
+    onNavigateToRank: () -> Unit,
+    onNavigateToRefer: () -> Unit,
+    onNavigateToChange: () -> Unit,
+    onNavigateToPayment: () -> Unit,
+    onNavigateToPrize: () -> Unit,
+    onNavigateToQuestions: () -> Unit,
+    onNavigateToPolicies: () -> Unit,
+    onNavigateToSupportCenter: () -> Unit,
     onNavigateToFeedback: () -> Unit,
     onNavigateToCompanyInfo: () -> Unit,
     onNavigateToChangePasswordAccount: () -> Unit,
@@ -207,6 +223,14 @@ fun MenuItems(
                 modifier = Modifier.clickable {
                     when (item.title) {
                         "Transaction History" -> onNavigateToHistory()
+                        "Member Rank" -> onNavigateToRank()
+                        "Refer a Friend" -> onNavigateToRefer()
+                        "Change" -> onNavigateToChange()
+                        "Payment Management" -> onNavigateToPayment()
+                        "Prize" -> onNavigateToPrize()
+                        "Regular Questions" -> onNavigateToQuestions()
+                        "Terms and Policies" -> onNavigateToPolicies()
+                        "Support Center" -> onNavigateToSupportCenter()
                         "User Feedback" -> onNavigateToFeedback()
                         "Company Information" -> onNavigateToCompanyInfo()
                         "Change Password" -> onNavigateToChangePasswordAccount()
