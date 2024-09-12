@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Notifications
@@ -33,7 +31,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.currentCompositionErrors
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -45,13 +42,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.bachphucngequy.bitbull.data.repository.CoinRepositoryImpl
-import com.bachphucngequy.bitbull.domain.model.Coin
 import com.bachphucngequy.bitbull.firebase.FirebaseRepository
-import com.bachphucngequy.bitbull.firebase.FirestoreHelper
 import com.bachphucngequy.bitbull.firebase.OrderManager
 import com.bachphucngequy.bitbull.firebase.user
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -67,11 +58,8 @@ import com.bachphucngequy.bitbull.presentation.ui.components.home.TabRow
 import com.bachphucngequy.bitbull.presentation.ui.components.marketdetail.OrderBookUI
 import com.bachphucngequy.bitbull.presentation.ui.components.marketdetail.SymbolAppBar
 import com.bachphucngequy.bitbull.presentation.ui.components.marketdetail.TradingChart
-import com.bachphucngequy.bitbull.presentation.ui.screens.LightThemeColors.Surface
 import com.bachphucngequy.bitbull.presentation.ui.theme.Green100
 import com.bachphucngequy.bitbull.presentation.ui.theme.Red100
-import com.bachphucngequy.bitbull.presentation.viewmodel.CoinDetailViewModel
-import com.bachphucngequy.bitbull.retrofit.RetrofitInstance
 import com.bachphucngequy.bitbull.presentation.viewmodel.TickerViewModel
 
 @Composable
@@ -101,17 +89,7 @@ fun MarketDetailScreen(
 
     Log.d("CryptoInfo", "t1: $t1")
     Log.d("CryptoInfo", "t2: $t2")
-    //Log.d("CryptoInfo", "Initial price: $price")
-    // Comment: base coin (btc)
-    // code: crypto.code
-    // Comment: quote coin (usdt)
-    // Code: crypto.quoteCode
-    // Comment: price
-    // Code: uiState.data[0].lastPrice
-    // nho check empty list hay khong nha vi cai do la cai list cua ticker nen co the bi null
-    // Co the implement theo kieu nay
-//    if(uiStateData.isNotEmpty()) {
-//        uiStateData[0].let {ticker -> {code cua Nghe}}
+
 
     Scaffold(
         topBar = {
@@ -158,13 +136,10 @@ fun MarketDetailScreen(
             }
             if (showBottomSheet) {
                 OrderBottomSheet(
-                    btccurrency = "BTC",
-                    usdtcurrency = "USDT",
-                    price = 56000.0,
+                    btccurrency = t1,
+                    usdtcurrency = t2,
+                    price = price,
                     isBuySelected = isBuy,
-                    onPlaceOrderClick = { amount, isBuySelected ->
-                        showBottomSheet = false
-                    },
                     onDismiss = {
                         showBottomSheet = false
                     }
@@ -242,15 +217,14 @@ fun OrderBottomSheet(
     usdtcurrency: String,
     price: Double,
     isBuySelected: Boolean,
-    onPlaceOrderClick: (String, Boolean) -> Unit,
     onDismiss: () -> Unit
 ) {
     var amount by remember { mutableStateOf("") }
     var isBuy by remember { mutableStateOf(isBuySelected) }
     var availableBalance by remember { mutableStateOf(0.0) }
-    var btcCurrency = "BTC"
-    var usdtCurrency = "USDT"
-    var price= 56000.0
+    var btcCurrency = btccurrency
+    var usdtCurrency = usdtcurrency
+    var price= price
 
     val userId = user.usid
 
@@ -385,12 +359,11 @@ fun OrderBottomSheet(
                         }
                         FirebaseRepository.fetchAvailableBalance(
                             userId = userId,
-                            currency = "BTC",
+                            currency = btcCurrency,
                             onSuccess = { currentAmountBuyCurrency ->
-                                // Step 2: Fetch Sell Currency Balance
                                 FirebaseRepository.fetchAvailableBalance(
                                     userId = userId,
-                                    currency = "USDT",
+                                    currency = usdtCurrency,
                                     onSuccess = { currentAmountSellCurrency ->
                                         val (newAmountBuyCurrency, newAmountSellCurrency) = OrderManager.handleOrder(
                                             currentAmountBuyCurrency = currentAmountBuyCurrency,
@@ -403,8 +376,8 @@ fun OrderBottomSheet(
                                         Log.d("OrderDebug1", "2: $currentAmountSellCurrency")
                                         FirebaseRepository.updateBalances(
                                             userId = userId,
-                                            buyCurrency = "BTC",
-                                            sellCurrency = "USDT",
+                                            buyCurrency = btcCurrency,
+                                            sellCurrency = usdtCurrency,
                                             newAmountBuyCurrency = newAmountBuyCurrency,
                                             newAmountSellCurrency = newAmountSellCurrency,
                                             onSuccess = {
@@ -417,14 +390,14 @@ fun OrderBottomSheet(
                                         )
                                     },
                                     onFailure = { exception ->
-                                        Log.e("FirebaseRepository", "Error fetching BTC balance", exception)
-                                        Toast.makeText(context, "Failed to fetch BTC balance", Toast.LENGTH_SHORT).show()
+                                        Log.e("FirebaseRepository", "Error fetching $btcCurrency balance", exception)
+                                        Toast.makeText(context, "Failed to fetch $btcCurrency balance", Toast.LENGTH_SHORT).show()
                                     }
                                 )
                             },
                             onFailure = { exception ->
-                                Log.e("FirebaseRepository", "Error fetching USDT balance", exception)
-                                Toast.makeText(context, "Failed to fetch USDT balance", Toast.LENGTH_SHORT).show()
+                                Log.e("FirebaseRepository", "Error fetching $usdtCurrency balance", exception)
+                                Toast.makeText(context, "Failed to fetch $usdtCurrency balance", Toast.LENGTH_SHORT).show()
                             }
                         )
                     },
