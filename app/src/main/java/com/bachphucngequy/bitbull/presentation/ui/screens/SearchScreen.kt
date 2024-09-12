@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.bachphucngequy.bitbull.data.entity.Crypto
 import com.bachphucngequy.bitbull.data.entity.SymbolPriceTickerItem
 import com.bachphucngequy.bitbull.presentation.ui.components.search.SearchIconBar
 import com.bachphucngequy.bitbull.presentation.viewmodel.SearchViewModel
@@ -32,7 +33,7 @@ import java.text.DecimalFormat
 @Composable
 fun SearchScreen(
     onCancelClick: () -> Unit,
-    onSearchItemClick: (String) -> Unit
+    onSearchItemClick: (Crypto) -> Unit
 ) {
     val searchModel = viewModel<SearchViewModel>()
     val searchText by searchModel.searchText.collectAsState()
@@ -61,7 +62,7 @@ fun SearchScreen(
                 ) {
                     items(cryptos) { crypto ->
                         SymbolTickerPriceItemCard(crypto, onClick = {
-                            onSearchItemClick(crypto.symbol)
+                            onSearchItemClick(crypto)
                         })
                         Spacer(modifier = Modifier.height(16.dp))
                     }
@@ -76,11 +77,9 @@ fun SearchScreen(
 
 @Composable
 fun SymbolTickerPriceItemCard(
-    symbolPriceTickerItem: SymbolPriceTickerItem,
+    crypto: Crypto,
     onClick : () -> Unit
 ){
-    val dec = DecimalFormat("#,###.00")
-    val roundedPrice = dec.format(symbolPriceTickerItem.price.toDouble())
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -89,11 +88,11 @@ fun SymbolTickerPriceItemCard(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = symbolPriceTickerItem.symbol,
+            text = crypto.code + "/" + crypto.quoteCode,
             style = MaterialTheme.typography.titleMedium,
         )
         Text(
-            text = roundedPrice,
+            text = crypto.fullName,
             style = MaterialTheme.typography.bodyMedium,
             color = Color.Gray
         )

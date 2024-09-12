@@ -2,6 +2,7 @@ package com.bachphucngequy.bitbull.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bachphucngequy.bitbull.core.di.annotation.HiltDispatchers
 import com.bachphucngequy.bitbull.domain.model.ConnectionState
 import com.bachphucngequy.bitbull.domain.model.Ticker
@@ -28,7 +29,7 @@ class TickerViewModel @Inject constructor(
         Timber.e("Init VM")
     }
 
-    fun getCryptos(productId: String? = null) {
+    fun getCryptos(symbol: String? = null) {
         viewModelScope.launch(coroutineDispatcher) {
             getTickersUseCase()
                 .onStart {
@@ -40,13 +41,12 @@ class TickerViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(isLoading = false, isOnline = true)
                             }
-                            Timber.e("Connected")
                         }
                         is ConnectionState.Success -> {
-                            combinedPrices[event.data.productId] = event.data
+                            combinedPrices[event.data.symbol] = event.data
                             _uiState.update { tickerState ->
-                                val list = if (productId != null) {
-                                    combinedPrices.values.filter { ticker -> ticker.productId == productId }
+                                val list = if (symbol != null) {
+                                    combinedPrices.values.filter { ticker -> ticker.symbol == symbol }
                                         .toList()
                                 } else combinedPrices.values.toList()
 

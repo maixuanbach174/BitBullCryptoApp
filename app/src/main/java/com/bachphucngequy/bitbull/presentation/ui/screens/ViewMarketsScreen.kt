@@ -15,8 +15,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bachphucngequy.bitbull.presentation.ui.components.home.CryptoList
-import com.bachphucngequy.bitbull.presentation.ui.components.home.sampleData
 
 @Composable
 fun ViewMarketScreen(
@@ -47,7 +45,6 @@ fun ViewMarketScreen(
         TopMetrics()
         SortT()
         SortOptions()
-        CryptoList(cryptoData = sampleData)
     }
 }
 

@@ -8,19 +8,22 @@ import javax.inject.Inject
 class TickerMapper @Inject constructor() : Mapper<TickerEntity, Ticker> {
 
     override fun mapFromEntity(entity: TickerEntity): Ticker {
-        val enum = Crypto.values().find { crypto -> crypto.id == entity.productId }
+        val enum = Crypto.values().find { crypto -> crypto.symbol == entity.symbol }
         return Ticker(
-            productId = entity.productId ?: "",
+            symbol = entity.symbol ?: "",
+            priceChange = entity.priceChange?.toDouble() ?: 0.0,
+            priceChangePercent = entity.priceChangePercent?.toDouble() ?: 0.0,
             productCode = enum?.code
                 ?: "",
             productName = enum?.fullName
                 ?: "",
-            price = entity.price?.toDouble() ?: 0.0,
+            quoteCode = enum?.quoteCode ?: "",
+            lastPrice = entity.lastPrice?.toDouble() ?: 0.0,
             openPrice = entity.openPrice?.toDouble() ?: 0.0,
-            volume24 = entity.volume24?.toDouble() ?: 0.0,
-            low24 = entity.low24?.toDouble() ?: 0.0,
-            high24 = entity.high24?.toDouble() ?: 0.0,
-            volumeMonth = entity.volumeMonth?.toDouble() ?: 0.0,
+            baseAssetVolume = entity.baseAssetVolume?.toDouble() ?: 0.0,
+            lowPrice = entity.lowPrice?.toDouble() ?: 0.0,
+            highPrice = entity.highPrice?.toDouble() ?: 0.0,
+            quoteAssetVolume = entity.quoteAssetVolume?.toDouble() ?: 0.0,
         )
     }
 

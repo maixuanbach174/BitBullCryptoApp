@@ -2,55 +2,19 @@ package com.bachphucngequy.bitbull.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bachphucngequy.bitbull.data.entity.SymbolPriceTicker
-import com.bachphucngequy.bitbull.data.repository.SymbolPriceTickerRepositoryImpl
-import com.bachphucngequy.bitbull.domain.repository.SymbolPriceTickerRepository
-import com.bachphucngequy.bitbull.retrofit.RetrofitInstance
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import com.bachphucngequy.bitbull.data.Result
+import com.bachphucngequy.bitbull.data.entity.Crypto
 
-class SearchViewModel(
-    private val repository: SymbolPriceTickerRepository = SymbolPriceTickerRepositoryImpl(
-        RetrofitInstance.binanceApi)
-): ViewModel() {
-    private val _ticker = MutableStateFlow(SymbolPriceTicker())
-
-    private val _showErrorToastChannel = Channel<Boolean>()
-    val showErrorToastChannel = _showErrorToastChannel.receiveAsFlow()
-
-    init {
-        viewModelScope.launch {
-            repository.getSymbolPriceTicker().collectLatest{
-                    result ->
-                when(result) {
-                    is Result.Error -> {
-                        _showErrorToastChannel.send(true)
-                    }
-                    is Result.Success ->{
-                        result.data?.let {ticker->
-                            _ticker.update { ticker }
-                        }
-
-                    }
-
-                    is Result.Loading -> TODO()
-                }
-            }
-        }
-    }
-
+class SearchViewModel(): ViewModel() {
+    private val _ticker = MutableStateFlow( Crypto.values().toList())
 
     private val _searchText = MutableStateFlow("")
     val searchText = _searchText.asStateFlow()
@@ -65,17 +29,9 @@ class SearchViewModel(
         .combine(_ticker) {
                 text,tickers ->
             if(text.isBlank()) {
-                tickers.filter {symbolPriceTickerItem->
-                    symbolPriceTickerItem.price.toDouble() >= 0.01
-                }.
-                sortedByDescending { it.price.toDouble() }
-
-            } else
-            {
-                tickers.filter {symbolPriceTickerItem->
-                    symbolPriceTickerItem.doesMatchSearchQuery(text) &&
-                            symbolPriceTickerItem.price.toDouble() >= 0.01
-                }.sortedByDescending { it.price.toDouble() }
+                tickers
+            } else {
+                tickers.filter { it.symbol.contains(text, ignoreCase = true) || it.fullName.contains(text, ignoreCase = true) }
             }
 
         }

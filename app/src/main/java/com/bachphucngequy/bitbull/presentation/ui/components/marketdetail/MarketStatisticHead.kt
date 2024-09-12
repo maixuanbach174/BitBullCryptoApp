@@ -1,4 +1,4 @@
-package com.bachphucngequy.bitbull.presentation.ui.components.MarketTracker
+package com.bachphucngequy.bitbull.presentation.ui.components.marketdetail
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.bachphucngequy.bitbull.domain.model.Ticker
 import com.bachphucngequy.bitbull.presentation.ui.theme.DarkRed
 import com.bachphucngequy.bitbull.presentation.ui.theme.Green100
 import com.bachphucngequy.bitbull.presentation.ui.theme.Red100
@@ -27,18 +28,12 @@ import java.text.DecimalFormat
 @Composable
 fun MarketStatisticHead(
     modifier: Modifier = Modifier,
-    productId: String?
+    uiStateData: List<Ticker>
 ) {
-    val tickerViewModel: TickerViewModel = hiltViewModel()
-    val uiState by tickerViewModel.uiState.collectAsState()
 
-    LaunchedEffect(Unit) {
-        tickerViewModel.getCryptos(productId)
-    }
-
-    if(uiState.data.isNotEmpty()) {
-        uiState.data[0].let {ticker ->
-            val asc = (ticker.openPrice < ticker.price)
+    if(uiStateData.isNotEmpty()) {
+        uiStateData[0].let {ticker ->
+            val asc = (ticker.openPrice < ticker.lastPrice)
             Row(
                 modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -48,19 +43,15 @@ fun MarketStatisticHead(
                     modifier = Modifier.weight(1.2f),
                 ) {
                     Text(
-                        "$ ${ticker.price}",
+                        ticker.lastPrice.toString(),
                         color = if (asc) Green100 else Red100,
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.headlineMedium
                     )
-                    val diff = ticker.price - ticker.openPrice
-                    val gain =
-                        ((ticker.price - ticker.openPrice) / (ticker.openPrice)) * 100
-                    val gainSymbol = if (gain > 0) "▲ +" else "▼ "
+                    val gainSymbol = if (ticker.priceChangePercent > 0) "▲" else "▼"
+                    val sign = if (ticker.priceChange > 0) "+" else ""
                     Text(
-                        "≈ ${ DecimalFormat("#,###.00").format(diff)} $gainSymbol${
-                            DecimalFormat("#.###").format(gain)
-                        }%",
+                        "$gainSymbol${ticker.priceChange}  $sign${ticker.priceChangePercent}%",
                         fontWeight = FontWeight.Bold,
                         color = if (asc) Green100 else DarkRed,
                         style = MaterialTheme.typography.bodySmall
@@ -82,30 +73,30 @@ fun MarketStatisticHead(
                                 "24h High",
                                 color = Color.Gray,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp,
+                                fontSize = 10.sp,
                                 style = MaterialTheme.typography.bodySmall
                             )
                             Text(
-                                DecimalFormat("#,###.0").format(ticker.high24),
-                                fontSize = 12.sp,
+                                ticker.highPrice.toString(),
+                                fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.End,
                                 style = MaterialTheme.typography.bodySmall
                             )
                         }
                         Column(
-                            modifier = Modifier.weight(1.3f),
+                            modifier = Modifier.weight(1.5f),
                         ) {
                             Text(
-                                "24h Vol",
+                                "24h Vol(${ticker.productCode})",
                                 color = Color.Gray,
-                                fontSize = 12.sp,
+                                fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold,
                                 style = MaterialTheme.typography.bodySmall
                             )
                             Text(
-                                DecimalFormat("#,###.0").format(ticker.volume24),
-                                fontSize = 12.sp,
+                                DecimalFormat("#,###.0").format(ticker.baseAssetVolume),
+                                fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.End,
                                 style = MaterialTheme.typography.bodySmall
@@ -125,30 +116,34 @@ fun MarketStatisticHead(
                                 color = Color.Gray,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.End,
-                                style = MaterialTheme.typography.bodySmall
+                                style = MaterialTheme.typography.bodySmall,
+                                fontSize = 10.sp
                             )
                             Text(
-                                DecimalFormat("#,###.0").format(ticker.low24),
+                                ticker.lowPrice.toString(),
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.End,
-                                style = MaterialTheme.typography.bodySmall
+                                style = MaterialTheme.typography.bodySmall,
+                                fontSize = 10.sp
                             )
                         }
                         Column(
-                            modifier = Modifier.weight(1.3f)
+                            modifier = Modifier.weight(1.5f)
                         ) {
                             Text(
-                                "Vol Month",
+                                "24h Vol(${ticker.quoteCode})",
                                 color = Color.Gray,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.End,
-                                style = MaterialTheme.typography.bodySmall
+                                style = MaterialTheme.typography.bodySmall,
+                                fontSize = 10.sp
                             )
                             Text(
-                                DecimalFormat("#,###.0").format(ticker.volumeMonth),
+                                DecimalFormat("#,###.0").format(ticker.quoteAssetVolume),
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.End,
-                                style = MaterialTheme.typography.bodySmall
+                                style = MaterialTheme.typography.bodySmall,
+                                fontSize = 10.sp
                             )
                         }
                     }

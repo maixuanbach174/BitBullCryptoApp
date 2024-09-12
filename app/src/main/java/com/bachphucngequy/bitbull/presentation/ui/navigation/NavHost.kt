@@ -32,6 +32,7 @@ import com.bachphucngequy.bitbull.tweets.post.NewPostViewModel
 import com.bachphucngequy.bitbull.tweets.post.PostDetailScreen
 import com.bachphucngequy.bitbull.tweets.post.PostDetailViewModel
 import com.bachphucngequy.bitbull.SignInSignUp.ChangeSuccessScreen
+import com.bachphucngequy.bitbull.SignInSignUp.ChooseLanguageScreen
 import com.bachphucngequy.bitbull.SignInSignUp.CreateSuccessScreen
 import com.bachphucngequy.bitbull.SignInSignUp.EnterCodePasswordScreen
 import com.bachphucngequy.bitbull.SignInSignUp.EnterCodeScreen
@@ -41,20 +42,30 @@ import com.bachphucngequy.bitbull.SignInSignUp.SignInPhoneScreen
 import com.bachphucngequy.bitbull.SignInSignUp.SignInScreen
 import com.bachphucngequy.bitbull.SignInSignUp.SignUpScreen
 import com.bachphucngequy.bitbull.SignInSignUp.StartScreen
+import com.bachphucngequy.bitbull.data.entity.Crypto
 import com.bachphucngequy.bitbull.firebase.user
 import com.bachphucngequy.bitbull.history.HistoryScreen
 import com.bachphucngequy.bitbull.history.HistoryViewModel
-import com.bachphucngequy.bitbull.presentation.ui.components.home.Crypto
-import com.bachphucngequy.bitbull.presentation.ui.components.home.sampleData
 import com.bachphucngequy.bitbull.presentation.ui.screens.BuySellScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.ChangeNicknameScreen
+import com.bachphucngequy.bitbull.presentation.ui.screens.ChangePasswordAccountScreen
+import com.bachphucngequy.bitbull.presentation.ui.screens.ChangeScreen
+import com.bachphucngequy.bitbull.presentation.ui.screens.CompanyInfoScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.CryptoWalletScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.Deposit
+import com.bachphucngequy.bitbull.presentation.ui.screens.FeedbackScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.HomeScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.MarketDetailScreen
+import com.bachphucngequy.bitbull.presentation.ui.screens.PaymentScreen
+import com.bachphucngequy.bitbull.presentation.ui.screens.PoliciesScreen
+import com.bachphucngequy.bitbull.presentation.ui.screens.PrizeScreen
+import com.bachphucngequy.bitbull.presentation.ui.screens.QuestionsScreen
+import com.bachphucngequy.bitbull.presentation.ui.screens.RankScreen
+import com.bachphucngequy.bitbull.presentation.ui.screens.ReferScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.SavedInstanceKeys
 import com.bachphucngequy.bitbull.presentation.ui.screens.Screen
 import com.bachphucngequy.bitbull.presentation.ui.screens.SearchScreen
+import com.bachphucngequy.bitbull.presentation.ui.screens.SupportCenterScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.TradingSection
 import com.bachphucngequy.bitbull.presentation.ui.screens.TradingSheetScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.UserAccountScreen
@@ -64,14 +75,11 @@ import com.bachphucngequy.bitbull.presentation.viewmodel.AuthViewModel
 
 @Composable
 fun MyAppNavHost(innerPadding: PaddingValues,
-                 coins: List<Coin>,
                  newsViewModel: NewsViewModel,
                  authViewModel: AuthViewModel
 ) {
     val navController = rememberNavController()
-    var symbol by remember { mutableStateOf("") }
-    var coin by remember { mutableStateOf(Coin()) }
-    var pairCoin by remember { mutableStateOf("") }
+    var crypto by remember { mutableStateOf(Crypto.BITCOIN) }
     NavHost(navController = navController, startDestination = com.bachphucngequy.bitbull.Navigation.Screen.Start.route) {
         composable(com.bachphucngequy.bitbull.Navigation.Screen.Start.route) {
             StartScreen(
@@ -153,6 +161,11 @@ fun MyAppNavHost(innerPadding: PaddingValues,
             )
         }
 
+        composable(com.bachphucngequy.bitbull.Navigation.Screen.ChooseLanguage.route) {
+            ChooseLanguageScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) })
+        }
+
         composable(com.bachphucngequy.bitbull.Navigation.Screen.SignUp.route){
             SignUpScreen(
                 onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
@@ -172,7 +185,19 @@ fun MyAppNavHost(innerPadding: PaddingValues,
             UserAccountScreen(
                 onNavigateToHome = { navController.navigate(Screen.Home.route) },
                 onNavigateToCryptoWallet = { navController.navigate(Screen.CryptoWallet.route) },
+                onNavigateToRank = { navController.navigate(Screen.Rank.route) },
+                onNavigateToRefer = { navController.navigate(Screen.Refer.route) },
+                onNavigateToChange = { navController.navigate(Screen.Change.route) },
+                onNavigateToPayment = { navController.navigate(Screen.Payment.route) },
+                onNavigateToPrize = { navController.navigate(Screen.Prize.route) },
+                onNavigateToQuestions = { navController.navigate(Screen.Questions.route) },
+                onNavigateToPolicies = { navController.navigate(Screen.Policies.route) },
+                onNavigateToSupportCenter = { navController.navigate(Screen.SupportCenter.route) },
+                onNavigateToFeedback = { navController.navigate(Screen.Feedback.route) },
+                onNavigateToCompanyInfo = { navController.navigate(Screen.CompanyInfo.route) },
+                onNavigateToChangePasswordAccount = { navController.navigate(Screen.ChangePasswordAccount.route) },
                 onNavigateToChangeNickname = { navController.navigate(Screen.ChangeNickname.route) },
+                onNavigateToChooseLanguage = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.ChooseLanguage.route) },
                 onNavigateToSignIn = { navController.navigate(com.bachphucngequy.bitbull.Navigation.Screen.SignIn.route) },
                 onNavigateToHistory = { navController.navigate(Screen.History.route) },
                 authViewModel = authViewModel
@@ -185,8 +210,75 @@ fun MyAppNavHost(innerPadding: PaddingValues,
             )
         }
 
+        composable(Screen.Rank.route) {
+            RankScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) },
+                authViewModel = authViewModel
+            )
+        }
+
+        composable(Screen.Refer.route) {
+            ReferScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+            )
+        }
+
+        composable(Screen.Change.route) {
+            ChangeScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+            )
+        }
+
+        composable(Screen.Payment.route) {
+            PaymentScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+            )
+        }
+
+        composable(Screen.Prize.route) {
+            PrizeScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+            )
+        }
+
+        composable(Screen.Questions.route) {
+            QuestionsScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+            )
+        }
+
+        composable(Screen.Policies.route) {
+            PoliciesScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+            )
+        }
+
+        composable(Screen.SupportCenter.route) {
+            SupportCenterScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+            )
+        }
+
+        composable(Screen.Feedback.route) {
+            FeedbackScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+            )
+        }
+
+        composable(Screen.CompanyInfo.route) {
+            CompanyInfoScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+            )
+        }
+
         composable(Screen.ChangeNickname.route) {
             ChangeNicknameScreen(
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+            )
+        }
+
+        composable(Screen.ChangePasswordAccount.route) {
+            ChangePasswordAccountScreen(
                 onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
             )
         }
@@ -198,6 +290,10 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                 onNavigateToDeposit = { navController.navigate(Screen.Deposit.route) },
                 onNavigateToWithdraw = { navController.navigate(Screen.Withdraw.route) },
                 onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) },
+                onNavigateToDetail = { coin ->
+                    navController.navigate(Screen.MarketDetail.route)
+                    crypto = coin
+                },
                 onNavigateToTrade = {navController.navigate(Screen.Trade.route)}
             )
         }
@@ -213,9 +309,6 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                     navController.navigate(Screen.BuySell.route)
                 },
                 onBackClick = { navController.popBackStack() },
-                marketName = symbol,
-                coin = coin,
-                pairCoin = pairCoin,
                 newsViewModel = newsViewModel,
                 onNavigateToNewsDetails = {article ->
                     navigateToNewsDetails(
@@ -223,31 +316,8 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                         article = article
                     )
                 },
-                onFavouriteClick = {
-                    val newIsFavourite = !coin.isFavourite
-                    coin = coin.copy(
-                        isFavourite = newIsFavourite
-                    )
-                    //TODO: Add to sampleData, need to change later
-                    coins.find { it.id == coin.id }?.let {
-                        it.isFavourite = newIsFavourite
-                    }
-                    if(newIsFavourite) {
-                        sampleData.add(
-                            Crypto(
-                                icon = R.drawable.btc,
-                                name = coin.name,
-                                volume = "$464,70M",
-                                price = "$59.749",
-                                change = "-0,42%"
-                            )
-                        )
-                    } else {
-                       sampleData.find { it.name == coin.name }?.let {crypto ->
-                           sampleData.remove(crypto)
-                       }
-                    }
-                }
+                onFavouriteClick = { /*TODO*/ },
+                crypto = crypto
             )
         }
         composable(Screen.TradingSheet.route) {
@@ -262,21 +332,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                 onCancelClick = { navController.popBackStack() },
                 onSearchItemClick = {
                     navController.navigate(Screen.MarketDetail.route)
-                    pairCoin = it
-                    if (it.length == 8) {
-                        symbol = it.substring(0, 4) + "/" + it.substring(4)
-                        coin = coins.find { coin ->
-                            it.substring(
-                                0,
-                                4
-                            ) == if (coin.symbol.length >= 4) coin.symbol.substring(0, 4) else ""
-                        } ?: Coin()
-                    } else {
-                        symbol = it.substring(0, 3) + "/" + it.substring(3)
-                        coin = coins.find { coin ->
-                            it.substring(0, 3) == coin.symbol.substring(0, 3)
-                        } ?: Coin()
-                    }
+                    crypto = it
                 }
             )
         }

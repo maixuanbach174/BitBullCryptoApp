@@ -54,10 +54,13 @@ import com.bachphucngequy.bitbull.firebase.FirebaseRepository
 import com.bachphucngequy.bitbull.firebase.FirestoreHelper
 import com.bachphucngequy.bitbull.firebase.OrderManager
 import com.bachphucngequy.bitbull.firebase.user
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.bachphucngequy.bitbull.data.entity.Crypto
+import com.bachphucngequy.bitbull.domain.model.Ticker
 import com.bachphucngequy.bitbull.news.NewsScreen
 import com.bachphucngequy.bitbull.news.NewsViewModel
 import com.bachphucngequy.bitbull.news.api.Article
-import com.bachphucngequy.bitbull.presentation.ui.components.MarketTracker.MarketStatisticHead
+import com.bachphucngequy.bitbull.presentation.ui.components.marketdetail.MarketStatisticHead
 import com.bachphucngequy.bitbull.presentation.ui.components.MarketTracker.PartialBottomSheet
 import com.bachphucngequy.bitbull.presentation.ui.components.home.TabRow
 //import com.bachphucngequy.bitbull.presentation.ui.components.marketdetail.BuySellBar
@@ -69,39 +72,56 @@ import com.bachphucngequy.bitbull.presentation.ui.theme.Green100
 import com.bachphucngequy.bitbull.presentation.ui.theme.Red100
 import com.bachphucngequy.bitbull.presentation.viewmodel.CoinDetailViewModel
 import com.bachphucngequy.bitbull.retrofit.RetrofitInstance
+import com.bachphucngequy.bitbull.presentation.viewmodel.TickerViewModel
 
 @Composable
 fun MarketDetailScreen(
     onNavigateToBuySell: () -> Unit,
     onBackClick: () -> Unit,
-    marketName : String = "BTC-USD",
-    coin: Coin = Coin(),
-    pairCoin: String = "",
     newsViewModel: NewsViewModel,
     onNavigateToNewsDetails: (Article) -> Unit,
-    onFavouriteClick: () -> Unit
+    onFavouriteClick: () -> Unit,
+    crypto: Crypto,
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
-    val coinDetailViewModel: CoinDetailViewModel = viewModel(
-        factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return CoinDetailViewModel(CoinRepositoryImpl(RetrofitInstance.coinPaprikaApi), coin.id) as T
-            }
-        }
-    )
-
-    val coinDetail by coinDetailViewModel.coinDetail.collectAsState()
     var showBottomSheet by remember { mutableStateOf(false) }
     var isBuy by remember { mutableStateOf(true) } // To track Buy/Sell button click
+    val tickerViewModel: TickerViewModel = hiltViewModel()
+    val uiState by tickerViewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        tickerViewModel.getCryptos(crypto.symbol)
+    }
+    var t1=crypto.code
+    var t2=crypto.quoteCode
+    var price=0.0
+    if(uiState.data.isNotEmpty()) {
+        price=uiState.data[0].lastPrice
+    }
+
+    Log.d("CryptoInfo", "t1: $t1")
+    Log.d("CryptoInfo", "t2: $t2")
+    //Log.d("CryptoInfo", "Initial price: $price")
+    // Comment: base coin (btc)
+    // code: crypto.code
+    // Comment: quote coin (usdt)
+    // Code: crypto.quoteCode
+    // Comment: price
+    // Code: uiState.data[0].lastPrice
+    // nho check empty list hay khong nha vi cai do la cai list cua ticker nen co the bi null
+    // Co the implement theo kieu nay
+//    if(uiStateData.isNotEmpty()) {
+//        uiStateData[0].let {ticker -> {code cua Nghe}}
+
     Scaffold(
         topBar = {
             Column {
                 SymbolAppBar(
-                    marketName = marketName,
-                    companyName = coin.name,
+                    marketName = crypto.code + "/" + crypto.quoteCode,
+                    companyName = crypto.fullName,
                     onBackClick = onBackClick,
                     onFavouriteClick = onFavouriteClick,
-                    isCoinFavourite = coin.isFavourite
+                    isCoinFavourite = false
                 )
                 TabRow(tabTitles = listOf("Price", "Info", "Trading Data", "News"), onClick = { index ->
                     selectedTabIndex = index
@@ -125,14 +145,15 @@ fun MarketDetailScreen(
             when (selectedTabIndex) {
                 0 -> PriceContent(
                     modifier = Modifier.fillMaxSize(),
-                    symbol = pairCoin,
+                    uiStateData = uiState.data,
+                    symbol = crypto.symbol
                 )
-                1 -> CoinDetailScreen(coin = coinDetail)
+                1 -> CoinDetailScreen(coinId = crypto.code.lowercase() + "-" + crypto.fullName.lowercase())
                 2 -> TradingDataContent()
                 3 -> NewsScreen(
                     newsViewModel = newsViewModel,
                     navigateToDetails = onNavigateToNewsDetails,
-                    searchQuery = coin.name
+                    searchQuery = crypto.symbol
                 )
             }
             if (showBottomSheet) {
@@ -437,21 +458,18 @@ fun SquareContent() {
 @Composable
 fun PriceContent(
     modifier: Modifier,
-    symbol: String,
-    marketName: String = "BTC-USD"
+    uiStateData: List<Ticker>,
+    symbol: String
 ) {
-
-    val scrollState = rememberScrollState()
 
     var selectedTimeframe by remember { mutableStateOf("15") }
     var selectedChartType by remember { mutableStateOf("1") }
 
     Column(
-        modifier = modifier.verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
 
-        MarketStatisticHead(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp), productId = marketName)
+        MarketStatisticHead(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp), uiStateData = uiStateData)
         PartialBottomSheet(modifier = Modifier.padding(16.dp), onLineTypeClick = { selectedChartType = it }, onTimeSpanClick = { selectedTimeframe = it })
         Divider(
             thickness = 1.dp,

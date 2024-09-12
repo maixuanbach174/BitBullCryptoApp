@@ -14,15 +14,13 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.bachphucngequy.bitbull.presentation.ui.components.home.CryptoList
+import com.bachphucngequy.bitbull.data.entity.Crypto
 import com.bachphucngequy.bitbull.presentation.ui.components.home.ProgressBar
 import com.bachphucngequy.bitbull.presentation.ui.components.home.TabRow
 import com.bachphucngequy.bitbull.presentation.ui.components.home.TickerList
 import com.bachphucngequy.bitbull.presentation.ui.components.home.TopBar
-import com.bachphucngequy.bitbull.presentation.ui.components.home.sampleData
 import com.bachphucngequy.bitbull.presentation.ui.components.navigationbar.BottomNavigationBar
 import com.bachphucngequy.bitbull.presentation.viewmodel.TickerViewModel
 
@@ -33,7 +31,8 @@ fun HomeScreen(
     onNavigateToDeposit: () -> Unit,
     onNavigateToWithdraw: () -> Unit,
     onNavigateToUserAccount: () -> Unit,
-    onNavigateToTrade: () ->Unit
+    onNavigateToTrade: () ->Unit,
+    onNavigateToDetail: (Crypto) -> Unit
 ) {
     val viewModel: TickerViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
@@ -78,7 +77,7 @@ fun HomeScreen(
                     )
                     Spacer(modifier = Modifier.height(20.dp))
 //                    CryptoList(sampleData)
-                    TickerList(data = uiState.data, {})
+                    TickerList(data = uiState.data, onNavigateToDetail)
                 }
             }
             2-> {
