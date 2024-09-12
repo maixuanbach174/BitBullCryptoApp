@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bachphucngequy.bitbull.core.di.annotation.HiltDispatchers
+import com.bachphucngequy.bitbull.data.entity.Crypto
 import com.bachphucngequy.bitbull.domain.model.ConnectionState
 import com.bachphucngequy.bitbull.domain.model.RemoteFavourite
 import com.bachphucngequy.bitbull.domain.model.Ticker
@@ -35,6 +36,8 @@ class TickerViewModel @Inject constructor(
 
     init {
         Timber.e("Init VM")
+
+        fetchFavouriteCoinsFromFirebase()
     }
 
     fun getCryptos(symbol: String? = null) {
@@ -73,8 +76,7 @@ class TickerViewModel @Inject constructor(
         }
     }
 
-    private fun fetchFavouriteCoinsFromFirebase(): List<String> {
-        var favouriteCoinList: List<String> = listOf()
+    private fun fetchFavouriteCoinsFromFirebase() {
         viewModelScope.launch {
             val currentUserId = auth.currentUser?.uid
 
@@ -89,11 +91,45 @@ class TickerViewModel @Inject constructor(
                     doc.toObject(RemoteFavourite::class.java)
                 }
 
-                favouriteCoinList = remoteFavouriteList.map { it.favouriteCoinSymbol }
+                if (remoteFavouriteList.isEmpty()) {
+                    // Select the first 5 cryptos as default favorites
+                    val defaultFavouriteCryptos = Crypto.values().take(5)
+
+                    // Create a list of RemoteFavourite objects for default cryptos
+                    val defaultFavouriteList = defaultFavouriteCryptos.map { crypto ->
+                        RemoteFavourite(userId = currentUserId, favouriteCryptoSymbol = crypto.symbol)
+                    }
+
+                    // Batch write the default favourites to the Firestore collection
+                    val batch = FirebaseFirestore.getInstance().batch()
+
+                    defaultFavouriteList.forEach { favourite ->
+                        val docRef = favouriteCoinCollection.document() // create a new document reference
+                        batch.set(docRef, favourite)
+                    }
+
+                    // Commit the batch write
+                    batch.commit().await()
+
+                    // Update the isFavourite status in the enum
+                    defaultFavouriteCryptos.forEach { crypto ->
+                        crypto.isFavourite = true
+                    }
+                } else {
+                    // Get the list of favorite symbols
+                    val favouriteSymbols = remoteFavouriteList.map { it.favouriteCryptoSymbol }
+
+                    // Update the isFavourite status of each Crypto based on the fetched data
+                    Crypto.values().forEach { crypto ->
+                        crypto.isFavourite = favouriteSymbols.contains(crypto.symbol)
+                    }
+                    
+                }
             }
         }
-        return favouriteCoinList
     }
+
+
 }
 
 

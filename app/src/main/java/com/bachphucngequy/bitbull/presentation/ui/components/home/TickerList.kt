@@ -27,13 +27,17 @@ import com.bachphucngequy.bitbull.presentation.ui.theme.Green100
 
 @Composable
 fun TickerList(data: List<Ticker>, onNavigateToDetail: (Crypto) -> Unit) {
-    val displayId = Crypto.values().take(6).map { it.symbol }
+    // Get displayIdList for favourite cryptos
+    val displayIdList = Crypto.values()
+        .filter { it.isFavourite }  // Filter cryptos where isFavourite is true
+        .map { it.symbol }           // Map to their symbols
+
     LazyColumn(
         Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(data.filter {ticker -> displayId.contains(ticker.symbol)  }.sortedBy { ticker -> ticker.symbol }) { item ->
+        items(data.filter {ticker -> displayIdList.contains(ticker.symbol)  }.sortedBy { ticker -> ticker.symbol }) { item ->
             TickerItem(item, onNavigateToDetail)
         }
     }

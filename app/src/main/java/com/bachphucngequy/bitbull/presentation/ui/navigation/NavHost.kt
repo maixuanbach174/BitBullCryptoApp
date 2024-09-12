@@ -60,6 +60,7 @@ import com.bachphucngequy.bitbull.presentation.ui.screens.UserAccountScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.ViewMarketScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.Withdraw
 import com.bachphucngequy.bitbull.presentation.viewmodel.AuthViewModel
+import com.bachphucngequy.bitbull.presentation.viewmodel.MarketDetailViewModel
 
 @Composable
 fun MyAppNavHost(innerPadding: PaddingValues,
@@ -208,6 +209,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
             ViewMarketScreen(onNavigateToMarketDetail = { navController.navigate(Screen.MarketDetail.route) })
         }
         composable(Screen.MarketDetail.route) {
+            val marketDetailViewModel = viewModel<MarketDetailViewModel>()
             MarketDetailScreen(
                 onNavigateToBuySell = {
                     navController.navigate(Screen.BuySell.route)
@@ -222,6 +224,11 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                 },
                 onFavouriteClick = {
                     crypto.isFavourite = !crypto.isFavourite
+                    if(crypto.isFavourite) {
+                        marketDetailViewModel.insertFavouriteToFirebase(crypto.symbol)
+                    } else {
+                        marketDetailViewModel.deleteFavouriteToFirebase(crypto.symbol)
+                    }
                 },
                 crypto = crypto
             )
