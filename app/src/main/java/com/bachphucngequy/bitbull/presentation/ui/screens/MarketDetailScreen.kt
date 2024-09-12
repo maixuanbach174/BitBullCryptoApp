@@ -137,9 +137,9 @@ fun MarketDetailScreen(
             }
             if (showBottomSheet) {
                 OrderBottomSheet(
-//                    btcCurrency = "BTC",
-//                    usdtCurrency = "USDT",
-//                    price = 56000.0,
+                    btccurrency = "BTC",
+                    usdtcurrency = "USDT",
+                    price = 56000.0,
                     isBuySelected = isBuy,
                     onPlaceOrderClick = { amount, isBuySelected ->
                         showBottomSheet = false
@@ -217,7 +217,9 @@ fun BuySellBar(onBuyClick: () -> Unit, onSellClick: () -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrderBottomSheet(
-
+    btccurrency: String,
+    usdtcurrency: String,
+    price: Double,
     isBuySelected: Boolean,
     onPlaceOrderClick: (String, Boolean) -> Unit,
     onDismiss: () -> Unit
