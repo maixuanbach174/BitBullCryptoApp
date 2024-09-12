@@ -17,24 +17,42 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.bachphucngequy.bitbull.domain.model.CoinDetail
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.bachphucngequy.bitbull.data.repository.CoinRepositoryImpl
 import com.bachphucngequy.bitbull.presentation.ui.components.coindetail.CoinTag
 import com.bachphucngequy.bitbull.presentation.ui.components.coindetail.TeamListItem
 import com.bachphucngequy.bitbull.presentation.ui.theme.Green100
 import com.bachphucngequy.bitbull.presentation.ui.theme.Red100
+import com.bachphucngequy.bitbull.presentation.viewmodel.CoinDetailViewModel
+import com.bachphucngequy.bitbull.retrofit.RetrofitInstance
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CoinDetailScreen(
-//    coinId: String
-    coin: CoinDetail
+    coinId: String,
 ) {
+    val factory = object : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(CoinDetailViewModel::class.java)) {
+                return CoinDetailViewModel(CoinRepositoryImpl(RetrofitInstance.coinPaprikaApi), coinId) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
+        }
+    }
+    val coinViewModel: CoinDetailViewModel = viewModel(factory = factory)
+
+    val coin by coinViewModel.coinDetail.collectAsState()
+
     Box(modifier = Modifier.fillMaxWidth()) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),

@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.bachphucngequy.bitbull.data.entity.Crypto
 import com.bachphucngequy.bitbull.domain.model.Ticker
 import java.text.DecimalFormat
 import com.bachphucngequy.bitbull.presentation.ui.theme.DarkRed
@@ -25,43 +26,47 @@ import com.bachphucngequy.bitbull.presentation.ui.theme.Green100
 
 
 @Composable
-fun TickerList(data: List<Ticker>, onNavigateToDetail: (String) -> Unit) {
+fun TickerList(data: List<Ticker>, onNavigateToDetail: (Crypto) -> Unit) {
     LazyColumn(
         Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(data.sortedBy { ticker -> ticker.productId }) { item ->
+        items(data.sortedBy { ticker -> ticker.symbol }) { item ->
             TickerItem(item, onNavigateToDetail)
         }
     }
 }
 
 @Composable
-fun TickerItem(item: Ticker, onNavigateToDetail: (String) -> Unit) {
-    val asc = (item.openPrice < item.price)
+fun TickerItem(item: Ticker, onNavigateToDetail: (Crypto) -> Unit) {
+    val asc = (item.openPrice < item.lastPrice)
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {}
+            .clickable {
+                onNavigateToDetail(
+                    Crypto.values().find { it.symbol == item.symbol } ?: Crypto.WETH
+                )
+            }
             .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = getProductResource(item.productCode),
+            model = getProductResource(item.productCode, item.productName),
             contentDescription = null,
             modifier = Modifier.size(40.dp),
         )
         Column(modifier = Modifier.padding(start = 16.dp)) {
             Text(
-                text = item.productCode,
+                text = item.productCode + "/" + item.quoteCode,
                 fontWeight = FontWeight.W500,
                 style = MaterialTheme.typography.bodyLarge,
                 fontSize = 16.sp,
             )
             Text(
-                text = "Vol. ${DecimalFormat("#.###").format(item.volume24)}",
+                text = "Vol. ${DecimalFormat("#.###").format(item.baseAssetVolume)}",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.W400,
                 fontSize = 14.sp
@@ -79,7 +84,7 @@ fun TickerItem(item: Ticker, onNavigateToDetail: (String) -> Unit) {
                     .padding(horizontal = 16.dp, vertical = 6.dp)
             ){
                 Text(
-                    text = item.price.toString(),
+                    text = item.lastPrice.toString(),
                     fontSize = 14.sp,
                     textAlign = TextAlign.End,
                     style = MaterialTheme.typography.bodyLarge,
@@ -99,15 +104,12 @@ fun TickerItem(item: Ticker, onNavigateToDetail: (String) -> Unit) {
     }
 }
 
-fun getProductResource(productCode: String): String {
-    return when (productCode) {
-        "BTC" -> "https://static.coinpaprika.com/coin/btc-bitcoin/logo.png"
-        "ETH" -> "https://static.coinpaprika.com/coin/eth-ethereum/logo.png"
-        "ADA" -> "https://static.coinpaprika.com/coin/ada-cardano/logo.png"
-        "LINK" -> "https://static.coinpaprika.com/coin/link-chainlink/logo.png"
-        "LTC" -> "https://static.coinpaprika.com/coin/ltc-litecoin/logo.png"
-        else -> {
-            "https://static.coinpaprika.com/coin/bnb-binance-coin/logo.png"
-        }
+fun getProductResource(
+    productCode: String,
+    productName: String
+): String {
+    if(productCode == "BNB") {
+        return "https://static.coinpaprika.com/coin/bnb-binance-coin/logo.png"
     }
+    return "https://static.coinpaprika.com/coin/" + productCode.lowercase() + "-" +productName.lowercase() + "/logo.png"
 }

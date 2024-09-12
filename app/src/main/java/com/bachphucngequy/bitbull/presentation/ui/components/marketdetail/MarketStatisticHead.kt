@@ -1,4 +1,4 @@
-package com.bachphucngequy.bitbull.presentation.ui.components.MarketTracker
+package com.bachphucngequy.bitbull.presentation.ui.components.marketdetail
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,18 +27,18 @@ import java.text.DecimalFormat
 @Composable
 fun MarketStatisticHead(
     modifier: Modifier = Modifier,
-    productId: String?
+    symbol: String
 ) {
     val tickerViewModel: TickerViewModel = hiltViewModel()
     val uiState by tickerViewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
-        tickerViewModel.getCryptos(productId)
+        tickerViewModel.getCryptos(symbol)
     }
 
     if(uiState.data.isNotEmpty()) {
         uiState.data[0].let {ticker ->
-            val asc = (ticker.openPrice < ticker.price)
+            val asc = (ticker.openPrice < ticker.lastPrice)
             Row(
                 modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -48,14 +48,14 @@ fun MarketStatisticHead(
                     modifier = Modifier.weight(1.2f),
                 ) {
                     Text(
-                        "$ ${ticker.price}",
+                        "$ ${ticker.lastPrice}",
                         color = if (asc) Green100 else Red100,
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.headlineMedium
                     )
-                    val diff = ticker.price - ticker.openPrice
+                    val diff = ticker.lastPrice - ticker.openPrice
                     val gain =
-                        ((ticker.price - ticker.openPrice) / (ticker.openPrice)) * 100
+                        ((ticker.lastPrice - ticker.openPrice) / (ticker.openPrice)) * 100
                     val gainSymbol = if (gain > 0) "▲ +" else "▼ "
                     Text(
                         "≈ ${ DecimalFormat("#,###.00").format(diff)} $gainSymbol${
@@ -86,7 +86,7 @@ fun MarketStatisticHead(
                                 style = MaterialTheme.typography.bodySmall
                             )
                             Text(
-                                DecimalFormat("#,###.0").format(ticker.high24),
+                                DecimalFormat("#,###.0").format(ticker.highPrice),
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.End,
@@ -104,7 +104,7 @@ fun MarketStatisticHead(
                                 style = MaterialTheme.typography.bodySmall
                             )
                             Text(
-                                DecimalFormat("#,###.0").format(ticker.volume24),
+                                DecimalFormat("#,###.0").format(ticker.baseAssetVolume),
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.End,
@@ -128,7 +128,7 @@ fun MarketStatisticHead(
                                 style = MaterialTheme.typography.bodySmall
                             )
                             Text(
-                                DecimalFormat("#,###.0").format(ticker.low24),
+                                DecimalFormat("#,###.0").format(ticker.lowPrice),
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.End,
                                 style = MaterialTheme.typography.bodySmall
@@ -145,7 +145,7 @@ fun MarketStatisticHead(
                                 style = MaterialTheme.typography.bodySmall
                             )
                             Text(
-                                DecimalFormat("#,###.0").format(ticker.volumeMonth),
+                                DecimalFormat("#,###.0").format(ticker.quoteAssetVolume),
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.End,
                                 style = MaterialTheme.typography.bodySmall

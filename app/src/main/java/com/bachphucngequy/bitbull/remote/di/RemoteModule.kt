@@ -83,6 +83,6 @@ class RemoteModule {
 
     companion object {
 
-        const val BASE_URL = "wss://ws-feed.exchange.coinbase.com"
+        const val BASE_URL = "wss://stream.binance.com:9443/ws"
     }
 }

@@ -10,5 +10,4 @@ interface TickerRepository {
     fun observeTicker(): Flow<ConnectionState>
 
     fun subscribeTicker()
-
 }

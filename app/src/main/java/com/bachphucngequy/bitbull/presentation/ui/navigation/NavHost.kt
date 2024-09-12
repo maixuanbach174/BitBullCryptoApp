@@ -41,11 +41,10 @@ import com.bachphucngequy.bitbull.SignInSignUp.SignInPhoneScreen
 import com.bachphucngequy.bitbull.SignInSignUp.SignInScreen
 import com.bachphucngequy.bitbull.SignInSignUp.SignUpScreen
 import com.bachphucngequy.bitbull.SignInSignUp.StartScreen
+import com.bachphucngequy.bitbull.data.entity.Crypto
 import com.bachphucngequy.bitbull.firebase.user
 import com.bachphucngequy.bitbull.history.HistoryScreen
 import com.bachphucngequy.bitbull.history.HistoryViewModel
-import com.bachphucngequy.bitbull.presentation.ui.components.home.Crypto
-import com.bachphucngequy.bitbull.presentation.ui.components.home.sampleData
 import com.bachphucngequy.bitbull.presentation.ui.screens.BuySellScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.ChangeNicknameScreen
 import com.bachphucngequy.bitbull.presentation.ui.screens.CryptoWalletScreen
@@ -64,14 +63,11 @@ import com.bachphucngequy.bitbull.presentation.viewmodel.AuthViewModel
 
 @Composable
 fun MyAppNavHost(innerPadding: PaddingValues,
-                 coins: List<Coin>,
                  newsViewModel: NewsViewModel,
                  authViewModel: AuthViewModel
 ) {
     val navController = rememberNavController()
-    var symbol by remember { mutableStateOf("") }
-    var coin by remember { mutableStateOf(Coin()) }
-    var pairCoin by remember { mutableStateOf("") }
+    var crypto by remember { mutableStateOf(Crypto.BITCOIN) }
     NavHost(navController = navController, startDestination = com.bachphucngequy.bitbull.Navigation.Screen.Start.route) {
         composable(com.bachphucngequy.bitbull.Navigation.Screen.Start.route) {
             StartScreen(
@@ -198,6 +194,10 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                 onNavigateToDeposit = { navController.navigate(Screen.Deposit.route) },
                 onNavigateToWithdraw = { navController.navigate(Screen.Withdraw.route) },
                 onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) },
+                onNavigateToDetail = { coin ->
+                    navController.navigate(Screen.MarketDetail.route)
+                    crypto = coin
+                },
                 onNavigateToTrade = {navController.navigate(Screen.Trade.route)}
             )
         }
@@ -213,9 +213,6 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                     navController.navigate(Screen.BuySell.route)
                 },
                 onBackClick = { navController.popBackStack() },
-                marketName = symbol,
-                coin = coin,
-                pairCoin = pairCoin,
                 newsViewModel = newsViewModel,
                 onNavigateToNewsDetails = {article ->
                     navigateToNewsDetails(
@@ -223,31 +220,8 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                         article = article
                     )
                 },
-                onFavouriteClick = {
-                    val newIsFavourite = !coin.isFavourite
-                    coin = coin.copy(
-                        isFavourite = newIsFavourite
-                    )
-                    //TODO: Add to sampleData, need to change later
-                    coins.find { it.id == coin.id }?.let {
-                        it.isFavourite = newIsFavourite
-                    }
-                    if(newIsFavourite) {
-                        sampleData.add(
-                            Crypto(
-                                icon = R.drawable.btc,
-                                name = coin.name,
-                                volume = "$464,70M",
-                                price = "$59.749",
-                                change = "-0,42%"
-                            )
-                        )
-                    } else {
-                       sampleData.find { it.name == coin.name }?.let {crypto ->
-                           sampleData.remove(crypto)
-                       }
-                    }
-                }
+                onFavouriteClick = { /*TODO*/ },
+                crypto = crypto
             )
         }
         composable(Screen.TradingSheet.route) {
@@ -262,21 +236,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                 onCancelClick = { navController.popBackStack() },
                 onSearchItemClick = {
                     navController.navigate(Screen.MarketDetail.route)
-                    pairCoin = it
-                    if (it.length == 8) {
-                        symbol = it.substring(0, 4) + "/" + it.substring(4)
-                        coin = coins.find { coin ->
-                            it.substring(
-                                0,
-                                4
-                            ) == if (coin.symbol.length >= 4) coin.symbol.substring(0, 4) else ""
-                        } ?: Coin()
-                    } else {
-                        symbol = it.substring(0, 3) + "/" + it.substring(3)
-                        coin = coins.find { coin ->
-                            it.substring(0, 3) == coin.symbol.substring(0, 3)
-                        } ?: Coin()
-                    }
+                    crypto = it
                 }
             )
         }

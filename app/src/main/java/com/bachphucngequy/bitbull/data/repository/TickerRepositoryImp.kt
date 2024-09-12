@@ -9,13 +9,13 @@ import com.bachphucngequy.bitbull.domain.repository.TickerRepository
 import com.bachphucngequy.bitbull.remote.model.Subscribe
 import com.tinder.scarlet.WebSocket
 import kotlinx.coroutines.flow.*
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class TickerRepositoryImpl @Inject constructor(
     private val tickerRemoteDataSource: TickerRemoteDataSource,
-    private val tickerCacheDataSource: TickerCacheDataSource,
     private val tickerMapper: TickerMapper,
 ) : TickerRepository {
 
@@ -39,27 +39,16 @@ class TickerRepositoryImpl @Inject constructor(
     }
 
     override fun observeTicker(): Flow<ConnectionState> = flow {
-        tickerCacheDataSource.getAllTicker()
-            .map { tickerMapper.mapFromEntity(it) }
-            .onEach {
-                emit(ConnectionState.Success(it))
-            }
-        emitAll(tickerRemoteDataSource.observeTicker()
-            .onEach { tickerEntity ->
-                tickerCacheDataSource.upsertTicker(tickerEntity)
-            }
-            .map
-            {
-                ConnectionState.Success(tickerMapper.mapFromEntity(it))
-            })
+        emitAll(tickerRemoteDataSource.observeTicker().map {
+            ConnectionState.Success(tickerMapper.mapFromEntity(it))
+        })
     }
 
     override fun subscribeTicker() {
         tickerRemoteDataSource.sendSubscribe(
             Subscribe(
-                productIds = Crypto.values()
-                    .map { it.id },
-                channels = listOf("ticker")
+                1,
+                params = Crypto.values().map { it.symbol.lowercase() + "@ticker" },
             )
         )
     }

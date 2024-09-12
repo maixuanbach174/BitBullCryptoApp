@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.bachphucngequy.bitbull.data.Result
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 class CoinDetailViewModel(
     private val repository: CoinRepository,
