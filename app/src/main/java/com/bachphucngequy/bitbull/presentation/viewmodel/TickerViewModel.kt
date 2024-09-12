@@ -41,7 +41,6 @@ class TickerViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(isLoading = false, isOnline = true)
                             }
-                            Timber.e("Connected")
                         }
                         is ConnectionState.Success -> {
                             combinedPrices[event.data.symbol] = event.data

@@ -48,7 +48,7 @@ fun TickerItem(item: Ticker, onNavigateToDetail: (Crypto) -> Unit) {
             .fillMaxWidth()
             .clickable {
                 onNavigateToDetail(
-                    Crypto.values().find { it.symbol == item.symbol } ?: Crypto.WETH
+                    Crypto.values().find { it.symbol == item.symbol } ?: Crypto.ETHEREUM
                 )
             }
             .padding(vertical = 8.dp),

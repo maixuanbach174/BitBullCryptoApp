@@ -15,21 +15,12 @@ enum class Crypto(val symbol: String, val code: String, val fullName: String, va
     STELLAR(symbol = "XLMUSDT", code = "XLM", fullName = "Stellar", quoteCode = "USDT"),
     EOS(symbol = "EOSUSDT", code = "EOS", fullName = "EOS", quoteCode = "USDT"),
     TRON(symbol = "TRXUSDT", code = "TRX", fullName = "Tron", quoteCode = "USDT"),
-    LEO(symbol = "LEOUSDT", code = "LEO", fullName = "LEO", quoteCode = "USDT"),
     COSMOS(symbol = "ATOMUSDT", code = "ATOM", fullName = "Cosmos", quoteCode = "USDT"),
     TEZOS(symbol = "XTZUSDT", code = "XTZ", fullName = "Tezos", quoteCode = "USDT"),
-    MONERO(symbol = "XMRUSDT", code = "XMR", fullName = "Monero", quoteCode = "USDT"),
     DASH(symbol = "DASHUSDT", code = "DASH", fullName = "Dash", quoteCode = "USDT"),
-    ZCASH(symbol = "ZECUSDT", code = "ZEC", fullName = "Zcash", quoteCode = "USDT"),
-    WAVES(symbol = "WAVESUSDT", code = "WAVES", fullName = "Waves", quoteCode = "USDT"),
-    NEM(symbol = "XEMUSDT", code = "XEM", fullName = "NEM", quoteCode = "USDT"),
     IOTA(symbol = "IOTAUSDT", code = "IOTA", fullName = "IOTA", quoteCode = "USDT"),
     NEO(symbol = "NEOUSDT", code = "NEO", fullName = "NEO", quoteCode = "USDT"),
     TONCOIN(symbol = "TONUSDT", code = "TON", fullName = "TONCOIN", quoteCode = "USDT"),
-    WETH(symbol = "WETHUSDT", code = "WETH", fullName = "WETH", quoteCode = "USDT"),
-    POLYGON(symbol = "MATICUSDT", code = "MATIC", fullName = "Polygon", quoteCode = "USDT"),
-    POLKADOT_NEW(symbol = "DOTUSDT", code = "DOT", fullName = "Polkadot", quoteCode = "USDT"),
-    KASPA(symbol = "KASUSDT", code = "KASPA", fullName = "Kaspa", quoteCode = "USDT"),
     ;
 
     companion object {
@@ -49,21 +40,12 @@ enum class Crypto(val symbol: String, val code: String, val fullName: String, va
                 STELLAR.symbol -> STELLAR.fullName
                 EOS.symbol -> EOS.fullName
                 TRON.symbol -> TRON.fullName
-                LEO.symbol -> LEO.fullName
                 COSMOS.symbol -> COSMOS.fullName
                 TEZOS.symbol -> TEZOS.fullName
-                MONERO.symbol -> MONERO.fullName
                 DASH.symbol -> DASH.fullName
-                ZCASH.symbol -> ZCASH.fullName
-                WAVES.symbol -> WAVES.fullName
-                NEM.symbol -> NEM.fullName
                 IOTA.symbol -> IOTA.fullName
                 NEO.symbol -> NEO.fullName
                 TONCOIN.symbol -> TONCOIN.fullName
-                WETH.symbol -> WETH.fullName
-                POLYGON.symbol -> POLYGON.fullName
-                POLKADOT_NEW.symbol -> POLKADOT_NEW.fullName
-                KASPA.symbol -> KASPA.fullName
                 else -> ""
             }
         }

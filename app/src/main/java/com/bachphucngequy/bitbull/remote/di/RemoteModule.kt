@@ -83,6 +83,6 @@ class RemoteModule {
 
     companion object {
 
-        const val BASE_URL = "wss://stream.binance.com:9443/ws"
+        const val BASE_URL = "wss://stream.binance.com:443/ws"
     }
 }
