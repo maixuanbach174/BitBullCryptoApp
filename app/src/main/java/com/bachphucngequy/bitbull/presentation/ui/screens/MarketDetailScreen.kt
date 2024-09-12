@@ -1,5 +1,6 @@
 package com.bachphucngequy.bitbull.presentation.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,7 +54,16 @@ fun MarketDetailScreen(
     LaunchedEffect(Unit) {
         tickerViewModel.getCryptos(crypto.symbol)
     }
+    var t1=crypto.code
+    var t2=crypto.quoteCode
+    var price=0.0
+    if(uiState.data.isNotEmpty()) {
+        price=uiState.data[0].lastPrice
+    }
 
+    Log.d("CryptoInfo", "t1: $t1")
+    Log.d("CryptoInfo", "t2: $t2")
+    //Log.d("CryptoInfo", "Initial price: $price")
     // Comment: base coin (btc)
     // code: crypto.code
     // Comment: quote coin (usdt)
