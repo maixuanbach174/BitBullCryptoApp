@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.bachphucngequy.bitbull.firebase.WithdrawBackend
 import com.bachphucngequy.bitbull.firebase.user
+import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,11 +66,86 @@ fun Withdraw(
                     }
                 }
             )
+        },
+        bottomBar = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp) // Add horizontal padding here
+                    .navigationBarsPadding()
+            ) {
+                Text(
+                    text = "Total amount",
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text(
+                    text = "${withdrawAmount.value + fee} USDT",
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text(
+                    text = "Fees: $fee USDT",
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = {
+                        if (withdrawAmount.value > 0 && binanceId.value.isNotEmpty() && binanceId.value != user.usid) {
+                            val remainingAmount = availableAmount.value - withdrawAmount.value - fee
+                            if (remainingAmount >= 0) {
+                                WithdrawBackend.performWithdrawal(
+                                    binanceId.value,
+                                    withdrawAmount.value,
+                                    fee,
+                                    note.value,
+                                    onSuccess = { transactionSuccess ->
+                                        if (transactionSuccess) {
+                                            WithdrawBackend.fetchAvailableAmount(fee) { amount ->
+                                                availableAmount.value = amount ?: 0.0
+                                                val maxAmount = maxOf(0.0, availableAmount.value - fee)
+                                                if (withdrawAmount.value > maxAmount) {
+                                                    withdrawAmount.value = maxAmount
+                                                }
+                                            }
+                                            Toast.makeText(context, "Transaction Successful!", Toast.LENGTH_SHORT).show()
+                                            Log.d("Withdraw", "Transaction Successful!")
+                                        } else {
+                                            Toast.makeText(context, "Transaction Failed", Toast.LENGTH_SHORT).show()
+                                            Log.d("Withdraw", "Transaction Failed")
+                                        }
+                                    },
+                                    onError = { errorMessage ->
+                                        Toast.makeText(context, "Error: $errorMessage", Toast.LENGTH_SHORT).show()
+                                        Log.e("Withdraw", "Error: $errorMessage")
+                                    }
+                                )
+                            } else {
+                                Toast.makeText(context, "Insufficient funds", Toast.LENGTH_SHORT).show()
+                                Log.d("Withdraw", "Insufficient funds!")
+                            }
+                        } else {
+                            if (binanceId.value == user.usid) {
+                                Toast.makeText(context, "Please enter a different Binance ID", Toast.LENGTH_SHORT).show()
+                                Log.d("Withdraw", "Please enter a different Binance ID")
+                            } else {
+                                Toast.makeText(context, "Please enter Binance ID and a valid withdrawal amount", Toast.LENGTH_SHORT).show()
+                                Log.d("Withdraw", "Please enter Binance ID and a valid withdrawal amount")
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDACB85))
+                ) {
+                    Text("Send")
+                }
+            }
         }
+
     ) { paddingValues ->
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
@@ -135,76 +211,6 @@ fun Withdraw(
                 label = { Text("Note (Optional)") },
                 placeholder = { Text("Add a note for the recipient") },
                 modifier = Modifier.fillMaxWidth(),
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Button(
-                onClick = {
-                    if (withdrawAmount.value > 0 && binanceId.value.isNotEmpty() && binanceId.value != user.usid) {
-                        val remainingAmount = availableAmount.value - withdrawAmount.value - fee
-                        if (remainingAmount >= 0) {
-                            WithdrawBackend.performWithdrawal(
-                                binanceId.value,
-                                withdrawAmount.value,
-                                fee,
-                                note.value,
-                                onSuccess = { transactionSuccess ->
-                                    if (transactionSuccess) {
-                                        WithdrawBackend.fetchAvailableAmount(fee) { amount ->
-                                            availableAmount.value = amount ?: 0.0
-                                            val maxAmount = maxOf(0.0, availableAmount.value - fee)
-                                            if (withdrawAmount.value > maxAmount) {
-                                                withdrawAmount.value = maxAmount
-                                            }
-                                        }
-                                        Toast.makeText(context, "Transaction Successful!", Toast.LENGTH_SHORT).show()
-                                        Log.d("Withdraw", "Transaction Successful!")
-                                    } else {
-                                        Toast.makeText(context, "Transaction Failed", Toast.LENGTH_SHORT).show()
-                                        Log.d("Withdraw", "Transaction Failed")
-                                    }
-                                },
-                                onError = { errorMessage ->
-                                    Toast.makeText(context, "Error: $errorMessage", Toast.LENGTH_SHORT).show()
-                                    Log.e("Withdraw", "Error: $errorMessage")
-                                }
-                            )
-                        } else {
-                            Toast.makeText(context, "Insufficient funds", Toast.LENGTH_SHORT).show()
-                            Log.d("Withdraw", "Insufficient funds!")
-                        }
-                    } else {
-                        if(binanceId.value==user.usid) {
-                            Toast.makeText(context, "Please enter other Binance ID not yours!", Toast.LENGTH_SHORT).show()
-                            Log.d("Withdraw", "Please enter other Binance ID not yours!")
-                        }
-                        else {
-                            Toast.makeText(context, "Please enter Binance ID and a valid withdrawal amount", Toast.LENGTH_SHORT).show()
-                            Log.d("Withdraw", "Please enter Binance ID and a valid withdrawal amount")
-                        }
-
-                    }
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDACB85))
-            ) {
-                Text("Send")
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "Total amount",
-                modifier = Modifier.fillMaxWidth()
-            )
-            Text(
-                text = "${withdrawAmount.value + fee} USDT",
-                modifier = Modifier.fillMaxWidth()
-            )
-            Text(
-                text = "Fees $fee USDT",
-                modifier = Modifier.fillMaxWidth()
             )
         }
     }
