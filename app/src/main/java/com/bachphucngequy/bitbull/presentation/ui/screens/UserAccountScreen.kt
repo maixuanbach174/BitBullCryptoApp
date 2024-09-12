@@ -36,7 +36,19 @@ import com.google.firebase.firestore.FirebaseFirestore
 fun UserAccountScreen(
     onNavigateToHome: () -> Unit,
     onNavigateToCryptoWallet: () -> Unit,
+    onNavigateToRank: () -> Unit,
+    onNavigateToRefer: () -> Unit,
+    onNavigateToChange: () -> Unit,
+    onNavigateToPayment: () -> Unit,
+    onNavigateToPrize: () -> Unit,
+    onNavigateToQuestions: () -> Unit,
+    onNavigateToPolicies: () -> Unit,
+    onNavigateToSupportCenter: () -> Unit,
+    onNavigateToFeedback: () -> Unit,
+    onNavigateToCompanyInfo: () -> Unit,
+    onNavigateToChangePasswordAccount: () -> Unit,
     onNavigateToChangeNickname: () -> Unit,
+    onNavigateToChooseLanguage: () -> Unit,
     onNavigateToSignIn: () -> Unit,
     onNavigateToHistory: () -> Unit,
     authViewModel: AuthViewModel
@@ -95,7 +107,7 @@ fun UserAccountScreen(
         ) {
             item { GreenFundBanner() }
             item { UserInfoSection(onNavigateToCryptoWallet, userName, userEmail) }
-            item { MenuItems(onNavigateToHistory,onNavigateToChangeNickname) }
+            item { MenuItems(onNavigateToHistory,onNavigateToRank,onNavigateToRefer,onNavigateToChange,onNavigateToPayment,onNavigateToPrize,onNavigateToQuestions,onNavigateToPolicies,onNavigateToSupportCenter,onNavigateToFeedback,onNavigateToCompanyInfo,onNavigateToChangePasswordAccount,onNavigateToChangeNickname,onNavigateToChooseLanguage) }
             item { LogoutButton(authViewModel) }
         }
     }
@@ -158,7 +170,20 @@ fun UserInfoSection(onNavigateToCryptoWallet: () -> Unit, userName: String, user
 
 @Composable
 fun MenuItems(
-    onNavigateToHistory: () -> Unit,onNavigateToChangeNickname: () -> Unit
+    onNavigateToHistory: () -> Unit,
+    onNavigateToRank: () -> Unit,
+    onNavigateToRefer: () -> Unit,
+    onNavigateToChange: () -> Unit,
+    onNavigateToPayment: () -> Unit,
+    onNavigateToPrize: () -> Unit,
+    onNavigateToQuestions: () -> Unit,
+    onNavigateToPolicies: () -> Unit,
+    onNavigateToSupportCenter: () -> Unit,
+    onNavigateToFeedback: () -> Unit,
+    onNavigateToCompanyInfo: () -> Unit,
+    onNavigateToChangePasswordAccount: () -> Unit,
+    onNavigateToChangeNickname: () -> Unit,
+    onNavigateToChooseLanguage: () -> Unit
 ) {
     val menuItems = listOf(
         MenuItem("Member Rank", Icons.Default.Star),
@@ -198,7 +223,19 @@ fun MenuItems(
                 modifier = Modifier.clickable {
                     when (item.title) {
                         "Transaction History" -> onNavigateToHistory()
+                        "Member Rank" -> onNavigateToRank()
+                        "Refer a Friend" -> onNavigateToRefer()
+                        "Change" -> onNavigateToChange()
+                        "Payment Management" -> onNavigateToPayment()
+                        "Prize" -> onNavigateToPrize()
+                        "Regular Questions" -> onNavigateToQuestions()
+                        "Terms and Policies" -> onNavigateToPolicies()
+                        "Support Center" -> onNavigateToSupportCenter()
+                        "User Feedback" -> onNavigateToFeedback()
+                        "Company Information" -> onNavigateToCompanyInfo()
+                        "Change Password" -> onNavigateToChangePasswordAccount()
                         "Change Nickname" -> onNavigateToChangeNickname()
+                        "Language" -> onNavigateToChooseLanguage()
                         else -> {
                             // Handle other menu item clicks
                             // You can add more navigation or action handlers here
