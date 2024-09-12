@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.bachphucngequy.bitbull.domain.model.Ticker
 import com.bachphucngequy.bitbull.presentation.ui.theme.DarkRed
 import com.bachphucngequy.bitbull.presentation.ui.theme.Green100
 import com.bachphucngequy.bitbull.presentation.ui.theme.Red100
@@ -27,17 +28,11 @@ import java.text.DecimalFormat
 @Composable
 fun MarketStatisticHead(
     modifier: Modifier = Modifier,
-    symbol: String
+    uiStateData: List<Ticker>
 ) {
-    val tickerViewModel: TickerViewModel = hiltViewModel()
-    val uiState by tickerViewModel.uiState.collectAsState()
 
-    LaunchedEffect(Unit) {
-        tickerViewModel.getCryptos(symbol)
-    }
-
-    if(uiState.data.isNotEmpty()) {
-        uiState.data[0].let {ticker ->
+    if(uiStateData.isNotEmpty()) {
+        uiStateData[0].let {ticker ->
             val asc = (ticker.openPrice < ticker.lastPrice)
             Row(
                 modifier = modifier.fillMaxWidth(),

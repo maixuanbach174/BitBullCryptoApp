@@ -12,6 +12,8 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -19,7 +21,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.bachphucngequy.bitbull.data.entity.Crypto
+import com.bachphucngequy.bitbull.domain.model.Ticker
 import com.bachphucngequy.bitbull.news.NewsScreen
 import com.bachphucngequy.bitbull.news.NewsViewModel
 import com.bachphucngequy.bitbull.news.api.Article
@@ -30,6 +34,7 @@ import com.bachphucngequy.bitbull.presentation.ui.components.marketdetail.BuySel
 import com.bachphucngequy.bitbull.presentation.ui.components.marketdetail.OrderBookUI
 import com.bachphucngequy.bitbull.presentation.ui.components.marketdetail.SymbolAppBar
 import com.bachphucngequy.bitbull.presentation.ui.components.marketdetail.TradingChart
+import com.bachphucngequy.bitbull.presentation.viewmodel.TickerViewModel
 
 @Composable
 fun MarketDetailScreen(
@@ -41,6 +46,24 @@ fun MarketDetailScreen(
     crypto: Crypto,
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
+
+    val tickerViewModel: TickerViewModel = hiltViewModel()
+    val uiState by tickerViewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        tickerViewModel.getCryptos(crypto.symbol)
+    }
+
+    // Comment: base coin (btc)
+    // code: crypto.code
+    // Comment: quote coin (usdt)
+    // Code: crypto.quoteCode
+    // Comment: price
+    // Code: uiState.data[0].lastPrice
+    // nho check empty list hay khong nha vi cai do la cai list cua ticker nen co the bi null
+    // Co the implement theo kieu nay
+//    if(uiStateData.isNotEmpty()) {
+//        uiStateData[0].let {ticker -> {code cua Nghe}}
 
     Scaffold(
         topBar = {
@@ -65,7 +88,8 @@ fun MarketDetailScreen(
             when (selectedTabIndex) {
                 0 -> PriceContent(
                     modifier = Modifier.fillMaxSize(),
-                    symbol = crypto.symbol,
+                    uiStateData = uiState.data,
+                    symbol = crypto.symbol
                 )
                 1 -> CoinDetailScreen(coinId = crypto.code.lowercase() + "-" + crypto.fullName.lowercase())
                 2 -> TradingDataContent()
@@ -82,7 +106,8 @@ fun MarketDetailScreen(
 @Composable
 fun PriceContent(
     modifier: Modifier,
-    symbol: String,
+    uiStateData: List<Ticker>,
+    symbol: String
 ) {
 
     var selectedTimeframe by remember { mutableStateOf("15") }
@@ -92,7 +117,7 @@ fun PriceContent(
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
 
-        MarketStatisticHead(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp), symbol = symbol)
+        MarketStatisticHead(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp), uiStateData = uiStateData)
         PartialBottomSheet(modifier = Modifier.padding(16.dp), onLineTypeClick = { selectedChartType = it }, onTimeSpanClick = { selectedTimeframe = it })
         Divider(
             thickness = 1.dp,
