@@ -1,6 +1,12 @@
 package com.bachphucngequy.bitbull.data.entity
 
-enum class Crypto(val symbol: String, val code: String, val fullName: String, val quoteCode: String) {
+enum class Crypto(
+    val symbol: String,
+    val code: String,
+    val fullName: String,
+    val quoteCode: String,
+    var isFavourite: Boolean = false
+) {
     BITCOIN(symbol = "BTCUSDT", code = "BTC", fullName = "Bitcoin", quoteCode = "USDT"),
     ETHEREUM(symbol = "ETHUSDT", code = "ETH", fullName = "Ethereum", quoteCode = "USDT"),
     CARDANO(symbol = "ADAUSDT", code = "ADA", fullName = "Cardano", quoteCode = "USDT"),

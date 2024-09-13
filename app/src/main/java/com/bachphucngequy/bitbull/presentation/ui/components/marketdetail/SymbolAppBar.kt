@@ -30,7 +30,7 @@ fun SymbolAppBar(
     companyName: String,
     onBackClick: () -> Unit,
     onFavouriteClick: () -> Unit,
-    isCoinFavourite: Boolean
+    isFavouriteState: Boolean
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -77,13 +77,13 @@ fun SymbolAppBar(
                 }
                 IconButton(onClick = onFavouriteClick) {
                     Icon(
-                        painter = if (isCoinFavourite) {
+                        painter = if (isFavouriteState) {
                             painterResource(id = R.drawable.like_icon_filled)
                         } else {
                             painterResource(id = R.drawable.like_icon_outlined)
                         },
                         contentDescription = null,
-                        tint = if (isCoinFavourite) Color.Red else Color.DarkGray
+                        tint = if (isFavouriteState) Color.Red else Color.DarkGray
                     )
                 }
             }

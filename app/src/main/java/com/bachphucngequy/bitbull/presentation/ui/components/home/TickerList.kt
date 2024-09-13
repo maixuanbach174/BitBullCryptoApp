@@ -26,14 +26,17 @@ import com.bachphucngequy.bitbull.presentation.ui.theme.Green100
 
 
 @Composable
-fun TickerList(data: List<Ticker>, onNavigateToDetail: (Crypto) -> Unit) {
-    val displayId = Crypto.values().take(6).map { it.symbol }
+fun TickerList(
+    data: List<Ticker>,
+    onNavigateToDetail: (Crypto) -> Unit,
+    displayIdList: List<String>
+) {
     LazyColumn(
         Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(data.filter {ticker -> displayId.contains(ticker.symbol)  }.sortedBy { ticker -> ticker.symbol }) { item ->
+        items(data.filter {ticker -> displayIdList.contains(ticker.symbol)  }.sortedBy { ticker -> ticker.symbol }) { item ->
             TickerItem(item, onNavigateToDetail)
         }
     }
