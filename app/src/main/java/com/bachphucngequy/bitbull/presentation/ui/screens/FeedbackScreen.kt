@@ -16,6 +16,9 @@ import androidx.compose.ui.unit.dp
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.clickable
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.graphics.Color
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -115,27 +118,41 @@ fun FeedbackScreen(onNavigateToUserAccount: () -> Unit) {
                 )
 
                 feedbackOptions.forEach { option ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                    Card(
                         modifier = Modifier
-                            .padding(vertical = 8.dp)
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
                             .clickable {
                                 selectedOptions = if (option in selectedOptions) {
                                     selectedOptions - option
                                 } else {
                                     selectedOptions + option
                                 }
-                            }
+                            },
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 2.dp
+                        ),
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (option in selectedOptions)
+                                androidx.compose.material3.MaterialTheme.colorScheme.primaryContainer
+                            else
+                                androidx.compose.material3.MaterialTheme.colorScheme.surface
+                        )
                     ) {
-                        Checkbox(
-                            checked = option in selectedOptions,
-                            onCheckedChange = null // Remove the onCheckedChange here
-                        )
-                        Text(
-                            text = option,
-                            style = MaterialTheme.typography.body1,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Checkbox(
+                                checked = option in selectedOptions,
+                                onCheckedChange = null // Remove the onCheckedChange here
+                            )
+                            Text(
+                                text = option,
+                                style = MaterialTheme.typography.body1,
+                                modifier = Modifier.padding(start = 8.dp)
+                            )
+                        }
                     }
                 }
             }
