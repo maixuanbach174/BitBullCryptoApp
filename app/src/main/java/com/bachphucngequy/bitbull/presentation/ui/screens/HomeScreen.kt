@@ -77,7 +77,11 @@ fun HomeScreen(
                     )
                     Spacer(modifier = Modifier.height(20.dp))
 //                    CryptoList(sampleData)
-                    TickerList(data = uiState.data, onNavigateToDetail)
+                    TickerList(
+                        data = uiState.data,
+                        onNavigateToDetail =  onNavigateToDetail,
+                        displayIdList = uiState.displayIdList
+                    )
                 }
             }
             2-> {

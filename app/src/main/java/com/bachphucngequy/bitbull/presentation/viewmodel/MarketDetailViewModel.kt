@@ -1,8 +1,12 @@
 package com.bachphucngequy.bitbull.presentation.viewmodel
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bachphucngequy.bitbull.data.entity.Crypto
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
@@ -13,6 +17,7 @@ class MarketDetailViewModel: ViewModel() {
     private val firestore = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
     private val favouriteCoinCollection = firestore.collection("favourite")
+
     fun insertFavouriteToFirebase(cryptoSymbol: String) {
         viewModelScope.launch {
             val currentUserId = auth.currentUser?.uid
@@ -54,6 +59,8 @@ class MarketDetailViewModel: ViewModel() {
                     for (document in querySnapshot.documents) {
                         favouriteCoinCollection.document(document.id).delete().await()
                     }
+
+                    Timber.e("Delete favourite successfully")
                 } catch(e: Exception) {
                     Timber.e("Exception during delete favourite")
                 }

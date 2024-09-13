@@ -1,6 +1,6 @@
 package com.bachphucngequy.bitbull.domain.model
 
 data class RemoteFavourite(
-    val userId: String = "",
-    val favouriteCryptoSymbol: String = ""
+    val cryptoSymbol: String = "",
+    val userId: String = ""
 )

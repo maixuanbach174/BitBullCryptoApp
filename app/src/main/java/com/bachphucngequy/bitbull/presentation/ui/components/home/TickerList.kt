@@ -26,12 +26,11 @@ import com.bachphucngequy.bitbull.presentation.ui.theme.Green100
 
 
 @Composable
-fun TickerList(data: List<Ticker>, onNavigateToDetail: (Crypto) -> Unit) {
-    // Get displayIdList for favourite cryptos
-    val displayIdList = Crypto.values()
-        .filter { it.isFavourite }  // Filter cryptos where isFavourite is true
-        .map { it.symbol }           // Map to their symbols
-
+fun TickerList(
+    data: List<Ticker>,
+    onNavigateToDetail: (Crypto) -> Unit,
+    displayIdList: List<String>
+) {
     LazyColumn(
         Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,

@@ -31,7 +31,7 @@ class TickerViewModel @Inject constructor(
 
     private val combinedPrices = mutableMapOf<String, Ticker>()
 
-    private val _uiState = MutableStateFlow<TickerUiState>(TickerUiState(data = emptyList()))
+    private val _uiState = MutableStateFlow<TickerUiState>(TickerUiState(data = emptyList(), displayIdList = emptyList()))
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -81,49 +81,67 @@ class TickerViewModel @Inject constructor(
             val currentUserId = auth.currentUser?.uid
 
             if(currentUserId != null) {
-                val favouriteSnapshot =
-                    favouriteCoinCollection
-                        .whereEqualTo("userId", currentUserId)
-                        .get()
-                        .await()
+                try {
+                    val favouriteSnapshot =
+                        favouriteCoinCollection
+                            .whereEqualTo("userId", currentUserId)
+                            .get()
+                            .await()
 
-                val remoteFavouriteList = favouriteSnapshot.documents.mapNotNull {doc ->
-                    doc.toObject(RemoteFavourite::class.java)
-                }
-
-                if (remoteFavouriteList.isEmpty()) {
-                    // Select the first 5 cryptos as default favorites
-                    val defaultFavouriteCryptos = Crypto.values().take(5)
-
-                    // Create a list of RemoteFavourite objects for default cryptos
-                    val defaultFavouriteList = defaultFavouriteCryptos.map { crypto ->
-                        RemoteFavourite(userId = currentUserId, favouriteCryptoSymbol = crypto.symbol)
+                    val remoteFavouriteList = favouriteSnapshot.documents.mapNotNull {doc ->
+                        doc.toObject(RemoteFavourite::class.java)
                     }
 
-                    // Batch write the default favourites to the Firestore collection
-                    val batch = FirebaseFirestore.getInstance().batch()
+                    if (remoteFavouriteList.isEmpty()) {
+                        // Select the first 5 cryptos as default favorites
+                        val defaultFavouriteCryptos = Crypto.values().take(5)
 
-                    defaultFavouriteList.forEach { favourite ->
-                        val docRef = favouriteCoinCollection.document() // create a new document reference
-                        batch.set(docRef, favourite)
+                        // Create a list of RemoteFavourite objects for default cryptos
+                        val defaultFavouriteList = defaultFavouriteCryptos.map { crypto ->
+                            RemoteFavourite(cryptoSymbol = crypto.symbol, userId = currentUserId)
+                        }
+
+                        // Batch write the default favourites to the Firestore collection
+                        val batch = FirebaseFirestore.getInstance().batch()
+
+                        defaultFavouriteList.forEach { favourite ->
+                            val docRef = favouriteCoinCollection.document() // create a new document reference
+                            batch.set(docRef, favourite)
+                        }
+
+                        // Commit the batch write
+                        batch.commit().await()
+
+                        // Update the isFavourite status in the enum
+                        defaultFavouriteCryptos.forEach { crypto ->
+                            crypto.isFavourite = true
+                        }
+
+                        Timber.e("Create default favourite successfully")
+                    } else {
+                        // Get the list of favorite symbols
+                        val favouriteSymbols = remoteFavouriteList.map { it.cryptoSymbol }
+
+                        // Update the isFavourite status of each Crypto based on the fetched data
+                        Crypto.values().forEach { crypto ->
+                            crypto.isFavourite = favouriteSymbols.contains(crypto.symbol)
+                        }
+                        Timber.e("Fetch favourite successfully")
                     }
 
-                    // Commit the batch write
-                    batch.commit().await()
+                    // Get displayIdList for favourite cryptos
+                    val displayIds = Crypto.values()
+                        .filter { it.isFavourite }  // Filter cryptos where isFavourite is true
+                        .map { it.symbol }           // Map to their symbols
 
-                    // Update the isFavourite status in the enum
-                    defaultFavouriteCryptos.forEach { crypto ->
-                        crypto.isFavourite = true
+                    _uiState.update { tickerState ->
+                        tickerState.copy(
+                            displayIdList = displayIds
+                        )
                     }
-                } else {
-                    // Get the list of favorite symbols
-                    val favouriteSymbols = remoteFavouriteList.map { it.favouriteCryptoSymbol }
 
-                    // Update the isFavourite status of each Crypto based on the fetched data
-                    Crypto.values().forEach { crypto ->
-                        crypto.isFavourite = favouriteSymbols.contains(crypto.symbol)
-                    }
-                    
+                } catch(e: Exception) {
+                    Timber.e("Exception during fetch favourite")
                 }
             }
         }
@@ -135,6 +153,7 @@ class TickerViewModel @Inject constructor(
 
 data class TickerUiState(
     val data: List<Ticker>,
+    val displayIdList: List<String>,
     val isLoading: Boolean = true,
     val isOnline: Boolean = false,
     val error: String = ""

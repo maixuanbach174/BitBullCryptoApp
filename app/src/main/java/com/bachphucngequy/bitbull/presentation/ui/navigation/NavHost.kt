@@ -222,8 +222,8 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                         article = article
                     )
                 },
-                onFavouriteClick = {
-                    crypto.isFavourite = !crypto.isFavourite
+                onFavouriteClick = {updatedCrypto ->
+                    crypto = updatedCrypto
                     if(crypto.isFavourite) {
                         marketDetailViewModel.insertFavouriteToFirebase(crypto.symbol)
                     } else {

@@ -37,10 +37,11 @@ fun MarketDetailScreen(
     onBackClick: () -> Unit,
     newsViewModel: NewsViewModel,
     onNavigateToNewsDetails: (Article) -> Unit,
-    onFavouriteClick: () -> Unit,
-    crypto: Crypto,
+    onFavouriteClick: (Crypto) -> Unit,
+    crypto: Crypto
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
+    var isFavouriteState by remember {mutableStateOf(true)}
 
     Scaffold(
         topBar = {
@@ -49,8 +50,12 @@ fun MarketDetailScreen(
                     marketName = crypto.code + "/" + crypto.quoteCode,
                     companyName = crypto.fullName,
                     onBackClick = onBackClick,
-                    onFavouriteClick = onFavouriteClick,
-                    isCoinFavourite = crypto.isFavourite
+                    onFavouriteClick = {
+                        isFavouriteState = !crypto.isFavourite
+                        crypto.isFavourite = isFavouriteState
+                        onFavouriteClick(crypto)
+                                       },
+                    isFavouriteState = isFavouriteState
                 )
                 TabRow(tabTitles = listOf("Price", "Info", "Trading Data", "News"), onClick = { index ->
                     selectedTabIndex = index
