@@ -298,5 +298,5 @@ fun getFiatList(): List<Fiat> {
 }
 
 fun getCryptoName(symbol: String): String {
-    return com.bachphucngequy.bitbull.data.entity.Crypto.values().find { crypto -> crypto.code == symbol }?.fullName ?: "Unknown"
+    return com.bachphucngequy.bitbull.data.entity.Crypto.values().find { crypto -> crypto.code == symbol }?.fullName ?: "Tether"
 }

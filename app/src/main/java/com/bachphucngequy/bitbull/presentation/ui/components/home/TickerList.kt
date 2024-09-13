@@ -118,6 +118,8 @@ fun getProductResource(
 ): String {
     if(productCode == "BNB") {
         return "https://static.coinpaprika.com/coin/bnb-binance-coin/logo.png"
+    } else if(productCode == "USDT") {
+        return "https://static.coinpaprika.com/coin/usdt-tether/logo.png"
     }
     return "https://static.coinpaprika.com/coin/" + productCode.lowercase() + "-" +productName.lowercase() + "/logo.png"
 }

@@ -38,7 +38,7 @@ fun SearchIconBar(
     ) {
         Box(
             modifier = Modifier
-                .width(300.dp)
+                .width(250.dp)
                 .background(Color.LightGray.copy(alpha = 0.2f), RoundedCornerShape(8.dp))
                 .height(40.dp)
         ) {

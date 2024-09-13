@@ -36,7 +36,8 @@ fun HomeScreen(
     onNavigateToWithdraw: () -> Unit,
     onNavigateToUserAccount: () -> Unit,
     onNavigateToTrade: () ->Unit,
-    onNavigateToDetail: (Crypto) -> Unit
+    onNavigateToDetail: (Crypto) -> Unit,
+    onNavigateToMarket : () -> Unit
 ) {
     val viewModel: TickerViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
@@ -95,6 +96,10 @@ fun HomeScreen(
                         )
                     }
                 }
+            }
+            1 -> {
+                onNavigateToMarket()
+                bottomTabIndex = 0
             }
             2-> {
                 onNavigateToTrade()

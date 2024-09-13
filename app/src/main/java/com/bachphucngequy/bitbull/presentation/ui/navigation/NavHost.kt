@@ -302,14 +302,27 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                     navController.navigate(Screen.MarketDetail.route)
                     crypto = coin
                 },
-                onNavigateToTrade = {navController.navigate(Screen.Trade.route)}
+                onNavigateToTrade = {navController.navigate(Screen.Trade.route)},
+                onNavigateToMarket = {navController.navigate(Screen.Search.route)}
             )
         }
         composable(Screen.Trade.route) {
-            TradingSection ()
+            CryptoWalletScreen(
+                onNavigateToUserAccount = {navController.popBackStack() },
+                onNavigateToDeposit = { navController.navigate(Screen.Deposit.route) },
+                onNavigateToWithdraw = { navController.navigate(Screen.Withdraw.route) },
+                onNavigateToHistory = { navController.navigate(Screen.History.route) },
+                onNavigateToChange = { navController.navigate(Screen.Change.route) }
+            )
         }
         composable(Screen.ViewMarket.route) {
-            ViewMarketScreen(onNavigateToMarketDetail = { navController.navigate(Screen.MarketDetail.route) })
+            SearchScreen(
+                onCancelClick = { navController.popBackStack() },
+                onSearchItemClick = {
+                    navController.navigate(Screen.MarketDetail.route)
+                    crypto = it
+                }
+            )
         }
         composable(Screen.MarketDetail.route) {
             val marketDetailViewModel = viewModel<MarketDetailViewModel>()

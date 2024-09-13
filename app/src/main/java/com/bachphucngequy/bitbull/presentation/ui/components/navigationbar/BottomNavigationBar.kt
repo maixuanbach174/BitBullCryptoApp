@@ -4,13 +4,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Feed
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Sell
 import androidx.compose.material.icons.filled.Wallet
 import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Feed
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Sell
 import androidx.compose.material.icons.outlined.Wallet
+import androidx.compose.material.icons.outlined.WatchLater
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,9 +47,9 @@ object ItemData {
             hasNews = false
         ),
         BottomNavigationItem(
-            title = "Trade",
-            selectedIcon = Icons.Filled.Sell,
-            unselectedIcon = Icons.Outlined.Sell,
+            title = "Wallets",
+            selectedIcon = Icons.Filled.Wallet,
+            unselectedIcon = Icons.Outlined.Wallet,
             hasNews = false
         ),
         BottomNavigationItem(
@@ -57,9 +60,9 @@ object ItemData {
             badgeCount = 2
         ),
         BottomNavigationItem(
-            title = "Wallets",
-            selectedIcon = Icons.Filled.Wallet,
-            unselectedIcon = Icons.Outlined.Wallet,
+            title = "Account",
+            selectedIcon = Icons.Filled.Person,
+            unselectedIcon = Icons.Outlined.Person,
             hasNews = false
         )
     )
