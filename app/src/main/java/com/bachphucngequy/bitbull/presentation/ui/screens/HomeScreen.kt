@@ -45,15 +45,19 @@ fun HomeScreen(
         mutableIntStateOf(0)
     }
     Scaffold(
+        topBar = {
+            Column {
+                Spacer(modifier = Modifier.height(25.dp))
+                TopBar(onSearchClick = onSearchClick)
+            }
+        },
         bottomBar = {
             BottomNavigationBar(
                 selectedItemIndex = bottomTabIndex,
                 onBottomTabSelect = {bottomTabIndex = it}
             )
-        },
-        topBar = {
-             TopBar(onSearchClick = onSearchClick)
         }
+
     ) {paddingValues ->
         when(bottomTabIndex) {
             0 -> Column(

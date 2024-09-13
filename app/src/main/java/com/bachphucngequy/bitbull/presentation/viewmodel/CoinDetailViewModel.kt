@@ -1,5 +1,7 @@
 package com.bachphucngequy.bitbull.presentation.viewmodel
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bachphucngequy.bitbull.domain.model.CoinDetail
@@ -18,11 +20,8 @@ class CoinDetailViewModel(
     private val repository: CoinRepository,
     private val coinId: String
 ) : ViewModel() {
-    private val _coinDetail = MutableStateFlow(CoinDetail())
-    val coinDetail = _coinDetail.asStateFlow()
-
-    private val _showErrorToastChannel = Channel<Boolean>()
-    val showErrorToastChannel = _showErrorToastChannel.receiveAsFlow()
+    private val _state = mutableStateOf(CoinDetailState())
+    val state: State<CoinDetailState> = _state
 
     init {
         viewModelScope.launch {
@@ -30,19 +29,27 @@ class CoinDetailViewModel(
                     result ->
                 when(result) {
                     is Result.Error -> {
-                        _showErrorToastChannel.send(true)
+                        _state.value = CoinDetailState(
+                            error = result.message ?: "An unexpected error occured"
+                        )
                     }
                     is Result.Success ->{
                         result.data?.let {coinDetail->
-                            _coinDetail.update { coinDetail }
+                            _state.value = CoinDetailState(coin = coinDetail)
                         }
-
                     }
-
-                    is Result.Loading -> TODO()
+                    is Result.Loading -> {
+                        _state.value = CoinDetailState(isLoading = true)
+                    }
                 }
             }
         }
     }
 
 }
+
+data class CoinDetailState(
+    val isLoading: Boolean = false,
+    val coin: CoinDetail? = null,
+    val error: String = ""
+)

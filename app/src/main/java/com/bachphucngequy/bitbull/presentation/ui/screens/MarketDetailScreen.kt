@@ -136,7 +136,6 @@ fun PriceContent(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         )
-        OrderBookUI(modifier = Modifier.padding(horizontal = 16.dp))
     }
 }
 
@@ -149,11 +148,5 @@ fun InfoContent() {
 @Composable
 fun TradingDataContent() {
     // Implement trading data content here
-    Text("Trading Data Content")
-}
-
-@Composable
-fun SquareContent() {
-    // Implement square content here
-    Text("Square Content")
+    OrderBookUI(modifier = Modifier.padding(horizontal = 16.dp))
 }
