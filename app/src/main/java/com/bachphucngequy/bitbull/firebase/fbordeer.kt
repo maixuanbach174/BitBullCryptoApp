@@ -1,6 +1,7 @@
 package com.bachphucngequy.bitbull.firebase
 
 import android.util.Log
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -10,6 +11,7 @@ import kotlin.coroutines.resumeWithException
 
 object FirebaseRepository {
     private val firestore = FirebaseFirestore.getInstance()
+
 
     /**
      * Function to fetch the available balance without UI/Compose dependencies
@@ -103,7 +105,42 @@ object FirebaseRepository {
                 onFailure(e)
             }
     }
+    fun addOrder(
+        userId: String,
+        amount: Double,
+        price: Double,
+        btcCurrency: String,
+        usdtCurrency: String,
+        isBuy: Boolean,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        // Define the order type
+        val orderType = if (isBuy) "Buy" else "Sell"
 
+        // Prepare the data for the transaction document
+        val transactionData = hashMapOf(
+            "userID" to userId,
+            "amount" to amount,
+            "price" to price,
+            "t1" to btcCurrency,   // BTC currency
+            "t2" to usdtCurrency,  // USDT currency
+            "type" to orderType,   // "Buy" or "Sell"
+            "date" to FieldValue.serverTimestamp() // Current timestamp
+        )
+
+        // Add the transaction data to the "transaction" collection
+        firestore.collection("transaction")
+            .add(transactionData)
+            .addOnSuccessListener {
+                // Call onSuccess callback if the document is successfully added
+                onSuccess()
+            }
+            .addOnFailureListener { exception ->
+                // Call onFailure callback if there is an error
+                onFailure(exception)
+            }
+    }
     // Helper function to update or create the sell currency
     private fun updateOrCreateSellCurrency(
         userId: String,

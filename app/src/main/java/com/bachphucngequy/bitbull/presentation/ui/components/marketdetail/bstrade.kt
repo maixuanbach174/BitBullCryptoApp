@@ -208,13 +208,28 @@ fun OrderBottomSheet(
                                             newAmountBuyCurrency = newAmountBuyCurrency,
                                             newAmountSellCurrency = newAmountSellCurrency,
                                             onSuccess = {
-                                                Toast.makeText(context, "Order executed successfully!", Toast.LENGTH_SHORT).show()
-                                                onDismiss()
+                                                // Call addOrder after updating the balances
+                                                FirebaseRepository.addOrder(
+                                                    userId = userId,
+                                                    amount = amount.toDouble()/price,
+                                                    price = price,
+                                                    btcCurrency = btcCurrency,
+                                                    usdtCurrency = usdtCurrency,
+                                                    isBuy = isBuy,
+                                                    onSuccess = {
+                                                        Toast.makeText(context, "Order executed successfully!", Toast.LENGTH_SHORT).show()
+                                                        onDismiss()
+                                                    },
+                                                    onFailure = { exception ->
+                                                        Toast.makeText(context, "Failed to record the transaction: ${exception.message}", Toast.LENGTH_SHORT).show()
+                                                    }
+                                                )
                                             },
                                             onFailure = { exception ->
-                                                Toast.makeText(context, "Order failed: ${exception.message}", Toast.LENGTH_SHORT).show()
+                                                Toast.makeText(context, "Failed to update balances: ${exception.message}", Toast.LENGTH_SHORT).show()
                                             }
                                         )
+
                                     },
                                     onFailure = { exception ->
                                         Log.e("FirebaseRepository", "Error fetching $btcCurrency balance", exception)

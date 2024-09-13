@@ -1,5 +1,6 @@
 package com.bachphucngequy.bitbull.firebase
 
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
 object WithdrawBackend {
@@ -106,7 +107,8 @@ object WithdrawBackend {
                                         "userIDwith" to user.usid,
                                         "currency" to "USDT",
                                         "amount" to withdrawAmount,
-                                        "note" to note
+                                        "note" to note,
+                                        "date" to FieldValue.serverTimestamp()
                                     )
 
                                     db.collection("transaction")
