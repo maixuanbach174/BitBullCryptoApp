@@ -1,15 +1,20 @@
 package com.bachphucngequy.bitbull.firebase
 
 import android.util.Log
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import kotlin.coroutines.resumeWithException
 
 object FirebaseRepository {
     private val firestore = FirebaseFirestore.getInstance()
+
 
     /**
      * Function to fetch the available balance without UI/Compose dependencies
@@ -60,7 +65,7 @@ object FirebaseRepository {
             .addOnSuccessListener { querySnapshot ->
                 if (querySnapshot.isEmpty) {
                     // Create a new document for the buy currency
-                    val newBuyData = hashMapOf(
+                    val newBuyData = mapOf(
                         "userID" to userId,
                         "currency" to buyCurrency,
                         "amount" to newAmountBuyCurrency
@@ -103,8 +108,41 @@ object FirebaseRepository {
                 onFailure(e)
             }
     }
+    fun addOrder(
+        userId: String,
+        amount: Double,
+        price: Double,
+        btcCurrency: String,
+        usdtCurrency: String,
+        isBuy: Boolean,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val orderType = if (isBuy) "Buy" else "Sell"
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val currentDate = dateFormat.format(Date())
+        val transactionData = mapOf(
+            "userID" to userId,
+            "amount" to amount,
+            "price" to price,
+            "t1" to btcCurrency,
+            "t2" to usdtCurrency,
+            "type" to orderType,
+            "date" to currentDate
+        )
 
-    // Helper function to update or create the sell currency
+        firestore.collection("order")
+            .add(transactionData)
+            .addOnSuccessListener {
+
+                onSuccess()
+            }
+            .addOnFailureListener { exception ->
+
+                onFailure(exception)
+            }
+    }
+
     private fun updateOrCreateSellCurrency(
         userId: String,
         sellCurrency: String,
@@ -119,25 +157,25 @@ object FirebaseRepository {
             .addOnSuccessListener { secondSnapshot ->
                 if (secondSnapshot.isEmpty) {
                     // Create a new document for the sell currency
-                    val newSellData = hashMapOf(
+                    val newSellData = mapOf(
                         "userID" to userId,
                         "currency" to sellCurrency,
                         "amount" to newAmountSellCurrency
                     )
                     firestore.collection("hold").add(newSellData)
                         .addOnSuccessListener {
-                            onSuccess() // Successfully created new sell currency document
+                            onSuccess()
                         }
                         .addOnFailureListener { e ->
                             onFailure(e)
                         }
                 } else {
-                    // Update the existing document for the sell currency
+
                     val sellDocument = secondSnapshot.documents[0]
                     firestore.collection("hold").document(sellDocument.id)
                         .update("amount", newAmountSellCurrency)
                         .addOnSuccessListener {
-                            onSuccess() // Successfully updated both currencies
+                            onSuccess()
                         }
                         .addOnFailureListener { e ->
                             onFailure(e)
@@ -150,7 +188,7 @@ object FirebaseRepository {
     }
 }
 object OrderManager {
-    // Buy/Sell logic function
+
     fun handleOrder(
         currentAmountBuyCurrency: Double,
         currentAmountSellCurrency: Double,

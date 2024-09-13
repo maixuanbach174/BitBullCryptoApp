@@ -1,6 +1,10 @@
 package com.bachphucngequy.bitbull.firebase
 
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 object WithdrawBackend {
     fun fetchAvailableAmount(fee: Double, onResult: (Double?) -> Unit) {
@@ -71,7 +75,7 @@ object WithdrawBackend {
                             .get()
                             .addOnSuccessListener { recipientHoldDocs ->
                                 if (recipientHoldDocs.isEmpty) {
-                                    val recipientNewHold = hashMapOf(
+                                    val recipientNewHold = mapOf(
                                         "userID" to binanceId,
                                         "currency" to "USDT",
                                         "amount" to withdrawAmount
@@ -100,13 +104,15 @@ object WithdrawBackend {
 
                                     val recipientHoldDoc = recipientHoldDocs.documents.firstOrNull()
                                     val recipientAvailableAmount = recipientHoldDoc?.getDouble("amount") ?: 0.0
-
-                                    val transaction = hashMapOf(
+                                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                    val currentDate = dateFormat.format(Date())
+                                    val transaction = mapOf(
                                         "UserIDdep" to binanceId,
                                         "userIDwith" to user.usid,
                                         "currency" to "USDT",
                                         "amount" to withdrawAmount,
-                                        "note" to note
+                                        "note" to note,
+                                        "date" to currentDate
                                     )
 
                                     db.collection("transaction")

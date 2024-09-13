@@ -1,9 +1,11 @@
 package com.bachphucngequy.bitbull.presentation.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -11,17 +13,19 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.bachphucngequy.bitbull.R
 import com.bachphucngequy.bitbull.presentation.ui.components.home.getProductResource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,12 +42,10 @@ fun CryptoWalletScreen(
     var searchQuery by remember { mutableStateOf("") }
 
     val cryptoList = remember { MutableStateFlow<List<Crypto>>(emptyList()) }
-    val totalAssetUSD = remember { MutableStateFlow(0.0) }
-    val totalAssetBTC = remember { MutableStateFlow(0.0) }
 
     LaunchedEffect(Unit) {
         if (currentUserId != null) {
-            fetchUserCryptoData(firestore, currentUserId, cryptoList, totalAssetUSD, totalAssetBTC)
+            fetchUserCryptoData(firestore, currentUserId, cryptoList)
         } else {
             // Handle the case where the user is not logged in
             // You might want to navigate to a login screen or show an error message
@@ -51,48 +53,47 @@ fun CryptoWalletScreen(
     }
 
     val cryptoListState by cryptoList.collectAsState()
-    val totalAssetUSDState by totalAssetUSD.collectAsState()
-    val totalAssetBTCState by totalAssetBTC.collectAsState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(Color.White)
+            .navigationBarsPadding()
     ) {
         // Top bar
         TopAppBar(
-            title = { Text("Funding Account", color = Color.White) },
+            title = { Text("Spot Account", color = Color.Black) },
             navigationIcon = {
                 IconButton(onClick = onNavigateToUserAccount) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.Black)
                 }
             },
             actions = {
                 IconButton(onClick = { /* Handle info action */ }) {
-                    Icon(Icons.Default.Info, contentDescription = "Info", tint = Color.White)
+                    Icon(Icons.Default.Info, contentDescription = "Info", tint = Color.Black)
                 }
                 IconButton(onClick = { /* Handle refresh action */ }) {
-                    Icon(Icons.Default.Refresh, contentDescription = "Refresh", tint = Color.White)
+                    Icon(Icons.Default.Refresh, contentDescription = "Refresh", tint = Color.Black)
                 }
             },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Black)
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
         )
 
-        // Total Assets
-        Card(
+        // App Logo
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
+            contentAlignment = Alignment.Center
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text("Total Assets", color = Color.Gray)
-                Text("${String.format("%.2f", totalAssetUSDState)} USD", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                Text("≈ ${String.format("%.8f", totalAssetBTCState)} BTC", color = Color.Gray)
-                Spacer(modifier = Modifier.height(8.dp))
-                Text("Available Balance", color = Color.Gray)
-                Text("${String.format("%.2f", totalAssetUSDState)} USD ≈ ${String.format("%.8f", totalAssetBTCState)} BTC", color = Color.White)
-            }
+            Image(
+                painter = painterResource(id = R.drawable.mylogo),
+                contentDescription = "App Logo",
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
         }
 
         // HODL USDe Banner
@@ -101,13 +102,13 @@ fun CryptoWalletScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2C2C2C))
+            colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.AttachMoney, contentDescription = null, tint = Color.White)
-                Text("HODL USDe to Enjoy Up to 10% APR!", color = Color.White)
+                Icon(Icons.Default.AttachMoney, contentDescription = null, tint = Color.Black)
+                Text("HODL USDe to Enjoy Up to 10% APR!", color = Color.Black)
                 Spacer(modifier = Modifier.weight(1f))
-                Icon(Icons.Default.ArrowForward, contentDescription = null, tint = Color.White)
+                Icon(Icons.Default.ArrowForward, contentDescription = null, tint = Color.Black)
             }
         }
 
@@ -127,12 +128,12 @@ fun CryptoWalletScreen(
         // Tabs
         TabRow(
             selectedTabIndex = selectedTab,
-            contentColor = Color.White,
-            containerColor = Color.Black,
+            contentColor = Color.Black,
+            containerColor = Color.White,
             indicator = { tabPositions ->
                 TabRowDefaults.Indicator(
                     modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
-                    color = Color.White
+                    color = Color.Black
                 )
             }
         ) {
@@ -141,7 +142,7 @@ fun CryptoWalletScreen(
                     text = { Text(title) },
                     selected = selectedTab == index,
                     onClick = { selectedTab = index },
-                    selectedContentColor = Color.White,
+                    selectedContentColor = Color.Black,
                     unselectedContentColor = Color.Gray
                 )
             }
@@ -158,19 +159,19 @@ fun CryptoWalletScreen(
                 checked = hideZeroBalances,
                 onCheckedChange = { hideZeroBalances = it },
                 colors = CheckboxDefaults.colors(
-                    checkedColor = Color.White,
+                    checkedColor = Color.Black,
                     uncheckedColor = Color.Gray
                 )
             )
-            Text("Hide zero balances", color = Color.White, modifier = Modifier.weight(1f))
+            Text("Hide zero balances", color = Color.Black, modifier = Modifier.weight(1f))
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
                 placeholder = { Text("Search", color = Color.Gray) },
                 modifier = Modifier.width(120.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = Color.White,
-                    focusedBorderColor = Color.White,
+                    focusedTextColor = Color.Black,
+                    focusedBorderColor = Color.Black,
                     unfocusedBorderColor = Color.Gray
                 )
             )
@@ -200,44 +201,27 @@ fun CryptoWalletScreen(
 fun fetchUserCryptoData(
     firestore: FirebaseFirestore,
     currentUserId: String,
-    cryptoList: MutableStateFlow<List<Crypto>>,
-    totalAssetUSD: MutableStateFlow<Double>,
-    totalAssetBTC: MutableStateFlow<Double>
+    cryptoList: MutableStateFlow<List<Crypto>>
 ) {
     firestore.collection("hold").get().addOnSuccessListener { querySnapshot ->
         val userCryptos = mutableListOf<Crypto>()
-        var totalUSD = 0.0
 
         for (document in querySnapshot.documents) {
             if (document.getString("userID") == currentUserId) {
                 val currency = document.getString("currency") ?: continue
                 val amount = document.getDouble("amount") ?: 0.0
-                val randomUsdRate = Random.nextDouble(0.1, 1000.0)
-                val usdValue = amount * randomUsdRate
-                totalUSD += usdValue
 
                 userCryptos.add(
                     Crypto(
                         symbol = currency,
                         name = getCryptoName(currency),
-                        balance = amount.toString(),
-                        value = "≈ ${String.format("%.2f", usdValue)} USD",
-                        usdRate = randomUsdRate
+                        balance = amount.toString()
                     )
                 )
             }
         }
 
         cryptoList.value = userCryptos
-        totalAssetUSD.value = totalUSD
-
-        // Calculate BTC equivalent
-        val btcCrypto = userCryptos.find { it.symbol == "BTC" }
-        totalAssetBTC.value = if (btcCrypto != null) {
-            totalUSD / btcCrypto.usdRate
-        } else {
-            totalUSD / Random.nextDouble(20000.0, 60000.0) // Random BTC price if user doesn't have BTC
-        }
     }.addOnFailureListener { exception ->
         // Handle error
         println("Error fetching data: ${exception.message}")
@@ -249,11 +233,11 @@ fun ActionButton(text: String, icon: ImageVector) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Button(
             onClick = { /* Handle action */ },
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2C2C2C))
+            colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
         ) {
-            Icon(icon, contentDescription = null, tint = Color.White)
+            Icon(icon, contentDescription = null, tint = Color.Black)
         }
-        Text(text, color = Color.White)
+        Text(text, color = Color.Black)
     }
 }
 
@@ -271,14 +255,11 @@ fun CryptoListItem(crypto: Crypto) {
             modifier = Modifier.size(40.dp)
         )
         Column(modifier = Modifier.padding(start = 16.dp)) {
-            Text(crypto.symbol, fontWeight = FontWeight.Bold, color = Color.White)
+            Text(crypto.symbol, fontWeight = FontWeight.Bold, color = Color.Black)
             Text(crypto.name, color = Color.Gray)
         }
         Spacer(modifier = Modifier.weight(1f))
-        Column(horizontalAlignment = Alignment.End) {
-            Text(crypto.balance, fontWeight = FontWeight.Bold, color = Color.White)
-            Text(crypto.value, color = Color.Gray)
-        }
+        Text(crypto.balance, fontWeight = FontWeight.Bold, color = Color.Black)
     }
 }
 
@@ -290,19 +271,17 @@ fun FiatListItem(fiat: Fiat) {
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(fiat.icon, contentDescription = null, tint = Color.White, modifier = Modifier.size(40.dp))
+        Icon(fiat.icon, contentDescription = null, tint = Color.Black, modifier = Modifier.size(40.dp))
         Column(modifier = Modifier.padding(start = 16.dp)) {
-            Text(fiat.symbol, fontWeight = FontWeight.Bold, color = Color.White)
+            Text(fiat.symbol, fontWeight = FontWeight.Bold, color = Color.Black)
             Text(fiat.name, color = Color.Gray)
         }
         Spacer(modifier = Modifier.weight(1f))
-        Column(horizontalAlignment = Alignment.End) {
-            Text(fiat.balance, fontWeight = FontWeight.Bold, color = Color.White)
-        }
+        Text(fiat.balance, fontWeight = FontWeight.Bold, color = Color.Black)
     }
 }
 
-data class Crypto(val symbol: String, val name: String, val balance: String, val value: String, val usdRate: Double)
+data class Crypto(val symbol: String, val name: String, val balance: String)
 data class Fiat(val symbol: String, val name: String, val balance: String, val icon: ImageVector)
 
 fun getFiatList(): List<Fiat> {
