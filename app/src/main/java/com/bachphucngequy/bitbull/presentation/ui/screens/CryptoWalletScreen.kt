@@ -16,11 +16,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import com.bachphucngequy.bitbull.presentation.ui.components.home.getProductResource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -222,7 +222,6 @@ fun fetchUserCryptoData(
                         name = getCryptoName(currency),
                         balance = amount.toString(),
                         value = "≈ ${String.format("%.2f", usdValue)} USD",
-                        icon = getCryptoIcon(currency),
                         usdRate = randomUsdRate
                     )
                 )
@@ -245,7 +244,6 @@ fun fetchUserCryptoData(
     }
 }
 
-// ... (rest of the code remains the same)
 @Composable
 fun ActionButton(text: String, icon: ImageVector) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -267,7 +265,11 @@ fun CryptoListItem(crypto: Crypto) {
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(crypto.icon, contentDescription = null, tint = Color.White, modifier = Modifier.size(40.dp))
+        AsyncImage(
+            model = getProductResource(crypto.symbol, crypto.name),
+            contentDescription = null,
+            modifier = Modifier.size(40.dp)
+        )
         Column(modifier = Modifier.padding(start = 16.dp)) {
             Text(crypto.symbol, fontWeight = FontWeight.Bold, color = Color.White)
             Text(crypto.name, color = Color.Gray)
@@ -300,7 +302,7 @@ fun FiatListItem(fiat: Fiat) {
     }
 }
 
-data class Crypto(val symbol: String, val name: String, val balance: String, val value: String, val icon: ImageVector, val usdRate: Double)
+data class Crypto(val symbol: String, val name: String, val balance: String, val value: String, val usdRate: Double)
 data class Fiat(val symbol: String, val name: String, val balance: String, val icon: ImageVector)
 
 fun getFiatList(): List<Fiat> {
@@ -313,23 +315,5 @@ fun getFiatList(): List<Fiat> {
 }
 
 fun getCryptoName(symbol: String): String {
-    return when (symbol) {
-        "USDT" -> "Tether USDT"
-        "BTC" -> "Bitcoin"
-        "ETH" -> "Ethereum"
-        "USDC" -> "USD Coin"
-        "DOGS" -> "Dogecoin"
-        else -> symbol
-    }
-}
-
-fun getCryptoIcon(symbol: String): ImageVector {
-    return when (symbol) {
-        "USDT" -> Icons.Default.MonetizationOn
-        "BTC" -> Icons.Default.CurrencyBitcoin
-        "ETH" -> Icons.Default.Token
-        "USDC" -> Icons.Default.AttachMoney
-        "DOGS" -> Icons.Default.Pets
-        else -> Icons.Default.CurrencyExchange
-    }
+    return com.bachphucngequy.bitbull.data.entity.Crypto.values().find { crypto -> crypto.code == symbol }?.fullName ?: "Unknown"
 }
