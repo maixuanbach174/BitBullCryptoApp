@@ -3,8 +3,10 @@ package com.bachphucngequy.bitbull.presentation.ui.screens
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,6 +16,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bachphucngequy.bitbull.data.entity.Crypto
@@ -74,17 +78,22 @@ fun HomeScreen(
                         onDepositClick = onNavigateToDeposit,
                         onWithdrawClick = onNavigateToWithdraw
                     )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    TabRow(
-                        listOf("Favorites", "Hot", "Gainers", "Losers", "New Listings", "24h"),
-                        onClick = {}
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
+                    if(uiState.isLoading) {
+
+                    }
+                    else {
+                        Spacer(modifier = Modifier.height(20.dp))
+                        TabRow(
+                            listOf("Favorites", "Hot", "Gainers", "Losers", "New Listings", "24h"),
+                            onClick = {}
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
 //                    CryptoList(sampleData)
-                    TickerList(
-                        data = uiState.data,
-                        onNavigateToDetail =  onNavigateToDetail
-                    )
+                        TickerList(
+                            data = uiState.data,
+                            onNavigateToDetail =  onNavigateToDetail
+                        )
+                    }
                 }
             }
             2-> {

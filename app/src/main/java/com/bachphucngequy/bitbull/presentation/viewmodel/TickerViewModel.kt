@@ -76,6 +76,7 @@ class TickerViewModel @Inject constructor(
     }
 
     private fun fetchFavouriteCoinsFromFirebase() {
+        _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             val currentUserId = auth.currentUser?.uid
 
@@ -127,6 +128,8 @@ class TickerViewModel @Inject constructor(
                         }
                         Timber.e("Fetch favourite successfully")
                     }
+
+                    _uiState.update { it.copy(isLoading = false) }
 
                 } catch(e: Exception) {
                     Timber.e("Exception during fetch favourite")

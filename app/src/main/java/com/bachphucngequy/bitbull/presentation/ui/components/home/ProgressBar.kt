@@ -37,11 +37,4 @@ fun ProgressBar(
         )
     }
     Spacer(modifier = Modifier.height(10.dp))
-    LinearProgressIndicator(
-        progress = 0.25f,
-        modifier = Modifier.fillMaxWidth(),
-        trackColor = Color.LightGray.copy(alpha = 0.2f),
-        color = Color.Black,
-        strokeCap = StrokeCap.Round
-    )
 }

@@ -87,7 +87,7 @@ fun MarketDetailScreen(
     if(uiState.data.isNotEmpty()) {
         price=uiState.data[0].lastPrice
     }
-    var isFavouriteState by remember {mutableStateOf(true)}
+    var isFavouriteState by remember {mutableStateOf(crypto.isFavourite)}
 
     Scaffold(
         topBar = {
