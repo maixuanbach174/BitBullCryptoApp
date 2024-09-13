@@ -111,7 +111,7 @@ fun EnterCodePasswordScreen(onNavigateToForgotPassword: () -> Unit,onNavigateToR
                     val email2=email
                     onNavigateToResetPassword(email2)
                 } else {
-                    Toast.makeText(context, "OTP is not correct $otpcur", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "OTP is not correct", Toast.LENGTH_SHORT).show()
                 }
             },
             modifier = Modifier

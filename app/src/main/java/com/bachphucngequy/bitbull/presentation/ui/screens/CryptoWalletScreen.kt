@@ -30,7 +30,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CryptoWalletScreen(
-    onNavigateToUserAccount: () -> Unit
+    onNavigateToUserAccount: () -> Unit,
+    onNavigateToDeposit: () -> Unit,
+    onNavigateToWithdraw: () -> Unit,
+    onNavigateToHistory: () -> Unit,
+    onNavigateToChange: () -> Unit
 ) {
     val firestore = FirebaseFirestore.getInstance()
     val auth = FirebaseAuth.getInstance()
@@ -118,10 +122,10 @@ fun CryptoWalletScreen(
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            ActionButton(text = "Deposit", icon = Icons.Default.Add)
-            ActionButton(text = "Withdraw", icon = Icons.Default.Remove)
-            ActionButton(text = "Transfer", icon = Icons.Default.Send)
-            ActionButton(text = "Convert", icon = Icons.Default.SwapHoriz)
+            ActionButton(text = "Deposit", icon = Icons.Default.Add, onNavigateToDeposit)
+            ActionButton(text = "Withdraw", icon = Icons.Default.Remove, onNavigateToWithdraw)
+            ActionButton(text = "History", icon = Icons.Default.History, onNavigateToHistory)
+            ActionButton(text = "Convert", icon = Icons.Default.SwapHoriz, onNavigateToChange)
         }
 
         // Tabs
@@ -228,10 +232,10 @@ fun fetchUserCryptoData(
 }
 
 @Composable
-fun ActionButton(text: String, icon: ImageVector) {
+fun ActionButton(text: String, icon: ImageVector, onNavigateTo: () -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Button(
-            onClick = { /* Handle action */ },
+            onClick = { onNavigateTo() },
             colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
         ) {
             Icon(icon, contentDescription = null, tint = Color.Black)

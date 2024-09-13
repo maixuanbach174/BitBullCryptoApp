@@ -188,6 +188,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
                 onNavigateToCryptoWallet = { navController.navigate(Screen.CryptoWallet.route) },
                 onNavigateToRank = { navController.navigate(Screen.Rank.route) },
                 onNavigateToRefer = { navController.navigate(Screen.Refer.route) },
+                onNavigateToDeposit = { navController.navigate(Screen.Deposit.route) },
                 onNavigateToChange = { navController.navigate(Screen.Change.route) },
                 onNavigateToPayment = { navController.navigate(Screen.Payment.route) },
                 onNavigateToPrize = { navController.navigate(Screen.Prize.route) },
@@ -207,7 +208,11 @@ fun MyAppNavHost(innerPadding: PaddingValues,
 
         composable(Screen.CryptoWallet.route) {
             CryptoWalletScreen(
-                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) },
+                onNavigateToDeposit = { navController.navigate(Screen.Deposit.route) },
+                onNavigateToWithdraw = { navController.navigate(Screen.Withdraw.route) },
+                onNavigateToHistory = { navController.navigate(Screen.History.route) },
+                onNavigateToChange = { navController.navigate(Screen.Change.route) }
             )
         }
 
@@ -226,13 +231,15 @@ fun MyAppNavHost(innerPadding: PaddingValues,
 
         composable(Screen.Change.route) {
             ChangeScreen(
-                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) },
+                onNavigateToHome = { navController.navigate(Screen.Home.route) }
             )
         }
 
         composable(Screen.Payment.route) {
             PaymentScreen(
-                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) }
+                onNavigateToUserAccount = { navController.navigate(Screen.UserAccount.route) },
+                onNavigateToPrize = { navController.navigate(Screen.Prize.route) }
             )
         }
 
