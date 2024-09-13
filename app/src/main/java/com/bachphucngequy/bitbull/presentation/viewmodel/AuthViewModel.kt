@@ -116,7 +116,17 @@ class AuthViewModel : ViewModel() {
                         // User is signed in
                         _authState.value = AuthState.Authenticated
                         // Check if the user is new
-                        if (signInTask.result?.additionalUserInfo?.isNewUser == true || signInTask.result?.additionalUserInfo?.isNewUser == false) {
+                        if (signInTask.result?.additionalUserInfo?.isNewUser == true) {
+                            handleNewUser(user)
+                            // Create a new user document in Firestore
+                            val userMap = hashMapOf(
+                                "name" to "Investor",
+                                "email" to user.email
+                            )
+                            firestore.collection("AppUsers").document(user.uid)
+                                .set(userMap)
+                        }
+                        if (signInTask.result?.additionalUserInfo?.isNewUser == false){
                             handleNewUser(user)
                         }
                     } else {
