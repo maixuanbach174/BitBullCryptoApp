@@ -20,7 +20,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.bachphucngequy.bitbull.history.components.BuySellListItem
 import com.bachphucngequy.bitbull.history.components.HistoryListItem
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,6 +73,12 @@ fun HistoryScreen(
                             HistoryListItem(historyItem = listItem)
                         }
                     }
+
+                    2 -> LazyColumn {
+                        items(uiState.tradeList) {listItem ->
+                            BuySellListItem(buySellHistoryItem = listItem)
+                        }
+                    }
                 }
             }
         }
@@ -97,15 +103,5 @@ fun HistoryTabRow(
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun HistoryScreenPreview() {
-    HistoryScreen(
-        uiState = HistoryUiState(),
-        onUiAction = {},
-        navigateUp = {}
-    )
 }
 

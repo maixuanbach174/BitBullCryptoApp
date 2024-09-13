@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bachphucngequy.bitbull.history.model.HistoryItem
 
@@ -28,11 +29,11 @@ fun HistoryListItem(
         Column {
             Text(
                 text = historyItem.coinCode,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyLarge
             )
             Text(
                 text = historyItem.date,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = Color.DarkGray
             )
         }
@@ -43,14 +44,14 @@ fun HistoryListItem(
                         } else {
                             historyItem.amount.toString()
                         },
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 color = if(historyItem.amount > 0){
                             Color.Green
                         } else {
                             Color.Red
                         },
             )
-            Text(text = historyItem.status, style = MaterialTheme.typography.bodySmall)
+            Text(text = historyItem.status, style = MaterialTheme.typography.bodyMedium)
         }
     }
 }

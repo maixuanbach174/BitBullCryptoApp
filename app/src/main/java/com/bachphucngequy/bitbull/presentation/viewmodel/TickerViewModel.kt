@@ -94,7 +94,7 @@ class TickerViewModel @Inject constructor(
 
                     if (remoteFavouriteList.isEmpty()) {
                         // Select the first 5 cryptos as default favorites
-                        val defaultFavouriteCryptos = Crypto.values().take(3)
+                        val defaultFavouriteCryptos = Crypto.values().take(6)
 
                         // Create a list of RemoteFavourite objects for default cryptos
                         val defaultFavouriteList = defaultFavouriteCryptos.map { crypto ->

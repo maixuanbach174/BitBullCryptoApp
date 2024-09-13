@@ -6,14 +6,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bachphucngequy.bitbull.history.Constants.ORDER_COLLECTION
 import com.bachphucngequy.bitbull.history.Constants.TRANSACTION_COLLECTION
+import com.bachphucngequy.bitbull.history.model.BuySellHistoryItem
 import com.bachphucngequy.bitbull.history.model.HistoryItem
+import com.bachphucngequy.bitbull.history.model.RemoteOrder
 import com.bachphucngequy.bitbull.history.model.Transaction
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 
 class HistoryViewModel : ViewModel() {
     var uiState by mutableStateOf(HistoryUiState())
@@ -60,12 +64,17 @@ class HistoryViewModel : ViewModel() {
                         .get()
                         .await()
 
+                    val tradeSnapshot = firestore.collection(ORDER_COLLECTION)
+                        .whereEqualTo("UserID", userId)
+                        .get()
+                        .await()
+
                     val userDepositList = depositSnapshot.documents.mapNotNull { doc ->
                         doc.toObject(Transaction::class.java)
                     }
 
                     for(deposit in userDepositList) {
-                        Log.d("Deposit", deposit.amount.toString())
+                        Timber.e("Deposit ${deposit.amount}")
                     }
 
                     val userWithdrawalList = withdrawalSnapshot.documents.mapNotNull { doc ->
@@ -73,7 +82,15 @@ class HistoryViewModel : ViewModel() {
                     }
 
                     for(withdraw in userWithdrawalList) {
-                        Log.d("Withdraw", withdraw.amount.toString())
+                        Timber.e("Withdraw ${withdraw.amount}")
+                    }
+
+                    val userTradeList = tradeSnapshot.documents.mapNotNull { doc ->
+                        doc.toObject(RemoteOrder::class.java)
+                    }
+
+                    for(trade in userTradeList) {
+                        Timber.e("Trade ${trade.amount}")
                     }
 
                     val depositList = userDepositList.map {transaction ->
@@ -94,10 +111,23 @@ class HistoryViewModel : ViewModel() {
                         )
                     }
 
+                    val tradeList = userTradeList.map {transaction ->
+                        BuySellHistoryItem(
+                            t1 = transaction.t1,
+                            t2 = transaction.t2,
+                            date = "2024-03-06",
+                            type = transaction.type,
+                            amount = transaction.amount,
+                            price = transaction.price,
+                            status = "Completed"
+                        )
+                    }
+
                     uiState = uiState.copy(
                         isLoading = false,
                         depositList = depositList,
-                        withdrawalList = withdrawalList
+                        withdrawalList = withdrawalList,
+                        tradeList = tradeList
                     )
 
                 } catch(e: Exception) {
@@ -106,7 +136,9 @@ class HistoryViewModel : ViewModel() {
                         errorMessage = e.localizedMessage
                     )
 
-                    e.localizedMessage?.let { Log.d("Exception: ", it) }
+                    e.localizedMessage?.let {
+                        Timber.e("Exception in History")
+                    }
                 }
             } else {
                 uiState = uiState.copy(
@@ -114,7 +146,7 @@ class HistoryViewModel : ViewModel() {
                     errorMessage = "User not logged in"
                 )
 
-                Log.d("Error: ", "User not logged in")
+                Timber.e("Error user not login")
             }
         }
     }
@@ -125,6 +157,7 @@ data class HistoryUiState (
     val topTabIndex: Int = 0,
     val depositList: List<HistoryItem> = listOf(),
     val withdrawalList: List<HistoryItem> = listOf(),
+    val tradeList: List<BuySellHistoryItem> = listOf(),
     val errorMessage: String? = null
 )
 

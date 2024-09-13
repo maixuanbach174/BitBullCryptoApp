@@ -78,15 +78,15 @@ fun HomeScreen(
                         onDepositClick = onNavigateToDeposit,
                         onWithdrawClick = onNavigateToWithdraw
                     )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    TabRow(
+                        listOf("Favorites", "Hot", "Gainers", "Losers", "New Listings", "24h"),
+                        onClick = {}
+                    )
                     if(uiState.isLoading) {
 
                     }
                     else {
-                        Spacer(modifier = Modifier.height(20.dp))
-                        TabRow(
-                            listOf("Favorites", "Hot", "Gainers", "Losers", "New Listings", "24h"),
-                            onClick = {}
-                        )
                         Spacer(modifier = Modifier.height(20.dp))
 //                    CryptoList(sampleData)
                         TickerList(
