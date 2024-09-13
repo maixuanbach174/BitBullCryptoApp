@@ -490,9 +490,7 @@ fun MyAppNavHost(innerPadding: PaddingValues,
             Deposit(number = user.usid, navController = navController)
         }
         composable(Screen.Withdraw.route) {
-            Withdraw(onNavigateToWithdraw = { /*TODO*/ }, onNavigateToHistory = { /*TODO*/ }) {
-
-            }
+            Withdraw(onNavigateToHelp = { /*TODO*/ }, onNavigateToHistory = { /*TODO*/ }, navController = navController)
         }
         composable(Screen.History.route) {
             val historyViewModel = viewModel<HistoryViewModel>()

@@ -24,50 +24,55 @@ import com.bachphucngequy.bitbull.presentation.ui.theme.Green100
 import com.bachphucngequy.bitbull.presentation.ui.theme.Red100
 
 @Composable
-fun BuySellBar() {
-    BottomAppBar (
+fun BuySellBar(onBuyClick: () -> Unit, onSellClick: () -> Unit) {
+    BottomAppBar(
         containerColor = Color.White,
         actions = {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                     modifier = Modifier.padding(start = 10.dp)
                 ) {
                     FilledTonalButton(
-                        onClick = { /*TODO*/ },
+                        onClick = onBuyClick,
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Green100
                         )
                     ) {
-                        Text("Buy", style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(end = 30.dp, start = 30.dp)
+                        Text(
+                            "Buy",
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(horizontal = 30.dp)
                         )
                     }
-                    FilledTonalButton(onClick = { /*TODO*/ },
+                    FilledTonalButton(
+                        onClick = onSellClick,
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Red100
-                        )) {
-                        Text("Sell", style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(end = 30.dp, start = 30.dp)
-
+                        )
+                    ) {
+                        Text(
+                            "Sell",
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(horizontal = 30.dp)
                         )
                     }
                 }
                 Row {
-                    IconButton(onClick = { /* do something */ }) {
+                    IconButton(onClick = {}) {
                         Icon(
                             Icons.Outlined.Notifications,
                             contentDescription = "Localized description",
                         )
                     }
-                    IconButton(onClick = { /* do something */ }) {
+                    IconButton(onClick = {}) {
                         Icon(
                             Icons.Outlined.MoreVert,
                             contentDescription = "Localized description",
@@ -75,7 +80,6 @@ fun BuySellBar() {
                     }
                 }
             }
-
         }
     )
 }

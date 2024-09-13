@@ -8,7 +8,13 @@ import com.bachphucngequy.bitbull.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import java.io.File
@@ -103,14 +109,61 @@ class AuthViewModel : ViewModel() {
     fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    _authState.value = AuthState.Authenticated
+            .addOnCompleteListener { signInTask ->
+                if (signInTask.isSuccessful) {
+                    val user = signInTask.result?.user
+                    if (user != null) {
+                        // User is signed in
+                        _authState.value = AuthState.Authenticated
+                        // Check if the user is new
+                        if (signInTask.result?.additionalUserInfo?.isNewUser == true || signInTask.result?.additionalUserInfo?.isNewUser == false) {
+                            handleNewUser(user)
+                        }
+                    } else {
+                        _authState.value = AuthState.Error("Failed to get user from Google Sign In.")
+                    }
                 } else {
-                    _authState.value =
-                        AuthState.Error(task.exception?.message ?: "Authentication failed.")
+                    handleSignInError(signInTask.exception)
                 }
             }
+    }
+
+    private fun handleNewUser(user: FirebaseUser) {
+        // Generate a default password (you might want to use a more secure method)
+        val defaultPassword = generateDefaultPassword()
+
+        // Link the Google account with a password
+        val credential = EmailAuthProvider.getCredential(user.email!!, defaultPassword)
+        user.linkWithCredential(credential)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Password authentication added successfully
+                    // You might want to store this information or notify the user
+                    savePasswordToFile(user.email!!, defaultPassword)
+                } else {
+                    // Handle the error
+                    }
+            }
+    }
+
+    private fun generateDefaultPassword(): String {
+        // This is a simple example. In a real app, use a more secure method to generate passwords
+        return "DefaultPass" + (1000..9999).random()
+    }
+
+    private fun handleSignInError(exception: Exception?) {
+        when (exception) {
+            is FirebaseAuthInvalidUserException -> {
+                // This shouldn't happen as signInWithCredential creates a new account if one doesn't exist
+                _authState.value = AuthState.Error("Invalid user: ${exception.message}")
+            }
+            is FirebaseAuthInvalidCredentialsException -> {
+                _authState.value = AuthState.Error("Invalid credentials: ${exception.message}")
+            }
+            else -> {
+                _authState.value = AuthState.Error("Authentication failed: ${exception?.message}")
+            }
+        }
     }
 
     fun onGoogleSignIn() {

@@ -1,16 +1,33 @@
 package com.bachphucngequy.bitbull.presentation.ui.screens
-
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -19,8 +36,15 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.bachphucngequy.bitbull.firebase.FirebaseRepository
+import com.bachphucngequy.bitbull.firebase.OrderManager
+import com.bachphucngequy.bitbull.firebase.user
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bachphucngequy.bitbull.data.entity.Crypto
 import com.bachphucngequy.bitbull.domain.model.Ticker
@@ -32,8 +56,11 @@ import com.bachphucngequy.bitbull.presentation.ui.components.MarketTracker.Parti
 import com.bachphucngequy.bitbull.presentation.ui.components.home.TabRow
 import com.bachphucngequy.bitbull.presentation.ui.components.marketdetail.BuySellBar
 import com.bachphucngequy.bitbull.presentation.ui.components.marketdetail.OrderBookUI
+import com.bachphucngequy.bitbull.presentation.ui.components.marketdetail.OrderBottomSheet
 import com.bachphucngequy.bitbull.presentation.ui.components.marketdetail.SymbolAppBar
 import com.bachphucngequy.bitbull.presentation.ui.components.marketdetail.TradingChart
+import com.bachphucngequy.bitbull.presentation.ui.theme.Green100
+import com.bachphucngequy.bitbull.presentation.ui.theme.Red100
 import com.bachphucngequy.bitbull.presentation.viewmodel.TickerViewModel
 
 @Composable
@@ -46,24 +73,20 @@ fun MarketDetailScreen(
     crypto: Crypto,
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
-
+    var showBottomSheet by remember { mutableStateOf(false) }
+    var isBuy by remember { mutableStateOf(true) } // To track Buy/Sell button click
     val tickerViewModel: TickerViewModel = hiltViewModel()
     val uiState by tickerViewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
         tickerViewModel.getCryptos(crypto.symbol)
     }
-
-    // Comment: base coin (btc)
-    // code: crypto.code
-    // Comment: quote coin (usdt)
-    // Code: crypto.quoteCode
-    // Comment: price
-    // Code: uiState.data[0].lastPrice
-    // nho check empty list hay khong nha vi cai do la cai list cua ticker nen co the bi null
-    // Co the implement theo kieu nay
-//    if(uiStateData.isNotEmpty()) {
-//        uiStateData[0].let {ticker -> {code cua Nghe}}
+    var t1=crypto.code
+    var t2=crypto.quoteCode
+    var price=0.0
+    if(uiState.data.isNotEmpty()) {
+        price=uiState.data[0].lastPrice
+    }
 
     Scaffold(
         topBar = {
@@ -81,7 +104,16 @@ fun MarketDetailScreen(
             }
         },
         bottomBar = {
-            BuySellBar()
+            BuySellBar(
+                onBuyClick = {
+                    isBuy = true
+                    showBottomSheet = true
+                },
+                onSellClick = {
+                    isBuy = false
+                    showBottomSheet = true
+                }
+            )
         }
     ) {innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
@@ -97,6 +129,17 @@ fun MarketDetailScreen(
                     newsViewModel = newsViewModel,
                     navigateToDetails = onNavigateToNewsDetails,
                     searchQuery = crypto.symbol
+                )
+            }
+            if (showBottomSheet) {
+                OrderBottomSheet(
+                    btccurrency = t1,
+                    usdtcurrency = t2,
+                    price = price,
+                    isBuySelected = isBuy,
+                    onDismiss = {
+                        showBottomSheet = false
+                    }
                 )
             }
         }

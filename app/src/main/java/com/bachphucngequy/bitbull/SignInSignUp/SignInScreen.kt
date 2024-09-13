@@ -28,8 +28,10 @@ import com.bachphucngequy.bitbull.presentation.viewmodel.AuthViewModel
 import com.bachphucngequy.bitbull.R
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import com.bachphucngequy.bitbull.firebase.user
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.firestore.auth.User
 
 
 @Composable
@@ -54,13 +56,20 @@ fun SignInScreen(onNavigateToSignInPhone: () -> Unit,onNavigateToForgotPassword:
     }
 
     LaunchedEffect(authState.value) {
-        when(authState.value){
-            is AuthState.Authenticated -> onNavigateToViewMarket.invoke()
-            is AuthState.Error -> Toast.makeText(context,
-                (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
+        when (authState.value) {
+            is AuthState.Authenticated -> {
+                user.fetchUserId() // Fetch the user ID when authenticated
+                onNavigateToViewMarket.invoke()
+            }
+            is AuthState.Error -> Toast.makeText(
+                context,
+                (authState.value as AuthState.Error).message,
+                Toast.LENGTH_SHORT
+            ).show()
             else -> Unit
         }
     }
+
 
     Column(
         modifier = Modifier
