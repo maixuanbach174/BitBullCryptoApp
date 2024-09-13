@@ -83,8 +83,7 @@ fun HomeScreen(
 //                    CryptoList(sampleData)
                     TickerList(
                         data = uiState.data,
-                        onNavigateToDetail =  onNavigateToDetail,
-                        displayIdList = uiState.displayIdList
+                        onNavigateToDetail =  onNavigateToDetail
                     )
                 }
             }

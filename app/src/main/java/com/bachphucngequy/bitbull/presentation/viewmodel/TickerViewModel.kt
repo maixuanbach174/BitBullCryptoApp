@@ -93,7 +93,7 @@ class TickerViewModel @Inject constructor(
 
                     if (remoteFavouriteList.isEmpty()) {
                         // Select the first 5 cryptos as default favorites
-                        val defaultFavouriteCryptos = Crypto.values().take(5)
+                        val defaultFavouriteCryptos = Crypto.values().take(3)
 
                         // Create a list of RemoteFavourite objects for default cryptos
                         val defaultFavouriteList = defaultFavouriteCryptos.map { crypto ->
@@ -126,17 +126,6 @@ class TickerViewModel @Inject constructor(
                             crypto.isFavourite = favouriteSymbols.contains(crypto.symbol)
                         }
                         Timber.e("Fetch favourite successfully")
-                    }
-
-                    // Get displayIdList for favourite cryptos
-                    val displayIds = Crypto.values()
-                        .filter { it.isFavourite }  // Filter cryptos where isFavourite is true
-                        .map { it.symbol }           // Map to their symbols
-
-                    _uiState.update { tickerState ->
-                        tickerState.copy(
-                            displayIdList = displayIds
-                        )
                     }
 
                 } catch(e: Exception) {
