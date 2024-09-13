@@ -58,6 +58,7 @@ fun CryptoWalletScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
+            .navigationBarsPadding()
     ) {
         // Top bar
         TopAppBar(

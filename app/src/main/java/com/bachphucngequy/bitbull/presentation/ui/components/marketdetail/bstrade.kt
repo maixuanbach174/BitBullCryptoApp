@@ -208,7 +208,7 @@ fun OrderBottomSheet(
                                             newAmountBuyCurrency = newAmountBuyCurrency,
                                             newAmountSellCurrency = newAmountSellCurrency,
                                             onSuccess = {
-                                                // Call addOrder after updating the balances
+
                                                 FirebaseRepository.addOrder(
                                                     userId = userId,
                                                     amount = amount.toDouble()/price,
