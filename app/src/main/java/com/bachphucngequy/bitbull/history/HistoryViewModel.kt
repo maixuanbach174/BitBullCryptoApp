@@ -96,7 +96,7 @@ class HistoryViewModel : ViewModel() {
                     val depositList = userDepositList.map {transaction ->
                         HistoryItem(
                             coinCode = transaction.currency,
-                            date = "2024-09-06", // Replace with actual date conversion from Transaction if needed
+                            date = transaction.date, // Replace with actual date conversion from Transaction if needed
                             amount = transaction.amount,
                             status = "Completed" // Or derive status based on your business logic
                         )
@@ -105,8 +105,8 @@ class HistoryViewModel : ViewModel() {
                     val withdrawalList = userWithdrawalList.map {transaction ->
                         HistoryItem(
                             coinCode = transaction.currency,
-                            date = "2024-09-06", // Replace with actual date conversion from Transaction if needed
-                            amount = transaction.amount.toDouble(),
+                            date = transaction.date, // Replace with actual date conversion from Transaction if needed
+                            amount = -transaction.amount,
                             status = "Completed" // Or derive status based on your business logic
                         )
                     }
@@ -115,7 +115,7 @@ class HistoryViewModel : ViewModel() {
                         BuySellHistoryItem(
                             t1 = transaction.t1,
                             t2 = transaction.t2,
-                            date = "2024-03-06",
+                            date = transaction.date,
                             type = transaction.type,
                             amount = transaction.amount,
                             price = transaction.price,
