@@ -17,7 +17,7 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChangeScreen(onNavigateToUserAccount: () -> Unit) {
+fun ChangeScreen(onNavigateToUserAccount: () -> Unit,onNavigateToHome: () -> Unit) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     var fromCoin by remember { mutableStateOf("BTC") }
     var toCoin by remember { mutableStateOf("ETH") }
@@ -122,12 +122,12 @@ fun ChangeScreen(onNavigateToUserAccount: () -> Unit) {
             }
 
             Button(
-                onClick = { /* Perform exchange */ },
+                onClick = { onNavigateToHome() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                Text("Transaction")
+                Text("Trade now")
             }
         }
     }

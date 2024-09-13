@@ -131,7 +131,7 @@ fun EnterCodeScreen(onNavigateToSignInPhone: () -> Unit, onNavigateToViewMarket:
                     val password = getPasswordFromFile(email).toString()
                     authViewModel.login(email,password)
                 } else {
-                    Toast.makeText(context, "OTP is not correct $otpcur", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "OTP is not correct", Toast.LENGTH_SHORT).show()
                 }
             },
             modifier = Modifier

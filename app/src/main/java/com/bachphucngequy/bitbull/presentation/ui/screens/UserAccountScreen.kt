@@ -38,6 +38,7 @@ fun UserAccountScreen(
     onNavigateToCryptoWallet: () -> Unit,
     onNavigateToRank: () -> Unit,
     onNavigateToRefer: () -> Unit,
+    onNavigateToDeposit: () -> Unit,
     onNavigateToChange: () -> Unit,
     onNavigateToPayment: () -> Unit,
     onNavigateToPrize: () -> Unit,
@@ -107,7 +108,7 @@ fun UserAccountScreen(
         ) {
             item { GreenFundBanner() }
             item { UserInfoSection(onNavigateToCryptoWallet, userName, userEmail) }
-            item { MenuItems(onNavigateToHistory,onNavigateToRank,onNavigateToRefer,onNavigateToChange,onNavigateToPayment,onNavigateToPrize,onNavigateToQuestions,onNavigateToPolicies,onNavigateToSupportCenter,onNavigateToFeedback,onNavigateToCompanyInfo,onNavigateToChangePasswordAccount,onNavigateToChangeNickname,onNavigateToChooseLanguage) }
+            item { MenuItems(onNavigateToHistory,onNavigateToRank,onNavigateToRefer,onNavigateToDeposit,onNavigateToChange,onNavigateToPayment,onNavigateToPrize,onNavigateToQuestions,onNavigateToPolicies,onNavigateToSupportCenter,onNavigateToFeedback,onNavigateToCompanyInfo,onNavigateToChangePasswordAccount,onNavigateToChangeNickname,onNavigateToChooseLanguage) }
             item { LogoutButton(authViewModel) }
         }
     }
@@ -173,6 +174,7 @@ fun MenuItems(
     onNavigateToHistory: () -> Unit,
     onNavigateToRank: () -> Unit,
     onNavigateToRefer: () -> Unit,
+    onNavigateToDeposit: () -> Unit,
     onNavigateToChange: () -> Unit,
     onNavigateToPayment: () -> Unit,
     onNavigateToPrize: () -> Unit,
@@ -225,6 +227,7 @@ fun MenuItems(
                         "Transaction History" -> onNavigateToHistory()
                         "Member Rank" -> onNavigateToRank()
                         "Refer a Friend" -> onNavigateToRefer()
+                        "Deposit" -> onNavigateToDeposit()
                         "Change" -> onNavigateToChange()
                         "Payment Management" -> onNavigateToPayment()
                         "Prize" -> onNavigateToPrize()

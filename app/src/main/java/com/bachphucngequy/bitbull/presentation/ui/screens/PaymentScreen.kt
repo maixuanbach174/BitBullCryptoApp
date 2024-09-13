@@ -20,7 +20,7 @@ data class PaymentMethod(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PaymentScreen(onNavigateToUserAccount: () -> Unit) {
+fun PaymentScreen(onNavigateToUserAccount: () -> Unit,onNavigateToPrize: () -> Unit) {
     val paymentMethods = listOf(
         PaymentMethod(Icons.Default.CreditCard, "Green Wallet", "0 USD"),
         PaymentMethod(Icons.Default.AccountBalance, "MoMo"),
@@ -58,7 +58,7 @@ fun PaymentScreen(onNavigateToUserAccount: () -> Unit) {
 
             item {
                 if (paymentMethods.first().balance != null) {
-                    BalanceSection(paymentMethods.first().balance!!)
+                    BalanceSection(paymentMethods.first().balance!!,onNavigateToPrize)
                 }
             }
 
@@ -114,7 +114,7 @@ fun PaymentMethodItem(method: PaymentMethod) {
 }
 
 @Composable
-fun BalanceSection(balance: String) {
+fun BalanceSection(balance: String,onNavigateToPrize:()-> Unit) {
     Column(modifier = Modifier.padding(vertical = 8.dp)) {
         Text(
             "Remaining: $balance",
@@ -132,7 +132,7 @@ fun BalanceSection(balance: String) {
                 Text("Deposit")
             }
             Button(
-                onClick = { /* Handle gift card exchange */ },
+                onClick = { onNavigateToPrize() },
                 modifier = Modifier.weight(1f)
             ) {
                 Text("Prize Exchange")
