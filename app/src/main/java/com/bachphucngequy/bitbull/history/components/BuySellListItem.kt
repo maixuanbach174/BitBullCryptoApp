@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -24,7 +25,9 @@ fun BuySellListItem(
             .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Column {
+        Column (
+            horizontalAlignment = Alignment.Start
+        ) {
             Text(
                 text = buySellHistoryItem.t1 + "/" + buySellHistoryItem.t2,
                 style = MaterialTheme.typography.bodyLarge,
@@ -46,7 +49,9 @@ fun BuySellListItem(
                 color = Color.DarkGray
             )
         }
-        Column {
+        Column (
+            horizontalAlignment = Alignment.End
+        ) {
             Text(
                 text = buySellHistoryItem.date,
                 style = MaterialTheme.typography.bodySmall,

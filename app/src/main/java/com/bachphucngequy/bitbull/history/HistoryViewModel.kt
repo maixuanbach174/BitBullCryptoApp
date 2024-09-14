@@ -65,7 +65,7 @@ class HistoryViewModel : ViewModel() {
                         .await()
 
                     val tradeSnapshot = firestore.collection(ORDER_COLLECTION)
-                        .whereEqualTo("UserID", userId)
+                        .whereEqualTo("userID", userId)
                         .get()
                         .await()
 
@@ -137,7 +137,7 @@ class HistoryViewModel : ViewModel() {
                     )
 
                     e.localizedMessage?.let {
-                        Timber.e("Exception in History")
+                        Timber.e(it)
                     }
                 }
             } else {
