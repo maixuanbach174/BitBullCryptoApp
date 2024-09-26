@@ -25,7 +25,7 @@ Bitbull is a cryptocurrency trading app built for Android using modern technolog
 _Add screenshots of the app here_
 
 ## Demo
-[https://www.youtube.com/watch?v=UlRSuWeSdhk&t=301s](#)
+[Demo Video](https://www.youtube.com/watch?v=UlRSuWeSdhk&t=301s)
 
 ## Getting the Application
 
